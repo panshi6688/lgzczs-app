@@ -120,7 +120,6 @@ fun YoukaPage(
                     return true
                 }
             }
-            }
 
             loadUrl("http://supplier.ukayun.cn/")
         }
