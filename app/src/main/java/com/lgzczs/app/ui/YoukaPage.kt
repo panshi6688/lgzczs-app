@@ -1,7 +1,5 @@
 package com.lgzczs.app.ui
 
-import android.os.Handler
-import android.os.Looper
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -38,8 +36,6 @@ fun YoukaPage(
     LaunchedEffect(hasToken) {
         onStatusChange(if (hasToken) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN)
     }
-
-    val handler = remember { Handler(Looper.getMainLooper()) }
 
     val webView = remember {
         WebView(context).apply {
