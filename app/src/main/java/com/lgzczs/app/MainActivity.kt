@@ -11,16 +11,17 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -29,13 +30,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.lgzczs.app.ui.theme.Primary
+import com.lgzczs.app.ui.theme.LgzczsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            LgzczsTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
 sealed class BottomNavItem(
     val route: String,
     val label: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector
+    val icon: ImageVector
 ) {
     data object HuiQuanYi : BottomNavItem("hui", "汇权益", Icons.Default.AccountBalance)
     data object YouKaYun : BottomNavItem("youka", "优卡云", Icons.Default.Cloud)
@@ -119,7 +120,7 @@ fun PlaceholderScreen(title: String) {
             text = title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Primary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
