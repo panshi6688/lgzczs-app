@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.PollingService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
     </application>
 
 </manifest>

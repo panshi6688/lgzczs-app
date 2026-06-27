@@ -1,5 +1,6 @@
 package com.lgzczs.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.network.YoukaApiClient
+import com.lgzczs.app.service.PollingService
 import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.DataPage
 import com.lgzczs.app.ui.YoukaPage
@@ -83,6 +86,42 @@ fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    LaunchedEffect(huiStatus) {
+        when (huiStatus) {
+            PlatformStatus.LOGGED_IN -> {
+                Intent(context, PollingService::class.java).apply {
+                    action = PollingService.ACTION_START_HUI
+                    context.startForegroundService(this)
+                }
+            }
+            PlatformStatus.NOT_LOGGED_IN, PlatformStatus.TOKEN_EXPIRED -> {
+                Intent(context, PollingService::class.java).apply {
+                    action = PollingService.ACTION_STOP_HUI
+                    context.startForegroundService(this)
+                }
+            }
+            else -> { }
+        }
+    }
+
+    LaunchedEffect(youkaStatus) {
+        when (youkaStatus) {
+            PlatformStatus.LOGGED_IN -> {
+                Intent(context, PollingService::class.java).apply {
+                    action = PollingService.ACTION_START_YOUKA
+                    context.startForegroundService(this)
+                }
+            }
+            PlatformStatus.NOT_LOGGED_IN, PlatformStatus.TOKEN_EXPIRED -> {
+                Intent(context, PollingService::class.java).apply {
+                    action = PollingService.ACTION_STOP_YOUKA
+                    context.startForegroundService(this)
+                }
+            }
+            else -> { }
+        }
+    }
 
     Scaffold(
         bottomBar = {
