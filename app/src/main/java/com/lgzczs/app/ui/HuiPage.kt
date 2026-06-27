@@ -268,7 +268,7 @@ fun HuiPage(
         }
 
         if (showDebugPanel) {
-            DebugPanel(onClose = { showDebugPanel = false })
+            DebugPanel(webView = webView, onClose = { showDebugPanel = false })
         }
     }
 }

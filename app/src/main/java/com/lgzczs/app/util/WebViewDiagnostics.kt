@@ -17,7 +17,8 @@ data class LogEntry(
 enum class LogType {
     JS_DEBUG, JS_LOG, JS_WARN, JS_ERROR,
     NETWORK_REQ, NETWORK_RESP,
-    HTTP_ERROR, ERROR
+    HTTP_ERROR, ERROR,
+    DOM_INSPECT
 }
 
 object WebViewDiagnostics {

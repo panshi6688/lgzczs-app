@@ -1,5 +1,6 @@
 package com.lgzczs.app.ui
 
+import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,10 +44,16 @@ import java.util.Locale
 
 @Composable
 fun DebugPanel(
+    webView: WebView? = null,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
     var logs by remember { mutableStateOf(WebViewDiagnostics.getLogs()) }
+    var running by remember { mutableStateOf(false) }
+
+    fun refresh() {
+        logs = WebViewDiagnostics.getLogs()
+    }
 
     Box(
         modifier = Modifier
@@ -54,7 +61,6 @@ fun DebugPanel(
             .background(Color(0xE6000000))
     ) {
         Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-            // Top bar
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -66,12 +72,18 @@ fun DebugPanel(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.weight(1f))
+                TextButtonSmall(if (running) "..." else "DOM") {
+                    if (!running && webView != null) {
+                        running = true
+                        runDomDiagnostics(webView) { running = false; refresh() }
+                    }
+                }
                 TextButtonSmall("清空") {
                     WebViewDiagnostics.clear()
                     logs = emptyList()
                 }
                 TextButtonSmall("刷新") {
-                    logs = WebViewDiagnostics.getLogs()
+                    refresh()
                 }
                 TextButtonSmall("复制") {
                     WebViewDiagnostics.copyToClipboard(context)
@@ -81,17 +93,15 @@ fun DebugPanel(
                 }
             }
 
-            // Log list
             LazyColumn(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                items(logs.reversed(), key = { "${it.timestamp}_${it.message.hashCode()}" }) { entry ->
+                items(logs.reversed(), key = { "${it.timestamp}_${it.message.hashCode()}_${it.source.hashCode()}" }) { entry ->
                     LogEntryRow(entry)
                 }
             }
 
-            // Bottom hint
             Text(
                 "连接电脑 → Chrome → chrome://inspect 可远程调试",
                 color = Color(0x99FFFFFF),
@@ -100,6 +110,86 @@ fun DebugPanel(
             )
         }
     }
+}
+
+private fun runDomDiagnostics(webView: WebView, onComplete: () -> Unit) {
+    val scripts = listOf(
+        "PageMeta" to """(function(){
+  return JSON.stringify({
+    readyState: document.readyState,
+    viewport: innerWidth+'x'+innerHeight,
+    scrollSize: document.documentElement.scrollWidth+'x'+document.documentElement.scrollHeight,
+    url: location.href,
+    title: document.title
+  });
+})()""",
+        "BodyStructure" to """(function(){
+  var b = document.body;
+  if(!b) return 'NO_BODY';
+  var r = { childCount: b.children.length, htmlLen: b.innerHTML.length, textLen: b.innerText.length, first5: [] };
+  for(var i=0;i<Math.min(5,b.children.length);i++){
+    var el=b.children[i];
+    r.first5.push(el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,30)+' visible='+(el.offsetParent!==null)+' text="'+(el.innerText||'').replace(/\s+/g,' ').slice(0,40)+'"');
+  }
+  return JSON.stringify(r);
+})()""",
+        "AppMountPoint" to """(function(){
+  var app=document.getElementById('app');
+  if(!app) return 'NO_#app';
+  var s=window.getComputedStyle(app);
+  return JSON.stringify({
+    childCount: app.children.length,
+    textLen: app.innerText.length,
+    display: s.display,
+    visibility: s.visibility,
+    opacity: s.opacity,
+    w: s.width, h: s.height,
+    overflow: s.overflow,
+    position: s.position,
+    zIndex: s.zIndex,
+    bgColor: s.backgroundColor
+  });
+})()""",
+        "HiddenElements" to """(function(){
+  var r=[];
+  function walk(el,d){
+    if(d>3||!el||!el.tagName)return;
+    if(el.tagName!=='SCRIPT'&&el.tagName!=='STYLE'&&el.tagName!=='LINK'){
+      if(el.offsetParent===null&&el.tagName!=='HTML'&&el.tagName!=='BODY'){
+        r.push('HIDDEN: '+el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,20));
+      }
+    }
+    for(var i=0;i<el.children.length;i++) walk(el.children[i],d+1);
+  }
+  walk(document.body,0);
+  return JSON.stringify(r.length>0?r.slice(0,15):'none');
+})()""",
+        "ImageStatus" to """(function(){
+  var imgs=document.getElementsByTagName('img');
+  var total=imgs.length, loaded=0, failed=0, rendered=0;
+  for(var i=0;i<imgs.length;i++){
+    if(imgs[i].complete) loaded++;
+    if(imgs[i].naturalWidth===0&&imgs[i].complete) failed++;
+    if(imgs[i].naturalWidth>0) rendered++;
+  }
+  return JSON.stringify({total:total,loaded:loaded,failed:failed,rendered:rendered});
+})()"""
+    )
+
+    var index = 0
+    fun runNext() {
+        if (index >= scripts.size) {
+            onComplete()
+            return
+        }
+        val (name, script) = scripts[index]
+        index++
+        webView.evaluateJavascript(script) { result ->
+            WebViewDiagnostics.add(LogType.DOM_INSPECT, "DOM<$name>", result ?: "null")
+            runNext()
+        }
+    }
+    runNext()
 }
 
 @Composable
@@ -112,6 +202,7 @@ private fun LogEntryRow(entry: LogEntry) {
         LogType.JS_LOG, LogType.JS_DEBUG -> Color(0xFF99CC00)
         LogType.NETWORK_REQ -> Color(0xFF33B5E5)
         LogType.NETWORK_RESP -> Color(0xFFAA66CC)
+        LogType.DOM_INSPECT -> Color(0xFF00BCD4)
     }
 
     Column(
@@ -149,7 +240,7 @@ private fun LogEntryRow(entry: LogEntry) {
             color = Color.White,
             fontSize = 11.sp,
             fontFamily = FontFamily.Monospace,
-            maxLines = 3,
+            maxLines = 6,
             overflow = TextOverflow.Ellipsis
         )
     }
