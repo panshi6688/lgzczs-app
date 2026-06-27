@@ -35,7 +35,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lgzczs.app.model.PlatformStatus
+import com.lgzczs.app.network.YoukaApiClient
 import com.lgzczs.app.ui.HuiPage
+import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.TokenManager
 
@@ -76,6 +78,7 @@ fun MainScreen() {
     val context = LocalContext.current
     val tokenManager = remember { TokenManager(context.applicationContext) }
     var huiStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
+    var youkaStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -116,7 +119,12 @@ fun MainScreen() {
                 )
             }
             composable(BottomNavItem.YouKaYun.route) {
-                PlaceholderScreen("优卡云")
+                YoukaPage(
+                    tokenManager = tokenManager,
+                    onStatusChange = { status ->
+                        youkaStatus = status
+                    }
+                )
             }
             composable(BottomNavItem.Data.route) {
                 PlaceholderScreen("数据")
