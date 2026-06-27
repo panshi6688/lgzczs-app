@@ -19,6 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,7 +34,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lgzczs.app.model.PlatformStatus
+import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
+import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +73,9 @@ private val bottomNavItems = listOf(
 
 @Composable
 fun MainScreen() {
+    val context = LocalContext.current
+    val tokenManager = remember { TokenManager(context) }
+    var huiStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -98,7 +108,12 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.HuiQuanYi.route) {
-                PlaceholderScreen("汇权益")
+                HuiPage(
+                    tokenManager = tokenManager,
+                    onStatusChange = { status ->
+                        huiStatus = status
+                    }
+                )
             }
             composable(BottomNavItem.YouKaYun.route) {
                 PlaceholderScreen("优卡云")
