@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -158,9 +159,7 @@ private fun LogEntryRow(entry: LogEntry) {
 private fun TextButtonSmall(text: String, onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
-        contentPadding = ButtonDefaults.TextButtonContentPadding.copy(
-            start = 6.dp, end = 6.dp
-        )
+        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)
     ) {
         Text(text, color = Color(0xFF33B5E5), fontSize = 12.sp)
     }
