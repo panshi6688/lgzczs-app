@@ -51,9 +51,6 @@ fun YoukaPage(
                 setDisplayZoomControls(false)
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
-            setAllowFileAccess(false)
-            setAllowContentAccess(false)
-
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)

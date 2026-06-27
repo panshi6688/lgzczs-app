@@ -73,9 +73,6 @@ fun HuiPage(
                 setDisplayZoomControls(false)
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
-            setAllowFileAccess(false)
-            setAllowContentAccess(false)
-
             addJavascriptInterface(webInterface, "Android")
 
             webViewClient = object : WebViewClient() {
