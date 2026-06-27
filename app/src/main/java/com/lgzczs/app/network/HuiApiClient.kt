@@ -64,7 +64,7 @@ class HuiApiClient {
 
             val mapType = object : TypeToken<Map<String, Any>>() {}.type
             val json: Map<String, Any> = gson.fromJson(body, mapType)
-            val count = (json["count"] as? Double)?.toInt() ?: 0
+            val count = (json["count"] as? Number)?.toInt() ?: 0
 
             if (count > 0) PollingEvent.HAS_ORDERS else PollingEvent.NO_ORDERS
         } catch (e: Exception) {

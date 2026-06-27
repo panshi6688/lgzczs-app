@@ -74,7 +74,7 @@ private val bottomNavItems = listOf(
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-    val tokenManager = remember { TokenManager(context) }
+    val tokenManager = remember { TokenManager(context.applicationContext) }
     var huiStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()

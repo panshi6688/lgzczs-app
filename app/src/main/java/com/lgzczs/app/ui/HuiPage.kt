@@ -17,7 +17,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.util.TokenManager
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 
 class HuiWebInterface(
     private val onToken: (String) -> Unit
@@ -62,9 +70,9 @@ fun HuiPage(
                 setSupportZoom(true)
                 builtInZoomControls(true)
                 displayZoomControls(false)
-                allowFileAccess = true
-                allowContentAccess = true
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                allowFileAccess = false
+                allowContentAccess = false
+                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
 
             addJavascriptInterface(webInterface, "Android")
@@ -87,17 +95,36 @@ fun HuiPage(
         }
     }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(2000)
-            webView.evaluateJavascript(
-                """
-                (function() {
-                    var t = localStorage.getItem('access_token');
-                    if (t) Android.onTokenReceived(t);
-                })()
-                """.trimIndent(), null
-            )
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val scope = rememberCoroutineScope()
+
+    DisposableEffect(lifecycleOwner) {
+        val job = scope.launch {
+            while (isActive) {
+                delay(2000)
+                withContext(Dispatchers.Main) {
+                    webView.evaluateJavascript(
+                        """
+                        (function() {
+                            var t = localStorage.getItem('access_token');
+                            if (t) Android.onTokenReceived(t);
+                        })()
+                        """.trimIndent(), null
+                    )
+                }
+            }
+        }
+
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                job.cancel()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            job.cancel()
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
