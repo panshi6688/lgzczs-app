@@ -1,6 +1,7 @@
 package com.lgzczs.app.ui
 
 import android.webkit.CookieManager
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,11 +50,36 @@ fun YoukaPage(
                 setSupportZoom(true)
                 setBuiltInZoomControls(true)
                 setDisplayZoomControls(false)
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                }
+
+                override fun onReceivedSslError(
+                    view: WebView?,
+                    handler: android.webkit.SslErrorHandler?,
+                    error: android.net.http.SslError?
+                ) {
+                    handler?.proceed()
+                }
+            }
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onJsAlert(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    result: android.webkit.JsResult?
+                ): Boolean {
+                    android.app.AlertDialog.Builder(context)
+                        .setTitle("公告")
+                        .setMessage(message)
+                        .setCancelable(false)
+                        .setPositiveButton("确定") { _, _ -> result?.confirm() }
+                        .show()
+                    return true
                 }
             }
 

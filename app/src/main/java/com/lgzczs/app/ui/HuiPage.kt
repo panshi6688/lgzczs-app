@@ -3,6 +3,7 @@ package com.lgzczs.app.ui
 import android.os.Handler
 import android.os.Looper
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
@@ -71,7 +72,7 @@ fun HuiPage(
                 setSupportZoom(true)
                 setBuiltInZoomControls(true)
                 setDisplayZoomControls(false)
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
             addJavascriptInterface(webInterface, "Android")
 
@@ -86,6 +87,31 @@ fun HuiPage(
                         })()
                         """.trimIndent(), null
                     )
+                }
+
+                override fun onReceivedSslError(
+                    view: WebView?,
+                    handler: android.webkit.SslErrorHandler?,
+                    error: android.net.http.SslError?
+                ) {
+                    handler?.proceed()
+                }
+            }
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onJsAlert(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    result: android.webkit.JsResult?
+                ): Boolean {
+                    android.app.AlertDialog.Builder(context)
+                        .setTitle("公告")
+                        .setMessage(message)
+                        .setPositiveButton("确定") { _, _ -> result?.confirm() }
+                        .setCancelable(false)
+                        .show()
+                    return true
                 }
             }
 

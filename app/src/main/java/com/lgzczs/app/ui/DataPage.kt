@@ -15,7 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,12 +42,24 @@ fun DataPage(
 ) {
     val context = LocalContext.current
 
-    var notificationGranted by remember { mutableStateOf(false) }
-    var overlayGranted by remember { mutableStateOf(false) }
+    var notificationGranted by remember { mutableStateOf(PermissionHelper.isNotificationEnabled(context)) }
+    var overlayGranted by remember { mutableStateOf(PermissionHelper.isOverlayPermissionGranted(context)) }
+    var alertDialogEnabled by remember { mutableStateOf(tokenManager.alertDialogEnabled) }
+    var notificationEnabled by remember { mutableStateOf(tokenManager.notificationEnabled) }
+    var floatWindowEnabled by remember { mutableStateOf(tokenManager.floatWindowEnabled) }
 
-    LaunchedEffect(Unit) {
-        notificationGranted = PermissionHelper.isNotificationEnabled(context)
-        overlayGranted = PermissionHelper.isOverlayPermissionGranted(context)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                notificationGranted = PermissionHelper.isNotificationEnabled(context)
+                overlayGranted = PermissionHelper.isOverlayPermissionGranted(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     Column(
@@ -110,22 +125,31 @@ fun DataPage(
         ToggleRow(
             label = "弹窗通知",
             description = "有订单时在所有 App 上方弹窗提示",
-            checked = tokenManager.alertDialogEnabled,
-            onCheckedChange = { tokenManager.alertDialogEnabled = it }
+            checked = alertDialogEnabled,
+            onCheckedChange = {
+                alertDialogEnabled = it
+                tokenManager.alertDialogEnabled = it
+            }
         )
 
         ToggleRow(
             label = "状态栏通知",
             description = "有订单时发送系统通知栏通知",
-            checked = tokenManager.notificationEnabled,
-            onCheckedChange = { tokenManager.notificationEnabled = it }
+            checked = notificationEnabled,
+            onCheckedChange = {
+                notificationEnabled = it
+                tokenManager.notificationEnabled = it
+            }
         )
 
         ToggleRow(
             label = "悬浮窗",
             description = "后台运行时显示可拖动的悬浮图标",
-            checked = tokenManager.floatWindowEnabled,
-            onCheckedChange = { tokenManager.floatWindowEnabled = it }
+            checked = floatWindowEnabled,
+            onCheckedChange = {
+                floatWindowEnabled = it
+                tokenManager.floatWindowEnabled = it
+            }
         )
     }
 }
