@@ -8,8 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
@@ -27,13 +27,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -50,6 +50,7 @@ import com.lgzczs.app.ui.DataPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
+import com.lgzczs.app.service.FloatWindowService
 import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
@@ -154,8 +155,9 @@ fun MainScreen() {
         }
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     DisposableEffect(context, tokenManager) {
-        val lifecycleOwner = LocalLifecycleOwner.current
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_STOP -> {

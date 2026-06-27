@@ -23,6 +23,7 @@ import com.lgzczs.app.util.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -48,10 +49,10 @@ fun YoukaPage(
                 setSupportZoom(true)
                 builtInZoomControls(true)
                 displayZoomControls(false)
-                allowFileAccess = false
-                allowContentAccess = false
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
+            allowFileAccess = false
+            allowContentAccess = false
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {

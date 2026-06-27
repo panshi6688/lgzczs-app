@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -72,7 +72,7 @@ fun DataPage(
         PlatformStatusRow("优卡云", youkaStatus)
 
         Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
+        Divider()
         Spacer(modifier = Modifier.height(16.dp))
 
         SectionTitle("通知权限")
@@ -86,7 +86,7 @@ fun DataPage(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
+        Divider()
         Spacer(modifier = Modifier.height(16.dp))
 
         SectionTitle("悬浮窗权限")
@@ -100,7 +100,7 @@ fun DataPage(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
+        Divider()
         Spacer(modifier = Modifier.height(16.dp))
 
         SectionTitle("功能开关")

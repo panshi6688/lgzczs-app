@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HuiWebInterface(
@@ -70,10 +71,10 @@ fun HuiPage(
                 setSupportZoom(true)
                 builtInZoomControls(true)
                 displayZoomControls(false)
-                allowFileAccess = false
-                allowContentAccess = false
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
+            allowFileAccess = false
+            allowContentAccess = false
 
             addJavascriptInterface(webInterface, "Android")
 
