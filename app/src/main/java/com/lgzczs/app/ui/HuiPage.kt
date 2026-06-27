@@ -1,15 +1,16 @@
 package com.lgzczs.app.ui
 
-import android.os.Handler
-import android.os.Looper
-import android.webkit.JavascriptInterface
+import android.util.Log
 import android.webkit.CookieManager
+import android.webkit.JsPromptResult
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,28 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import com.lgzczs.app.model.PlatformStatus
-import com.lgzczs.app.util.TokenManager
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-class HuiWebInterface(
-    private val onToken: (String) -> Unit
-) {
-    @JavascriptInterface
-    fun onTokenReceived(token: String) {
-        onToken(token)
-    }
-}
+import com.lgzczs.app.model.PlatformStatus
+import com.lgzczs.app.util.TokenManager
 
 @Composable
 fun HuiPage(
@@ -52,29 +37,19 @@ fun HuiPage(
         onStatusChange(if (hasToken) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN)
     }
 
-    val handler = remember { Handler(Looper.getMainLooper()) }
-
-    val webInterface = remember {
-        HuiWebInterface { token ->
-            handler.post {
-                tokenManager.huiToken = token
-                hasToken = true
-            }
-        }
-    }
+    WebView.setWebContentsDebuggingEnabled(true)
 
     val webView = remember {
         WebView(context).apply {
             settings.apply {
                 javaScriptEnabled = true
                 domStorageEnabled = true
-                databaseEnabled = true
                 useWideViewPort = true
                 loadWithOverviewMode = true
                 setSupportZoom(true)
                 setBuiltInZoomControls(true)
                 setDisplayZoomControls(false)
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 loadsImagesAutomatically = true
                 javaScriptCanOpenWindowsAutomatically = true
                 textZoom = 100
@@ -82,19 +57,34 @@ fun HuiPage(
                 userAgentString = "Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36"
             }
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
-            addJavascriptInterface(webInterface, "Android")
 
             webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    view?.loadUrl(request?.url.toString())
+                    return true
+                }
+
+                override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    Log.d("HuiWebView", "Loading: $url")
+                }
+
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     view?.evaluateJavascript(
-                        """
-                        (function() {
-                            var t = localStorage.getItem('access_token');
-                            if (t) Android.onTokenReceived(t);
-                        })()
-                        """.trimIndent(), null
-                    )
+                        "(function(){ return localStorage.getItem('access_token') })()"
+                    ) { value ->
+                        if (value != null && value != "null" && value.isNotEmpty()) {
+                            val token = value.trim('"')
+                            if (token.isNotEmpty()) {
+                                tokenManager.huiToken = token
+                                hasToken = true
+                            }
+                        }
+                    }
                 }
 
                 override fun onReceivedSslError(
@@ -107,6 +97,26 @@ fun HuiPage(
             }
 
             webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(message: ConsoleMessage?): Boolean {
+                    Log.d("HuiWebView", "${message?.message()} (${message?.sourceId()}:${message?.lineNumber()})")
+                    return true
+                }
+
+                override fun onCreateWindow(
+                    view: WebView?,
+                    isDialog: Boolean,
+                    isUserGesture: Boolean,
+                    resultMsg: android.os.Message?
+                ): Boolean {
+                    val newView = view
+                    if (newView != null && resultMsg != null) {
+                        val transport = resultMsg.obj as? android.webkit.WebView.WebViewTransport
+                        transport?.webView = newView
+                        resultMsg.sendToTarget()
+                    }
+                    return true
+                }
+
                 override fun onJsAlert(
                     view: WebView?,
                     url: String?,
@@ -114,8 +124,7 @@ fun HuiPage(
                     result: android.webkit.JsResult?
                 ): Boolean {
                     android.app.AlertDialog.Builder(context)
-                        .setTitle("公告")
-                        .setMessage(message)
+                        .setTitle(message)
                         .setPositiveButton("确定") { _, _ -> result?.confirm() }
                         .setCancelable(false)
                         .show()
@@ -142,7 +151,7 @@ fun HuiPage(
                     url: String?,
                     message: String?,
                     defaultValue: String?,
-                    result: android.webkit.JsPromptResult?
+                    result: JsPromptResult?
                 ): Boolean {
                     android.app.AlertDialog.Builder(context)
                         .setTitle("提示")
@@ -159,37 +168,16 @@ fun HuiPage(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
-    val scope = rememberCoroutineScope()
-
     DisposableEffect(lifecycleOwner) {
-        val job = scope.launch {
-            while (isActive) {
-                delay(2000)
-                withContext(Dispatchers.Main) {
-                    webView.evaluateJavascript(
-                        """
-                        (function() {
-                            var t = localStorage.getItem('access_token');
-                            if (t) Android.onTokenReceived(t);
-                        })()
-                        """.trimIndent(), null
-                    )
-                }
-            }
-        }
-
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> webView.onResume()
                 Lifecycle.Event.ON_PAUSE -> webView.onPause()
-                Lifecycle.Event.ON_DESTROY -> job.cancel()
                 else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-
         onDispose {
-            job.cancel()
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
