@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -35,7 +33,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -72,7 +70,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT), RECEIVER_NOT_EXPORTED)
+            registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT), Context.RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT))
         }
@@ -97,11 +95,11 @@ class MainActivity : ComponentActivity() {
 sealed class BottomNavItem(
     val route: String,
     val label: String,
-    val icon: ImageVector
+    val icon: @Composable () -> Unit
 ) {
-    data object HuiQuanYi : BottomNavItem("hui", "汇权益", Icons.Default.AccountBalance)
-    data object YouKaYun : BottomNavItem("youka", "优卡云", Icons.Default.Cloud)
-    data object Data : BottomNavItem("data", "数据", Icons.Default.Dashboard)
+    data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益") })
+    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云") })
+    data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据") })
 }
 
 private val bottomNavItems = listOf(
@@ -186,7 +184,7 @@ fun MainScreen() {
             NavigationBar {
                 bottomNavItems.forEach { item ->
                     NavigationBarItem(
-                        icon = { Icon(item.icon, contentDescription = item.label) },
+                        icon = item.icon,
                         label = { Text(item.label) },
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         onClick = {
