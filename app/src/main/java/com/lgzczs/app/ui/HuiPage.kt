@@ -1,14 +1,20 @@
 package com.lgzczs.app.ui
 
+import android.graphics.Bitmap
 import android.util.Log
 import android.webkit.CookieManager
-import android.webkit.JsPromptResult
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -16,22 +22,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.lgzczs.app.model.PlatformStatus
+import com.lgzczs.app.util.LogType
 import com.lgzczs.app.util.TokenManager
+import com.lgzczs.app.util.WebViewDiagnostics
 
 @Composable
 fun HuiPage(
     tokenManager: TokenManager,
+    debugMode: Boolean = false,
     onStatusChange: (PlatformStatus) -> Unit
 ) {
     val context = LocalContext.current
     var hasToken by remember { mutableStateOf(tokenManager.huiToken != null) }
+    var showDebugPanel by remember { mutableStateOf(false) }
 
     LaunchedEffect(hasToken) {
         onStatusChange(if (hasToken) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN)
@@ -63,11 +77,13 @@ fun HuiPage(
                     view: WebView?,
                     request: WebResourceRequest?
                 ): Boolean {
-                    view?.loadUrl(request?.url.toString())
+                    val url = request?.url.toString()
+                    WebViewDiagnostics.add(LogType.NETWORK_REQ, url, "NAVIGATE")
+                    view?.loadUrl(url)
                     return true
                 }
 
-                override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                     Log.d("HuiWebView", "Loading: $url")
                 }
@@ -82,9 +98,48 @@ fun HuiPage(
                             if (token.isNotEmpty()) {
                                 tokenManager.huiToken = token
                                 hasToken = true
+                                WebViewDiagnostics.add(LogType.JS_LOG, url ?: "", "Token extracted: ${token.take(8)}...")
                             }
                         }
                     }
+                }
+
+                override fun shouldInterceptRequest(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): WebResourceResponse? {
+                    if (request != null) {
+                        WebViewDiagnostics.add(LogType.NETWORK_REQ, request.url.toString(), request.method ?: "GET")
+                    }
+                    return super.shouldInterceptRequest(view, request)
+                }
+
+                override fun onReceivedHttpError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    errorResponse: WebResourceResponse?
+                ) {
+                    val url = request?.url.toString()
+                    val status = errorResponse?.statusCode ?: 0
+                    WebViewDiagnostics.add(LogType.HTTP_ERROR, url, "HTTP $status ${errorResponse?.reasonPhrase}")
+                }
+
+                @Deprecated("deprecated")
+                override fun onReceivedError(
+                    view: WebView?,
+                    errorCode: Int,
+                    description: String?,
+                    failingUrl: String?
+                ) {
+                    WebViewDiagnostics.add(LogType.ERROR, failingUrl ?: "", "Error $errorCode: $description")
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: android.webkit.WebResourceError?
+                ) {
+                    WebViewDiagnostics.add(LogType.ERROR, request?.url.toString(), "Error ${error?.errorCode}: ${error?.description}")
                 }
 
                 override fun onReceivedSslError(
@@ -98,7 +153,17 @@ fun HuiPage(
 
             webChromeClient = object : WebChromeClient() {
                 override fun onConsoleMessage(message: android.webkit.ConsoleMessage?): Boolean {
-                    Log.d("HuiWebView", "${message?.message()} (${message?.sourceId()}:${message?.lineNumber()})")
+                    val msg = message?.message() ?: ""
+                    val src = "${message?.sourceId()}:${message?.lineNumber()}"
+                    val level = message?.messageLevel()
+                    val type = when (level) {
+                        android.webkit.ConsoleMessage.MessageLevel.ERROR -> LogType.JS_ERROR
+                        android.webkit.ConsoleMessage.MessageLevel.WARNING -> LogType.JS_WARN
+                        android.webkit.ConsoleMessage.MessageLevel.TIP -> LogType.JS_DEBUG
+                        else -> LogType.JS_LOG
+                    }
+                    WebViewDiagnostics.add(type, src, msg)
+                    Log.d("HuiWebView", "[$level] $msg ($src)")
                     return true
                 }
 
@@ -110,7 +175,7 @@ fun HuiPage(
                 ): Boolean {
                     val newView = view
                     if (newView != null && resultMsg != null) {
-                        val transport = resultMsg.obj as? android.webkit.WebView.WebViewTransport
+                        val transport = resultMsg.obj as? WebView.WebViewTransport
                         transport?.webView = newView
                         resultMsg.sendToTarget()
                     }
@@ -151,7 +216,7 @@ fun HuiPage(
                     url: String?,
                     message: String?,
                     defaultValue: String?,
-                    result: JsPromptResult?
+                    result: android.webkit.JsPromptResult?
                 ): Boolean {
                     android.app.AlertDialog.Builder(context)
                         .setTitle("提示")
@@ -182,8 +247,28 @@ fun HuiPage(
         }
     }
 
-    AndroidView(
-        factory = { webView },
-        modifier = Modifier.fillMaxSize()
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { webView },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        if (debugMode) {
+            FloatingActionButton(
+                onClick = { showDebugPanel = !showDebugPanel },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(40.dp),
+                containerColor = Color(0x99000000),
+                contentColor = Color.White
+            ) {
+                Text("🐛", fontSize = 18.sp)
+            }
+        }
+
+        if (showDebugPanel) {
+            DebugPanel(onClose = { showDebugPanel = false })
+        }
+    }
 }

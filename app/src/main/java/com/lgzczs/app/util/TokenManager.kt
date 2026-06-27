@@ -28,6 +28,10 @@ class TokenManager(context: Context) {
         get() = prefs.getBoolean("float_window_enabled", true)
         set(value) = prefs.edit().putBoolean("float_window_enabled", value).apply()
 
+    var debugModeEnabled: Boolean
+        get() = prefs.getBoolean("debug_mode_enabled", false)
+        set(value) = prefs.edit().putBoolean("debug_mode_enabled", value).apply()
+
     fun clearHuiToken() {
         prefs.edit().remove("hui_token").apply()
     }

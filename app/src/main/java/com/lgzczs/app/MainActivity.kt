@@ -213,6 +213,7 @@ fun MainScreen() {
             composable(BottomNavItem.HuiQuanYi.route) {
                 HuiPage(
                     tokenManager = tokenManager,
+                    debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         huiStatus = status
                     }
@@ -221,6 +222,7 @@ fun MainScreen() {
             composable(BottomNavItem.YouKaYun.route) {
                 YoukaPage(
                     tokenManager = tokenManager,
+                    debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         youkaStatus = status
                     }

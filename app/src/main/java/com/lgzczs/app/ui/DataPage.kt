@@ -151,6 +151,25 @@ fun DataPage(
                 tokenManager.floatWindowEnabled = it
             }
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SectionTitle("调试选项")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        var debugMode by remember { mutableStateOf(tokenManager.debugModeEnabled) }
+        ToggleRow(
+            label = "调试模式",
+            description = "在 WebView 页面显示调试按钮，捕获 JS 错误和网络请求日志",
+            checked = debugMode,
+            onCheckedChange = {
+                debugMode = it
+                tokenManager.debugModeEnabled = it
+            }
+        )
     }
 }
 
