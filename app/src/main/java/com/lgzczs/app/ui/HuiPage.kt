@@ -69,12 +69,12 @@ fun HuiPage(
                 useWideViewPort = true
                 loadWithOverviewMode = true
                 setSupportZoom(true)
-                builtInZoomControls(true)
-                displayZoomControls(false)
+                setBuiltInZoomControls(true)
+                setDisplayZoomControls(false)
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
-            allowFileAccess = false
-            allowContentAccess = false
+            setAllowFileAccess(false)
+            setAllowContentAccess(false)
 
             addJavascriptInterface(webInterface, "Android")
 
