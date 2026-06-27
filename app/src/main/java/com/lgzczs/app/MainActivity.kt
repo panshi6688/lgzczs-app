@@ -24,11 +24,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,6 +51,7 @@ import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.DataPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
+import com.lgzczs.app.util.PermissionHelper
 import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
@@ -148,6 +153,31 @@ fun MainScreen() {
                 }
             }
             else -> { }
+        }
+    }
+
+    DisposableEffect(context, tokenManager) {
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> {
+                    if (tokenManager.floatWindowEnabled && PermissionHelper.isOverlayPermissionGranted(context)) {
+                        Intent(context, FloatWindowService::class.java).also {
+                            context.startService(it)
+                        }
+                    }
+                }
+                Lifecycle.Event.ON_START -> {
+                    Intent(context, FloatWindowService::class.java).also {
+                        context.stopService(it)
+                    }
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
