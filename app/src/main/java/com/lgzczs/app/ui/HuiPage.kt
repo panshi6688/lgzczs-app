@@ -97,7 +97,7 @@ fun HuiPage(
             }
 
             webChromeClient = object : WebChromeClient() {
-                override fun onConsoleMessage(message: ConsoleMessage?): Boolean {
+                override fun onConsoleMessage(message: android.webkit.ConsoleMessage?): Boolean {
                     Log.d("HuiWebView", "${message?.message()} (${message?.sourceId()}:${message?.lineNumber()})")
                     return true
                 }

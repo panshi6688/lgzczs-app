@@ -97,7 +97,7 @@ fun YoukaPage(
             }
 
             webChromeClient = object : WebChromeClient() {
-                override fun onConsoleMessage(message: ConsoleMessage?): Boolean {
+                override fun onConsoleMessage(message: android.webkit.ConsoleMessage?): Boolean {
                     Log.d("YoukaWebView", "${message?.message()} (${message?.sourceId()}:${message?.lineNumber()})")
                     return true
                 }
