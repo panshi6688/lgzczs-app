@@ -3,7 +3,9 @@ package com.lgzczs.app.ui
 import android.os.Handler
 import android.os.Looper
 import android.webkit.JavascriptInterface
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
@@ -73,7 +75,13 @@ fun HuiPage(
                 setBuiltInZoomControls(true)
                 setDisplayZoomControls(false)
                 mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+                loadsImagesAutomatically = true
+                javaScriptCanOpenWindowsAutomatically = true
+                textZoom = 100
+                layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
+                userAgentString = "Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36"
             }
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
             addJavascriptInterface(webInterface, "Android")
 
             webViewClient = object : WebViewClient() {
@@ -113,6 +121,37 @@ fun HuiPage(
                         .show()
                     return true
                 }
+
+                override fun onJsConfirm(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    result: android.webkit.JsResult?
+                ): Boolean {
+                    android.app.AlertDialog.Builder(context)
+                        .setTitle("确认")
+                        .setMessage(message)
+                        .setPositiveButton("确定") { _, _ -> result?.confirm() }
+                        .setNegativeButton("取消") { _, _ -> result?.cancel() }
+                        .show()
+                    return true
+                }
+
+                override fun onJsPrompt(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    defaultValue: String?,
+                    result: android.webkit.JsPromptResult?
+                ): Boolean {
+                    android.app.AlertDialog.Builder(context)
+                        .setTitle("提示")
+                        .setMessage(message)
+                        .setPositiveButton("确定") { _, _ -> result?.confirm(defaultValue) }
+                        .setNegativeButton("取消") { _, _ -> result?.cancel() }
+                        .show()
+                    return true
+                }
             }
 
             loadUrl("https://sup.78k.cn/")
@@ -140,8 +179,11 @@ fun HuiPage(
         }
 
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                job.cancel()
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> webView.onResume()
+                Lifecycle.Event.ON_PAUSE -> webView.onPause()
+                Lifecycle.Event.ON_DESTROY -> job.cancel()
+                else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
