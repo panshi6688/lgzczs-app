@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.network.YoukaApiClient
 import com.lgzczs.app.ui.HuiPage
+import com.lgzczs.app.ui.DataPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.TokenManager
@@ -127,7 +128,11 @@ fun MainScreen() {
                 )
             }
             composable(BottomNavItem.Data.route) {
-                PlaceholderScreen("数据")
+                DataPage(
+                    tokenManager = tokenManager,
+                    huiStatus = huiStatus,
+                    youkaStatus = youkaStatus
+                )
             }
         }
     }
