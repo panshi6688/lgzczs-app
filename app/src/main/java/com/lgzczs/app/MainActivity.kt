@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -98,9 +100,9 @@ sealed class BottomNavItem(
     val label: String,
     val icon: @Composable () -> Unit
 ) {
-    data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益") })
-    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云") })
-    data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据") })
+    data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(24.dp)) })
+    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(24.dp)) })
+    data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(24.dp)) })
 }
 
 private val bottomNavItems = listOf(
