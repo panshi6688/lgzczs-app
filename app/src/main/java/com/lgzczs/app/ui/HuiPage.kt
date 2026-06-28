@@ -2,7 +2,7 @@ package com.lgzczs.app.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.clipToBounds
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,7 +28,7 @@ fun HuiPage(
         onStatusChange(if (hasToken) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN)
     }
 
-    Box(modifier = Modifier.fillMaxSize().clipToBounds()) {
+    Box(modifier = Modifier.fillMaxSize().graphicsLayer(clip = true)) {
         AndroidView(
             factory = { context ->
                 GeckoView(context).apply {
