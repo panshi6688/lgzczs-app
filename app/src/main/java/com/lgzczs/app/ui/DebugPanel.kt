@@ -43,12 +43,11 @@ import java.util.Locale
 
 @Composable
 fun DebugPanel(
-    session: org.mozilla.geckoview.GeckoSession? = null,
+    @Suppress("UNUSED_PARAMETER") session: org.mozilla.geckoview.GeckoSession? = null,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
     var logs by remember { mutableStateOf(WebViewDiagnostics.getLogs()) }
-    var running by remember { mutableStateOf(false) }
 
     fun refresh() {
         logs = WebViewDiagnostics.getLogs()
@@ -71,11 +70,9 @@ fun DebugPanel(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.weight(1f))
-                TextButtonSmall(if (running) "..." else "DOM") {
-                    if (!running && session != null) {
-                        running = true
-                        runDomDiagnostics(session) { running = false; refresh() }
-                    }
+                TextButtonSmall("DOM") {
+                    WebViewDiagnostics.add(LogType.DOM_INSPECT, "GV", "DOM inspection unavailable in GeckoView 130")
+                    refresh()
                 }
                 TextButtonSmall("清空") {
                     WebViewDiagnostics.clear()
@@ -109,107 +106,6 @@ fun DebugPanel(
             )
         }
     }
-}
-
-private fun runDomDiagnostics(session: org.mozilla.geckoview.GeckoSession, onComplete: () -> Unit) {
-    val scripts = listOf(
-        "PageMeta" to """(function(){
-  return JSON.stringify({
-    readyState: document.readyState,
-    viewport: innerWidth+'x'+innerHeight,
-    scrollSize: document.documentElement.scrollWidth+'x'+document.documentElement.scrollHeight,
-    url: location.href,
-    title: document.title
-  });
-})()""",
-        "BodyStructure" to """(function(){
-  var b = document.body;
-  if(!b) return 'NO_BODY';
-  var r = { childCount: b.children.length, htmlLen: b.innerHTML.length, textLen: b.innerText.length, first5: [] };
-  for(var i=0;i<Math.min(5,b.children.length);i++){
-    var el=b.children[i];
-    r.first5.push(el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,35)+' visible='+(el.offsetParent!==null)+' text="'+(el.innerText||'').replace(/\s+/g,' ').slice(0,50)+'"');
-  }
-  return JSON.stringify(r);
-})()""",
-        "UniAppRoot" to """(function(){
-  var app=document.querySelector('uni-app');
-  if(!app) return 'NO_uni-app';
-  var s=window.getComputedStyle(app);
-  var r={
-    childCount: app.children.length,
-    textLen: app.innerText.length,
-    display: s.display, visibility: s.visibility, opacity: s.opacity,
-    w: s.width, h: s.height, overflow: s.overflow, position: s.position, zIndex: s.zIndex,
-    children: []
-  };
-  for(var i=0;i<Math.min(3,app.children.length);i++){
-    var c=app.children[i];
-    var cs=window.getComputedStyle(c);
-    r.children.push(c.tagName+(c.id?'#'+c.id:'')+'.'+(c.className||'').slice(0,25)+' d='+cs.display+' v='+cs.visibility+' o='+cs.opacity+' w='+cs.width+' h='+cs.height);
-  }
-  return JSON.stringify(r);
-})()""",
-        "Components" to """(function(){
-  var results=[];
-  var maxwidth=document.querySelector('.uni-app--maxwidth');
-  if(!maxwidth) return 'NO_.uni-app--maxwidth';
-  function describe(el,d){
-    if(d>4||!el||!el.tagName)return;
-    if(el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
-    var s=window.getComputedStyle(el);
-    var text=(el.innerText||'').replace(/\s+/g,' ').slice(0,30);
-    var info=el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,20)+' d='+s.display+' v='+s.visibility+' o='+s.opacity+' w='+s.width+' h='+s.height+' text="'+text+'"';
-    results.push(info);
-    if(d<3) for(var i=0;i<el.children.length;i++) describe(el.children[i],d+1);
-  }
-  describe(maxwidth,0);
-  return JSON.stringify(results.slice(0,30));
-})()""",
-        "ZeroHeight" to """(function(){
-  var r=[];
-  function walk(el,d){
-    if(d>3||!el||!el.tagName)return;
-    if(el.tagName!=='SCRIPT'&&el.tagName!=='STYLE'&&el.tagName!=='LINK'){
-      var s=window.getComputedStyle(el);
-      if(s.display!=='none'&&parseInt(s.height)===0&&parseInt(s.width)>0){
-        r.push('ZERO-H: '+el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,20)+' w='+s.width);
-      }
-      if(el.offsetParent===null&&el.tagName!=='HTML'&&el.tagName!=='BODY'){
-        r.push('HIDDEN: '+el.tagName+(el.id?'#'+el.id:'')+'.'+(el.className||'').slice(0,20));
-      }
-    }
-    for(var i=0;i<el.children.length;i++) walk(el.children[i],d+1);
-  }
-  walk(document.body,0);
-  return JSON.stringify(r.length>0?r.slice(0,25):'none');
-})()""",
-        "ImageStatus" to """(function(){
-  var imgs=document.getElementsByTagName('img');
-  var total=imgs.length, loaded=0, failed=0, rendered=0;
-  for(var i=0;i<imgs.length;i++){
-    if(imgs[i].complete) loaded++;
-    if(imgs[i].naturalWidth===0&&imgs[i].complete) failed++;
-    if(imgs[i].naturalWidth>0) rendered++;
-  }
-  return JSON.stringify({total:total,loaded:loaded,failed:failed,rendered:rendered});
-})()"""
-    )
-
-    var index = 0
-    fun runNext() {
-        if (index >= scripts.size) {
-            onComplete()
-            return
-        }
-        val (name, script) = scripts[index]
-        index++
-        session.evaluateJavascript(script) { result ->
-            WebViewDiagnostics.add(LogType.DOM_INSPECT, "DOM<$name>", result ?: "null")
-            runNext()
-        }
-    }
-    runNext()
 }
 
 @Composable

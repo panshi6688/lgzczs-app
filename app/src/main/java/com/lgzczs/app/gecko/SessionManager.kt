@@ -93,7 +93,31 @@ class SessionManager(
 
             promptDelegate = object : PromptDelegate {
                 override fun onAlertPrompt(session: GeckoSession, prompt: PromptDelegate.AlertPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
-                    onLog("JS_LOG", platform, "Alert: ${prompt.message}")
+                    val msg = prompt.message ?: ""
+                    if (msg.startsWith("__TK__:")) {
+                        val token = msg.removePrefix("__TK__:")
+                        if (token.isNotEmpty()) {
+                            if (platform == "youka") {
+                                val raw = token
+                                val t = raw.split(";")
+                                    .map { it.trim() }
+                                    .firstOrNull { it.startsWith("admin_token=") }
+                                    ?.removePrefix("admin_token=")
+                                if (t != null && t.isNotEmpty()) {
+                                    onYoukaToken(t)
+                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
+                                }
+                            } else if (platform == "hui") {
+                                val t = token.trim('"').ifEmpty { null }
+                                if (t != null) {
+                                    onHuiToken(t)
+                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
+                                }
+                            }
+                        }
+                    } else {
+                        onLog("JS_LOG", platform, "Alert: ${prompt.message}")
+                    }
                     return GeckoResult.fromValue(prompt.dismiss())
                 }
 
@@ -102,19 +126,7 @@ class SessionManager(
                 }
 
                 override fun onTextPrompt(session: GeckoSession, prompt: PromptDelegate.TextPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
-                    return GeckoResult.fromValue(prompt.confirm(prompt.defaultValue))
-                }
-            }
-
-            consoleCallback = object : GeckoSession.ConsoleCallback {
-                override fun onMessage(message: GeckoSession.ConsoleCallback.Message) {
-                    val msg = message.message()
-                    val src = "${message.sourceId()}:${message.lineNumber()}"
-                    when (message.level()) {
-                        GeckoSession.ConsoleCallback.Level.ERROR -> onLog("JS_ERROR", src, msg)
-                        GeckoSession.ConsoleCallback.Level.WARN -> onLog("JS_WARN", src, msg)
-                        else -> onLog("JS_LOG", src, msg)
-                    }
+                    return GeckoResult.fromValue(prompt.confirm(prompt.defaultValue ?: ""))
                 }
             }
 
@@ -123,38 +135,24 @@ class SessionManager(
     }
 
     init {
+        var youkaExtracted = false
         youkaSession = createSession(
             platform = "youka",
             onPageLoaded = { session ->
-                session.evaluateJavascript("document.cookie") { cookieStr ->
-                    if (cookieStr != null && cookieStr != "null" && cookieStr.isNotEmpty()) {
-                        val raw = cookieStr.trim('"')
-                        val token = raw.split(";")
-                            .map { it.trim() }
-                            .firstOrNull { it.startsWith("admin_token=") }
-                            ?.removePrefix("admin_token=")
-                        if (token != null && token.isNotEmpty()) {
-                            onYoukaToken(token)
-                            onLog("JS_LOG", "youka", "Token extracted: ${token.take(8)}...")
-                        }
-                    }
+                if (!youkaExtracted) {
+                    youkaExtracted = true
+                    session.loadUri("javascript:void(alert('__TK__:'+document.cookie))")
                 }
             }
         )
 
+        var huiExtracted = false
         huiSession = createSession(
             platform = "hui",
             onPageLoaded = { session ->
-                session.evaluateJavascript(
-                    "(function(){ return localStorage.getItem('access_token') })()"
-                ) { value ->
-                    if (value != null && value != "null" && value.isNotEmpty()) {
-                        val token = value.trim('"')
-                        if (token.isNotEmpty()) {
-                            onHuiToken(token)
-                            onLog("JS_LOG", "hui", "Token extracted: ${token.take(8)}...")
-                        }
-                    }
+                if (!huiExtracted) {
+                    huiExtracted = true
+                    session.loadUri("javascript:void(alert('__TK__:'+(localStorage.getItem('access_token')||'')))")
                 }
             }
         )
