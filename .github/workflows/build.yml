@@ -25,7 +25,16 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee /tmp/build.log
+          if [ $? -ne 0 ]; then
+            echo "::group::Compilation errors"
+            grep -n "error:" /tmp/build.log | head -40
+            echo "::endgroup::"
+            exit 1
+          fi
+        shell: bash
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
