@@ -162,4 +162,12 @@ class SessionManager(
     fun loadYoukaPage() {
         youkaSession.loadUri("http://supplier.ukayun.cn/")
     }
+
+    fun suspendAll() {
+        listOf(youkaSession, huiSession).forEach { it.stop() }
+    }
+
+    fun resumeAll() {
+        listOf(youkaSession, huiSession).forEach { it.open(runtime) }
+    }
 }

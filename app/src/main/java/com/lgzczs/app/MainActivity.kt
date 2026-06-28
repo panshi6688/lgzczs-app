@@ -1,9 +1,11 @@
 package com.lgzczs.app
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -49,10 +51,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lgzczs.app.gecko.GeckoRuntimeManager
 import com.lgzczs.app.gecko.SessionManager
-import com.lgzczs.app.util.WebViewDiagnostics
-import com.lgzczs.app.util.LogType
 import com.lgzczs.app.model.PlatformStatus
-import com.lgzczs.app.network.YoukaApiClient
 import com.lgzczs.app.service.PollingService
 import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.DataPage
@@ -84,6 +83,12 @@ class MainActivity : ComponentActivity() {
         window.statusBarColor = Color.WHITE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 100)
+            }
         }
 
         startForegroundService(Intent(this, KeepAliveService::class.java))
@@ -133,27 +138,22 @@ fun MainScreen() {
     val tokenManager = remember { TokenManager(context.applicationContext) }
     val application = context.applicationContext as android.app.Application
     val runtime = GeckoRuntimeManager.get(application)
+    var huiTokenValue by remember { mutableStateOf(tokenManager.huiToken) }
+    var youkaTokenValue by remember { mutableStateOf(tokenManager.youkaToken) }
+
     val sessionManager = remember {
         SessionManager(
             runtime = runtime,
             onYoukaToken = { token ->
                 tokenManager.youkaToken = token
+                youkaTokenValue = token
             },
             onHuiToken = { token ->
                 tokenManager.huiToken = token
+                huiTokenValue = token
             },
             onLog = { type, source, message ->
-                WebViewDiagnostics.add(
-                    when (type) {
-                        "JS_ERROR" -> LogType.JS_ERROR
-                        "JS_WARN" -> LogType.JS_WARN
-                        "JS_LOG" -> LogType.JS_LOG
-                        "ERROR" -> LogType.ERROR
-                        "HTTP_ERROR" -> LogType.HTTP_ERROR
-                        "NETWORK_REQ" -> LogType.NETWORK_REQ
-                        else -> LogType.JS_DEBUG
-                    }, source, message
-                )
+                // logging is disabled (DebugPanel removed)
             },
             onStatusChange = { platform, isLoading ->
                 // optional: could update loading indicator
@@ -233,6 +233,14 @@ fun MainScreen() {
         sessionManager.loadHuiPage()
     }
 
+    LaunchedEffect(currentDestination?.route) {
+        if (currentDestination?.route == "data") {
+            sessionManager.suspendAll()
+        } else {
+            sessionManager.resumeAll()
+        }
+    }
+
     Scaffold(
         bottomBar = {
             NavigationBar(modifier = Modifier.height(64.dp)) {
@@ -258,13 +266,14 @@ fun MainScreen() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.HuiQuanYi.route,
+            startDestination = BottomNavItem.Data.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.HuiQuanYi.route) {
                 HuiPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
+                    huiToken = huiTokenValue,
                     onStatusChange = { status ->
                         huiStatus = status
                     }
@@ -274,6 +283,7 @@ fun MainScreen() {
                 YoukaPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
+                    youkaToken = youkaTokenValue,
                     onStatusChange = { status ->
                         youkaStatus = status
                     }

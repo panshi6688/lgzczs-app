@@ -2,7 +2,6 @@ package com.lgzczs.app.service
 
 import android.app.Service
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -17,7 +16,6 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.FrameLayout
 import com.lgzczs.app.MainActivity
-import com.lgzczs.app.R
 
 class FloatWindowService : Service() {
 
@@ -55,10 +53,11 @@ class FloatWindowService : Service() {
             }
         })
 
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+        val appIcon = applicationInfo.loadIcon(packageManager)
         val iconView = ImageView(this).apply {
-            setImageBitmap(icon)
+            setImageDrawable(appIcon)
             scaleType = ImageView.ScaleType.FIT_CENTER
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
         }
 
         floatView = FrameLayout(this).apply {

@@ -84,7 +84,25 @@ fun DataPage(
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        ) {
+            Text(
+                text = "💡 使用说明：同时监控两个平台的新订单并发出通知",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(10.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),

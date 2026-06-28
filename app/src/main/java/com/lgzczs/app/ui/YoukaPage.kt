@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.lgzczs.app.gecko.SessionManager
@@ -20,9 +16,10 @@ import org.mozilla.geckoview.GeckoView
 fun YoukaPage(
     tokenManager: TokenManager,
     sessionManager: SessionManager,
+    youkaToken: String?,
     onStatusChange: (PlatformStatus) -> Unit
 ) {
-    var hasToken by remember { mutableStateOf(tokenManager.youkaToken != null) }
+    val hasToken = youkaToken != null
 
     LaunchedEffect(hasToken) {
         onStatusChange(if (hasToken) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN)
