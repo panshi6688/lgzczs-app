@@ -31,7 +31,6 @@ fun YoukaPage(
         AndroidView(
             factory = { context ->
                 GeckoView(context).apply {
-                    setSurfaceViewEnabled(false)
                     setSession(sessionManager.youkaSession)
                 }
             },

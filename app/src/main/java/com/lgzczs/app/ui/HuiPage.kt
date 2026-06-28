@@ -31,7 +31,6 @@ fun HuiPage(
         AndroidView(
             factory = { context ->
                 GeckoView(context).apply {
-                    setSurfaceViewEnabled(false)
                     setSession(sessionManager.huiSession)
                 }
             },
