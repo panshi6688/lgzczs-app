@@ -42,7 +42,7 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("新订单提醒")
+            .setContentTitle("$platformName - 新订单提醒")
             .setContentText("$platformName 有新的可抢订单")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)

@@ -162,4 +162,9 @@ class SessionManager(
     fun loadYoukaPage() {
         youkaSession.loadUri("http://supplier.ukayun.cn/")
     }
+
+    fun reloadAll() {
+        youkaSession.loadUri("http://supplier.ukayun.cn/")
+        huiSession.loadUri("https://sup.78k.cn/")
+    }
 }

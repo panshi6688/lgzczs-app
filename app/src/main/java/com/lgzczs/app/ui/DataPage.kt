@@ -1,5 +1,6 @@
 package com.lgzczs.app.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -53,6 +55,7 @@ fun DataPage(
     var notificationEnabled by remember { mutableStateOf(tokenManager.notificationEnabled) }
     var floatWindowEnabled by remember { mutableStateOf(tokenManager.floatWindowEnabled) }
     var showOverlayGuide by remember { mutableStateOf(false) }
+    var showUsageGuide by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -93,13 +96,26 @@ fun DataPage(
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
-            Text(
-                text = "💡 使用说明：同时监控两个平台的新订单并发出通知",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.padding(10.dp)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "💡 使用说明：同时监控两个平台的新订单并发出通知",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.weight(1f)
+                )
+                OutlinedButton(
+                    onClick = { showUsageGuide = true },
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)
+                ) {
+                    Text("查看", fontSize = 12.sp)
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -207,6 +223,19 @@ fun DataPage(
             },
             dismissButton = {
                 TextButton(onClick = { showOverlayGuide = false }) { Text("取消") }
+            }
+        )
+    }
+
+    if (showUsageGuide) {
+        AlertDialog(
+            onDismissRequest = { showUsageGuide = false },
+            title = { Text("使用说明") },
+            text = {
+                Text("① 依次登录汇权益和优卡云后台\n② 打开弹窗/通知/悬浮窗功能开关\n③ 保持 App 后台运行即可自动监控")
+            },
+            confirmButton = {
+                TextButton(onClick = { showUsageGuide = false }) { Text("知道了") }
             }
         )
     }

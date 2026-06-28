@@ -204,7 +204,7 @@ fun MainScreen() {
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(context, tokenManager) {
+    DisposableEffect(context, tokenManager, sessionManager) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_STOP -> {
@@ -218,6 +218,9 @@ fun MainScreen() {
                     Intent(context, FloatWindowService::class.java).also {
                         context.stopService(it)
                     }
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    sessionManager.reloadAll()
                 }
                 else -> {}
             }
