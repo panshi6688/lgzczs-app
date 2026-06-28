@@ -48,7 +48,7 @@ jobs:
         if: failure()
         run: |
           echo "::group::Compilation errors"
-          grep -n -i "error:" /tmp/build.log | head -80 || echo "(no match for 'error:')"
+          grep -n -i "error:" /tmp/build.log | head -80 | while IFS= read -r line; do echo "::error::$line"; done
           echo "::endgroup::"
           echo "::group::Last 50 lines"
           tail -50 /tmp/build.log
