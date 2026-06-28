@@ -32,6 +32,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -160,8 +161,12 @@ fun MainScreen() {
             }
         )
     }
-    var huiStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
-    var youkaStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
+    val huiStatus by remember { derivedStateOf {
+        if (huiTokenValue != null) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN
+    } }
+    val youkaStatus by remember { derivedStateOf {
+        if (youkaTokenValue != null) PlatformStatus.LOGGED_IN else PlatformStatus.NOT_LOGGED_IN
+    } }
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -268,20 +273,14 @@ fun MainScreen() {
                 HuiPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    huiToken = huiTokenValue,
-                    onStatusChange = { status ->
-                        huiStatus = status
-                    }
+                    huiToken = huiTokenValue
                 )
             }
             composable(BottomNavItem.YouKaYun.route) {
                 YoukaPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    youkaToken = youkaTokenValue,
-                    onStatusChange = { status ->
-                        youkaStatus = status
-                    }
+                    youkaToken = youkaTokenValue
                 )
             }
             composable(BottomNavItem.Data.route) {
