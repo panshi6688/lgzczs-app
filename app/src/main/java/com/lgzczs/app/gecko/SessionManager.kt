@@ -8,6 +8,8 @@ import org.mozilla.geckoview.GeckoSession.ContentDelegate
 import org.mozilla.geckoview.GeckoSession.NavigationDelegate
 import org.mozilla.geckoview.GeckoSession.ProgressDelegate
 import org.mozilla.geckoview.GeckoSession.PromptDelegate
+import org.mozilla.geckoview.WebRequestError
+import org.mozilla.geckoview.WebResponse
 
 class SessionManager(
     private val runtime: GeckoRuntime,
@@ -25,7 +27,7 @@ class SessionManager(
     ): GeckoSession {
         return GeckoSession().apply {
             navigationDelegate = object : NavigationDelegate {
-                override fun onLocationChange(session: GeckoSession, url: String?) {
+                override fun onLocationChange(session: GeckoSession, url: String?, perms: List<GeckoSession.PermissionDelegate.ContentPermission>, hasUserGesture: Boolean) {
                     onLog("NAVIGATE", url ?: "", "Location changed")
                 }
 
@@ -55,8 +57,8 @@ class SessionManager(
                     onLog("NAVIGATE", url ?: "", "Page started loading")
                 }
 
-                override fun onLoadError(session: GeckoSession, uri: String?, error: Int, errorMsg: String?): GeckoResult<String>? {
-                    onLog("HTTP_ERROR", uri ?: "", "Error $error: $errorMsg")
+                override fun onLoadError(session: GeckoSession, uri: String?, error: WebRequestError): GeckoResult<String>? {
+                    onLog("HTTP_ERROR", uri ?: "", "Error ${error.code}: ${error.message}")
                     return null
                 }
             }
@@ -68,12 +70,12 @@ class SessionManager(
                     session.open(runtime)
                 }
 
-                override fun onContextMenu(session: GeckoSession, screenX: Int, screenY: Int, uri: String?, elementUri: String?, elementType: Int): GeckoResult<AllowOrDeny>? {
+                override fun onContextMenu(session: GeckoSession, screenX: Int, screenY: Int, element: ContentDelegate.ContextElement): GeckoResult<AllowOrDeny>? {
                     return null
                 }
 
-                override fun onExternalResponse(session: GeckoSession, response: GeckoSession.WebResponseInfo) {
-                    onLog("NETWORK_REQ", response.uri ?: "", "${response.contentType} (${response.contentLength})")
+                override fun onExternalResponse(session: GeckoSession, response: WebResponse) {
+                    onLog("NETWORK_REQ", response.uri ?: "", "External response")
                 }
 
                 override fun onPermissionRequest(session: GeckoSession, request: ContentDelegate.PermissionRequest) {
