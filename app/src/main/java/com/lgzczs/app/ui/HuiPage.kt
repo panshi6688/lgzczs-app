@@ -91,6 +91,18 @@ fun HuiPage(
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     view?.evaluateJavascript(
+                        """(function(){
+  var s=document.getElementById('h-fix');
+  if(!s){
+    s=document.createElement('style');
+    s.id='h-fix';
+    s.textContent='uni-app,uni-page,uni-page-wrapper,uni-page-body,uni-page-head{min-height:100vh!important;height:auto!important}uni-page-body{display:block!important}uni-page-head{position:relative!important}';
+    document.head.appendChild(s);
+    window.dispatchEvent(new Event('resize'));
+  }
+})()"""
+                    ) { }
+                    view?.evaluateJavascript(
                         "(function(){ return localStorage.getItem('access_token') })()"
                     ) { value ->
                         if (value != null && value != "null" && value.isNotEmpty()) {

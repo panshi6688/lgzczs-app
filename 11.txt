@@ -1,5 +1,0 @@
-[DOM_INSPECT] [08:53:08] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
-[DOM_INSPECT] [08:53:08] DOM<BodyStructure> | "{\"childCount\":6,\"htmlLen\":19220,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to cont\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
-[DOM_INSPECT] [08:53:08] DOM<AppMountPoint> | "NO_#app"
-[DOM_INSPECT] [08:53:08] DOM<HiddenElements> | "[\"HIDDEN: NOSCRIPT.\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\"]"
-[DOM_INSPECT] [08:53:08] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"

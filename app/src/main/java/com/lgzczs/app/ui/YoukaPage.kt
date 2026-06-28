@@ -90,6 +90,18 @@ fun YoukaPage(
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    view?.evaluateJavascript(
+                        """(function(){
+  var s=document.getElementById('h-fix');
+  if(!s){
+    s=document.createElement('style');
+    s.id='h-fix';
+    s.textContent='uni-app,uni-page,uni-page-wrapper,uni-page-body,uni-page-head{min-height:100vh!important;height:auto!important}uni-page-body{display:block!important}uni-page-head{position:relative!important}';
+    document.head.appendChild(s);
+    window.dispatchEvent(new Event('resize'));
+  }
+})()"""
+                    ) { }
                     val cookie = CookieManager.getInstance().getCookie("http://supplier.ukayun.cn")
                     if (cookie != null) {
                         val token = cookie.split(";")

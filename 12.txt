@@ -1,0 +1,356 @@
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/ | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/# | NAVIGATE
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/# | GET
+[JS_ERROR] [09:07:10] :1 | Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/umi.595ac581.css | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/preload_helper.6cd44919.js | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/scripts/loading.js | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/umi.5f81ec21.js | GET
+[NETWORK_REQ] [09:07:10] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/p__404.ce87c64f.async.js | GET
+[NETWORK_REQ] [09:07:10] https://sup.78k.cn/sup/5821.c77e1968.async.js | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | ✅ [Token自动刷新] 定时器和页面监听已启动
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] UA: mozilla/5.0 (linux; android 14; k) applewebkit/537.36 (khtml, like gecko) chrome/125.0.6422.165 mobile safari/537.36
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 小屏幕: true | 粗指针: true | 触摸设备: true
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 移动UA: true | PC关键词: false
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 最终判定: 移动端
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 首次检测到移动设备，立即跳转
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 完整URL: https://sup.78k.cn/sup/#
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] Hash: 
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 当前路径: /sup/
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 当前参数: 
+[JS_LOG] [09:07:11] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 跳转到H5首页: /supwap/#/pages/index/index
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/#/pages/index/index | NAVIGATE
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/#/pages/index/index | GET
+[JS_WARN] [09:07:11] https://sup.78k.cn/sup/#:0 | Mixed Content: The page at 'https://sup.78k.cn/sup/#' was loaded over HTTPS, but requested an insecure favicon 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[JS_WARN] [09:07:11] https://sup.78k.cn/sup/#:0 | Mixed Content: The page at 'https://sup.78k.cn/sup/#' was loaded over HTTPS, but requested an insecure favicon 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[NETWORK_REQ] [09:07:11] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[NETWORK_REQ] [09:07:11] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/index.cc298949.css | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/scripts/gt.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/scripts/fingerprint.min.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/index.392edff3.js | GET
+[NETWORK_REQ] [09:07:11] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/packageSup-orderHall-orderHall~pages-index-index.d53efda3.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/packageSup-afterSale-afterSale~packageSup-afterSale-afterSaleDetail~packageSup-cardConsignment-inbou~a35bbe2a.e8851baa.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/pages-index-index.05e996b1.js | GET
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/packageSup-afterSale-afterSale~packageSup-cardConsignment-inbound~packageSup-cardConsignment-records~9c0d2991.1042baeb.js | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 App Launch
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 路由拦截器已设置
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👀 App Show
+[NETWORK_REQ] [09:07:11] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | OPTIONS
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[NETWORK_REQ] [09:07:11] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] requireConfirm: false 原始值: null
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] isButtonDisabled: false requireConfirm: false confirmChecked: false
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [Header组件] mounted 开始
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/icons/iconfont.ttf | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [悬浮窗初始化] [object Object]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📍 [初始位置] [object Object]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [检查位置] [object Object]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✓ [位置无需调整]
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📦 [Header组件] 准备加载监控配置
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [开始加载监控配置]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📥 [读取到的配置] 
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ [没有找到保存的配置，使用默认值] [object Object]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [Header组件] 准备初始化音频
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [初始化音频] [object Object]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👆 [设置用户交互监听]
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ [Header组件] mounted 完成
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/js/pages-login-login.4fc77899.js | GET
+[JS_ERROR] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取用户信息失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取用户信息失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取统计数据失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取待处理售后数失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取待处理售后数失败: Error: 用户未登录，请重新登录
+[NETWORK_REQ] [09:07:11] https://sup.78k.cn/supwap/static/audio/ts.wav | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📱 登录页面加载
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔐 检查登录状态...
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] Token存在: false
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ID+Key数据: false 自动登录: 
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ❌ 未登录，显示登录页面
+[NETWORK_REQ] [09:07:11] https://public.kky.v3.supplier.kakayun.vip/sup/auth/login/capabilities | OPTIONS
+[JS_WARN] [09:07:11] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure image 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[NETWORK_REQ] [09:07:11] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频加载成功
+[JS_LOG] [09:07:11] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频可以播放
+[NETWORK_REQ] [09:07:12] https://public.kky.v3.supplier.kakayun.vip/sup/auth/login/capabilities | GET
+[NETWORK_REQ] [09:07:12] https://sup.78k.cn/supwap/static/iconfont-2/iconfont.woff2 | GET
+[JS_WARN] [09:07:12] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure image 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[JS_WARN] [09:07:12] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure favicon 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[NETWORK_REQ] [09:07:12] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[NETWORK_REQ] [09:07:14] https://cdn.dcloud.net.cn/img/shadow-grey.png | GET
+[JS_LOG] [09:07:15] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🙈 App Hide
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/ | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/# | NAVIGATE
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/# | GET
+[JS_ERROR] [09:07:19] :1 | Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/umi.595ac581.css | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/scripts/loading.js | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/preload_helper.6cd44919.js | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/umi.5f81ec21.js | GET
+[NETWORK_REQ] [09:07:19] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/5821.c77e1968.async.js | GET
+[NETWORK_REQ] [09:07:19] https://sup.78k.cn/sup/p__404.ce87c64f.async.js | GET
+[JS_LOG] [09:07:19] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | ✅ [Token自动刷新] 定时器和页面监听已启动
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] UA: mozilla/5.0 (linux; android 14; k) applewebkit/537.36 (khtml, like gecko) chrome/125.0.6422.165 mobile safari/537.36
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 小屏幕: true | 粗指针: true | 触摸设备: true
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 移动UA: true | PC关键词: false
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 最终判定: 移动端
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [移动端检测] 首次检测到移动设备，立即跳转
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 完整URL: https://sup.78k.cn/sup/#
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] Hash: 
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 当前路径: /sup/
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 当前参数: 
+[JS_LOG] [09:07:20] https://sup.78k.cn/sup/umi.5f81ec21.js:135 | 📱 [智能跳转] 跳转到H5首页: /supwap/#/pages/index/index
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/#/pages/index/index | NAVIGATE
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/#/pages/index/index | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/index.cc298949.css | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/scripts/gt.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/scripts/fingerprint.min.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/index.392edff3.js | GET
+[NETWORK_REQ] [09:07:20] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/packageSup-afterSale-afterSale~packageSup-cardConsignment-inbound~packageSup-cardConsignment-records~9c0d2991.1042baeb.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/pages-index-index.05e996b1.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/packageSup-afterSale-afterSale~packageSup-afterSale-afterSaleDetail~packageSup-cardConsignment-inbou~a35bbe2a.e8851baa.js | GET
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/packageSup-orderHall-orderHall~pages-index-index.d53efda3.js | GET
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 App Launch
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 路由拦截器已设置
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👀 App Show
+[NETWORK_REQ] [09:07:20] https://public.kky.v3.supplier.kakayun.vip/sup/auth/siteconfig | GET
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] requireConfirm: false 原始值: null
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] isButtonDisabled: false requireConfirm: false confirmChecked: false
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [Header组件] mounted 开始
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/icons/iconfont.ttf | GET
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [悬浮窗初始化] [object Object]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📍 [初始位置] [object Object]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [检查位置] [object Object]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✓ [位置无需调整]
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ 用户信息不存在，跳转到登录页面
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 公开页面，允许访问: /pages/login/login
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📦 [Header组件] 准备加载监控配置
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [开始加载监控配置]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📥 [读取到的配置] 
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ [没有找到保存的配置，使用默认值] [object Object]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [Header组件] 准备初始化音频
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [初始化音频] [object Object]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👆 [设置用户交互监听]
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ [Header组件] mounted 完成
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/js/pages-login-login.4fc77899.js | GET
+[JS_ERROR] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取用户信息失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取用户信息失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取统计数据失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取待处理售后数失败: Error: 用户未登录，请重新登录
+[JS_ERROR] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取待处理售后数失败: Error: 用户未登录，请重新登录
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/audio/ts.wav | GET
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📱 登录页面加载
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔐 检查登录状态...
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] Token存在: false
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ID+Key数据: false 自动登录: 
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ❌ 未登录，显示登录页面
+[NETWORK_REQ] [09:07:20] https://public.kky.v3.supplier.kakayun.vip/sup/auth/login/capabilities | GET
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure image 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[NETWORK_REQ] [09:07:20] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频加载成功
+[JS_LOG] [09:07:20] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频可以播放
+[NETWORK_REQ] [09:07:20] https://sup.78k.cn/supwap/static/iconfont-2/iconfont.woff2 | GET
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure image 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[JS_WARN] [09:07:20] https://sup.78k.cn/supwap/#/:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/' was loaded over HTTPS, but requested an insecure favicon 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[NETWORK_REQ] [09:07:20] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[JS_LOG] [09:07:21] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ [检测到用户交互，启用音频播放]
+[JS_LOG] [09:07:21] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频加载成功
+[JS_LOG] [09:07:21] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频可以播放
+[JS_LOG] [09:07:23] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🙈 App Hide
+[JS_LOG] [09:07:24] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👀 App Show
+[JS_LOG] [09:07:25] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔐 账号密码登录...
+[JS_LOG] [09:07:25] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎯 开始极验验证...
+[JS_LOG] [09:07:25] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎯 获取极验配置...
+[NETWORK_REQ] [09:07:25] https://public.kky.v3.supplier.kakayun.vip/sup/sms/getgeetestconfig | OPTIONS
+[NETWORK_REQ] [09:07:25] https://public.kky.v3.supplier.kakayun.vip/sup/sms/getgeetestconfig | GET
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 极验配置获取成功
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 极验success值: 1
+[NETWORK_REQ] [09:07:26] https://api.geetest.com/gettype.php?gt=61a1798213e475a33581aa03daf1dfce&callback=geetest_1782608847865 | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/js/fullpage.9.2.0-guwyxh.js | GET
+[NETWORK_REQ] [09:07:26] https://api.geetest.com/get.php?gt=61a1798213e475a33581aa03daf1dfce&challenge=bcb99a9e1a6e1a0432daf0adb5f385cd&lang=zh-cn&pt=3&client_type=web_mobile&w=hPWzJYcp9iZTa1m1MaJMjFtay0f)B6O7BaVr5SB)Fx3xjogRLrJT0zWx(Rd6hNM8h1B7EYXFooHHuxhp0Jap4n1FdLbgsPAJyoDdhvi76a)k4FJyR5dBkio()hQC1QX1z1OFWIpj(NfYF)u(MSTD3rXVgfvR(OFp0qJ63OYZYThQlY1Irpqu3TvxkCS5T(HbQEnYS2G3VwAd8xstW2F(6sKhVhiHpHI(ehxj0)gju5BwLZ3rnuT44bkWiFuVuKQ18HyMfGOx17t44AUMlcmXJcF7G9eD2R(Mr06oB1Pr4TGl79z4pjl)YJD7qx3MFgIGuGLoajcG8PPhWGwv)NDeNUCKFq1I8gNYqjikJqCImeszeQNpfSRlAA)hgv0UbyAywsGlr2AH58n0SEE6DuOq6cm7qa5shOg5CQZWlvvO)p08ysv6RNJ6BHcjnC7OGkHQtDY6w54N3v10MlkuvVYSTrTtq8OGMMdTb2G7tUMkVJ)dmnK2GUd)sqPAP3aCz11LGJiGfXKWYkzXwb2Gk76UIoQQVKJFLhz)2cSRpROrxKhzu85ySitoP1FzlOgEapR7h3l)Yu(M)dzbrCLlmHH4uLQok8I1sB6nnr)pvI4qhAKuPBh2i2b7K75Q3L0pFwMBKVANrdCzgJFb92rtuXK8oG8WyAjEELTkdmOFZgRI0o0eItBdtRr)bSSOuzyR4kKc6c3B)JNn3R(349nlCauOWCPhODsm2AJLGH2Hf(538NomRTRudjVPk1DgRX7GjzUpb9r6R4cvh4c7HiAljTWOZEtHO0la6k9vQwr5JLh72IhtnRxEpUiYesOHMXYGF8XXpMn5))xH0xN3mF7Enz4PtgDlc4WIP6o63HUeRKp0uhFdIZH0Wu0ghNqXOV8vo8g3)Vpk7dSTF2s3deESTE8TEWPrM6nCSyAoM4L3ugEpgFETZmOlvFN5pzxmjxy(SvxgSJSfUuGyo2MAoIBN(XOkMEcXkx6erovaJlFICgShHGFVBs5rS8ERClxISTjze7W561VNo(Mxu3gCzC8uhH5CVhbXDeLS)5iA8UCwoQLpi7dqyu9VuCmDYGfpsDBmHbR6cGodT10YOlySFnkbwuWTXhHJsucPmaP2jhTqDhSZ5ugAmdF0qEyNJbVQEQwh(q5NfBnUy(Ig)otA0KjmeSyttA..5396e4c5d69c0bec5f39681a637291978c13aca003c78f2bf3c638c052bbcdc09044570669e1ed20b57b38caf2b452fccbac2390d0e634d69de585cdbd0fccb3e171e822eba6e6301148ca43ab6e75a60d7aaf8b1be0c1b3664cba18bc138e1287f883e411e5406f294ef61be69c66599aae7746230d752a35937a49f1cb9058&callback=geetest_1782608851590 | GET
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 极验初始化成功
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔧 创建极验容器...
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 容器创建成功
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 绑定到容器完成
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/wind/style_https.1.5.8.css | GET
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 极验准备就绪
+[JS_LOG] [09:07:26] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 弹出验证窗口...
+[NETWORK_REQ] [09:07:26] https://api.geevisit.com/ajax.php?gt=61a1798213e475a33581aa03daf1dfce&challenge=bcb99a9e1a6e1a0432daf0adb5f385cd&lang=zh-cn&pt=3&client_type=web_mobile&w=YbsDRm5WpKnpRfzHsG8)8inmwn)cH5cF7sA8CwOqjtkgOwsnAhtis259U5dt4Auvh9t5LGOQKxMqBZnnqw9RraKlVXiN8Q0stEFRggm1SBREHOluwcCBzSmk5q4P(JNKlsVEw1Ihp18vD(z6ygWa7wChYG5BL3RBSAmvEPydGZUZV(oVa2E)lkBmSg9(kwjvBIGabfRsaPJedCk(kEFj9vqUB2haSTRXB87rsPEj1JdR9QRygOaMshQX8ZPOnVC0)IDN4uHU4eadH6XLQvFM3o81LBQJxKB3JgT0Z4nyJXOyjCLHPdRLoX6Ln20Ujb2uiUHt(9joY7GtDIUzzq9tJ2QnurPQIdH(hQvABGesSHskbuIJLPu4lvUgXUBgvbD(Llrz6M(hE18Q5zt6cj)2ANOBkZV2HTL1JGKGg6bPHEz11JqCaDJMKlbO7D3KvqpTyWEe7dYtKRwKy4421k8eER7kmvaskGIPLv9y9y7cQcVCpvimYg0i9)qXtILrNPk9avz2zADCM)LaYydVJs4ZxiQAK7wAdJmvJ9(f6VuMVzQKwgvO04iI83mTTS7gqE0GwsJbhPgI1PGkv46YknIDV4b9tJswpJZoPf2F1R6mnE2ZPCkhQ06FvTm5aevJUEx2Ymv8umTCx6H8II0a1t4W8nXwGpH(l4t(jxig8P8Ky21OhzAJX2WPVinZfL7hnuAdGMqyuxmBPcZ4e5cNth1M)8gC9(6pRL69uvYOPktLh148EYrzmTCJF)idzw7aMfc59aLlr4xWHu3pR189DPoJeGsBEEApwczEUdNHMNH)8i5v7nm3B7yom091v6QzGoKmgXEoKziq(weBsBvov2u4tQvstapDpUd4wUxT3lIAnQ7M2QLEsOnuGM9hW0HK2gG69zEwpHQ1MP4WSrxF(IFhm7vPlY7hxypiaVEcciUjcYlJcR6p5tr(vrX(MVh4nF1JJeBTvysLmYQh)2aTCus1X(DuoeMOE1PKtfstyWKYhT2AuTphimdbonhrG(7pHYpovv(WY42KgVo49K3pm0uPQq0WGl9D3Vl9BPat43oSYDC9eDU7XbMdF0vH8qr6jZi0rxCJioNfJ(CXTxbZ0mCS7M(22nQFRSycV0jSfhhkVMOOmdCpCdPfhp1mOmFdaAeTA9Eu6DRhcdMdOyLmROyHJw..&callback=geetest_1782608855164 | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/wind/sprite2x/panel_loading.1.5.8.gif | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/wind/sprite2x.1.5.8.png | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/js/slide.7.9.3.js | GET
+[NETWORK_REQ] [09:07:26] https://api.geevisit.com/get.php?is_next=true&type=slide3&gt=61a1798213e475a33581aa03daf1dfce&challenge=bcb99a9e1a6e1a0432daf0adb5f385cd&lang=zh-cn&https=false&protocol=https%3A%2F%2F&offline=false&product=embed&api_server=api.geevisit.com&isPC=true&autoReset=true&width=100%25&callback=geetest_1782608848776 | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/js/gct.b71a9027509bc6bcfef9fc6a196424f5.js | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/ant/style_https.1.2.7.css | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/pictures/gt/1e4873b17/1e4873b17.webp | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/pictures/gt/1e4873b17/bg/c2d47366a.webp | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/pictures/gt/1e4873b17/slice/c2d47366a.png | GET
+[NETWORK_REQ] [09:07:26] https://static.geetest.com/static/ant/sprite2x.1.2.7.png | GET
+[JS_WARN] [09:07:26] https://static.geetest.com/static/js/slide.7.9.3.js:1 | Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+[JS_WARN] [09:07:27] https://static.geetest.com/static/js/slide.7.9.3.js:1 | Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+[NETWORK_REQ] [09:07:30] https://api.geevisit.com/ajax.php?gt=61a1798213e475a33581aa03daf1dfce&challenge=bcb99a9e1a6e1a0432daf0adb5f385cde5&lang=zh-cn&%24_BCm=3&client_type=web_mobile&w=CrpJ8Iiv772HszjU8jvy(OJVGBzep1eWx2G0k7o6r9JnlOHEWIha3jBOe7g8hROaLiEEaHey2dqdql8lAMpmQI7oHvkVsaQQWTFQCQ1RessX66BOXllQb(Ac6FlElb1KBvSZleGlnxXeayC1kNHpE6Lq2xqSdhqrC5X5ia6dWKyDTJ5c7vzsuXCsb0bNmoVEMqpfsqRjDracsKzPHPysWXJPPp2jDxwdu333XBOyGItwUsFAuqeNa9fUcKhFwJkIkEqSIyNqFX(MoONfb0zdG7B1HOh6Z9USKD5NT3dxc944JE4X)XIypkdpwwMbSfk9P2F93vq2DOh0ZTrrKhwglB8uzIUAyidB1TGe4eF0Y(1dFSXWHu2rLjDUc7TFrqKQKIlMtQnvWfCjTINqY5Fs3ogVTrTugwPvLWxujBFKoEsbtfhtCffdqASRSIefF1jJ6a00u3knd8Teb6wlpsXh2yLy2UQTrzlRWPePrOkC0w4leTclLYei1zwR5HrRAl6NASRA5bDSwQGZ2PliHKjV5kiEbTsad)CSFGmGT5NCBHCqFF6suM3AS(hWren19IlEllTZOkPiX8)c8orOqa9(XU7KCl2Q7EwQjlDh8JIqSUJ(8iPx2RAeuAJVo7z8c1dIz(Z7Ca3dg69sUKcqeHuxpubCT(2vzFayq9qgWGN(ZY7goM7znOqqDD7XMBlKfuw9TSFOBTZUvIlyPNe3KbXnjkX4)uMegWa8cTyhjSl68)6oXn3noCUSFqUph7DHOeV6qWy9ipJFDExejoWPGnPJ4d6z7GgjHMWXP5iUertrVvOo7zJw0vKy9BVk3yVusghrlrlCKFm8K9KN)k(8FHnw9sRJT1x7gQfRaT9BuqRRjR(t2kU57s4TkxVBLZRbhTZx3K09SSF)8p(PDCWE601p9yhHHhp0jIt)sG0jG2GUowY.2f269d2cfeecbc338b5e9846770e6ad4cd32949c359c23389d87a6b5acf2f291214e79dae557b31a23cfd438f67793ebac2b09919db65cb723c8c81fd83b8b795a89b4ba6c9e76e946623549e0dbeea2892f6716dc87df951e0b0b919c1f53037d40a08dce92f975de432af6d1831e7276c1a2cc7e4a4943e33d7c0044baab91&callback=geetest_1782608859362 | GET
+[JS_LOG] [09:07:31] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 极验验证成功 [object Object]
+[JS_LOG] [09:07:31] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 极验验证通过
+[NETWORK_REQ] [09:07:31] https://public.kky.v3.supplier.kakayun.vip/sup/auth/loginbypassword | OPTIONS
+[NETWORK_REQ] [09:07:32] https://public.kky.v3.supplier.kakayun.vip/sup/auth/loginbypassword | POST
+[JS_LOG] [09:07:32] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ Token已保存: [object Object]
+[JS_LOG] [09:07:32] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 用户信息已保存: 13006307734
+[JS_LOG] [09:07:32] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 密码已记住
+[JS_LOG] [09:07:32] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 密码已记住
+[JS_LOG] [09:07:32] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 账号密码登录成功
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 已登录，允许访问: /pages/index/index
+[NETWORK_REQ] [09:07:33] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/successcount?type=home | OPTIONS
+[NETWORK_REQ] [09:07:33] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/pending-count | OPTIONS
+[NETWORK_REQ] [09:07:33] https://public.kky.v3.supplier.kakayun.vip/sup/user/info?type=info | OPTIONS
+[NETWORK_REQ] [09:07:33] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/pending-count | OPTIONS
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] requireConfirm: false 原始值: null
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] isButtonDisabled: false requireConfirm: false confirmChecked: false
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [Header组件] mounted 开始
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🚀 [悬浮窗初始化] [object Object]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📍 [初始位置] [object Object]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [检查位置] [object Object]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✓ [位置无需调整]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📦 [Header组件] 准备加载监控配置
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🔍 [开始加载监控配置]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 📥 [读取到的配置] 
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ⚠️ [没有找到保存的配置，使用默认值] [object Object]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [Header组件] 准备初始化音频
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 🎵 [初始化音频] [object Object]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 👆 [设置用户交互监听]
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ [Header组件] mounted 完成
+[NETWORK_REQ] [09:07:33] https://public.kky.v3.supplier.kakayun.vip/sup/user/info?type=info | OPTIONS
+[JS_WARN] [09:07:33] https://sup.78k.cn/supwap/#/pages/index/index:0 | Mixed Content: The page at 'https://sup.78k.cn/supwap/#/pages/index/index' was loaded over HTTPS, but requested an insecure favicon 'http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png'. This content should also be served over HTTPS.
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/#/pages/index/index | Token extracted: eyJ0eXAi...
+[NETWORK_REQ] [09:07:33] http://umg.yxp8.cn/65a9d138149930c1b3fcadeabfa62574.png | GET
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频加载成功
+[JS_LOG] [09:07:33] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频可以播放
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/pending-count | POST
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/successcount?type=home | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v2/order/pending-count | POST
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/user/info?type=info | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/user/info?type=info | GET
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 获取用户信息: [object Object]
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v2/team/statistics | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=banner&page=1&pageSize=5 | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=card&page=1&pageSize=5 | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getUnreadCount | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=modal&page=1&pageSize=5 | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getUnreadCount | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=card&page=1&pageSize=5 | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=banner&page=1&pageSize=5 | OPTIONS
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v2/team/statistics | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getUnreadCount | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=card&page=1&pageSize=5 | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=modal&page=1&pageSize=5 | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=banner&page=1&pageSize=5 | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getUnreadCount | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=banner&page=1&pageSize=5 | GET
+[NETWORK_REQ] [09:07:34] https://public.kky.v3.supplier.kakayun.vip/sup/v1/Announcement/getList?type=card&page=1&pageSize=5 | GET
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ===== 公告弹窗：visible变化 =====
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] visible: true
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] announcement: [object Object]
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ===== 公告弹窗：announcement变化 =====
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 新的announcement: [object Object]
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] requireConfirm: false 原始值: false
+[JS_LOG] [09:07:34] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] isButtonDisabled: false requireConfirm: false confirmChecked: false
+[NETWORK_REQ] [09:07:34] https://at.alicdn.com/t/font_2225171_8kdcwk4po24.ttf | GET
+[JS_LOG] [09:07:40] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ [检测到用户交互，启用音频播放]
+[JS_LOG] [09:07:40] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频加载成功
+[JS_LOG] [09:07:40] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ✅ 音频可以播放
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ===== handleClose触发 =====
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ===== 公告弹窗：visible变化 =====
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] visible: false
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] announcement: null
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] ===== 公告弹窗：announcement变化 =====
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] 新的announcement: null
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] requireConfirm: false 原始值: null
+[JS_LOG] [09:07:41] https://sup.78k.cn/supwap/static/js/chunk-vendors.ada159a7.js:20 | [system] [计算属性] isButtonDisabled: false requireConfirm: false confirmChecked: false
+[DOM_INSPECT] [09:07:46] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:46] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:46] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:46] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:46] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:46] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:47] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:47] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:47] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:47] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:47] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:47] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:47] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:47] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:47] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:47] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:47] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:47] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:48] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:48] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:48] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:48] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:48] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:48] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:49] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:49] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:49] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:49] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:49] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:49] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:50] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:50] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:50] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:50] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:50] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:50] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:50] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:50] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:50] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:50] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:50] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:50] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:55] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:55] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:55] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:55] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:55] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:55] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:58] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:58] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:58] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:58] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:58] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:58] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:07:59] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:07:59] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:07:59] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:07:59] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:07:59] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:07:59] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
+[DOM_INSPECT] [09:08:06] DOM<PageMeta> | "{\"readyState\":\"complete\",\"viewport\":\"369x682\",\"scrollSize\":\"369x682\",\"url\":\"https://sup.78k.cn/supwap/#/pages/index/index\",\"title\":\"首页 - 汇权益供货商端\"}"
+[DOM_INSPECT] [09:08:06] DOM<BodyStructure> | "{\"childCount\":8,\"htmlLen\":23443,\"textLen\":370,\"first5\":[\"NOSCRIPT. visible=false text=\\\"\u003Cstrong>Please enable JavaScript to continue.\u003C/str\\\"\",\"UNI-APP.uni-app--maxwidth visible=true text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00 vs 昨日 – 0% 今日订单 0 成\\\"\",\"SCRIPT. visible=false text=\\\"/*BAIDU_STAT*/\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\",\"SCRIPT. visible=false text=\\\"\\\"\"]}"
+[DOM_INSPECT] [09:08:06] DOM<UniAppRoot> | "{\"childCount\":2,\"textLen\":370,\"display\":\"block\",\"visibility\":\"visible\",\"opacity\":\"1\",\"w\":\"369.231px\",\"h\":\"0px\",\"overflow\":\"visible\",\"position\":\"static\",\"zIndex\":\"auto\",\"children\":[\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto\"]}"
+[DOM_INSPECT] [09:08:06] DOM<Components> | "[\"UNI-APP.uni-app--maxwidth d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-WRAPPER. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-PAGE-BODY. d=block v=visible o=1 w=369.231px h=0px text=\\\"早上好,13006307734 团长 今日营收 ¥ 0.00\\\"\",\"UNI-MODAL. d=none v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-mask d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal d=block v=visible o=1 w=80% h=auto text=\\\" Cancel OK \\\"\",\"DIV.uni-modal__bd d=block v=visible o=1 w=auto h=auto text=\\\"\\\"\",\"DIV.uni-modal__ft d=flex v=visible o=1 w=auto h=auto text=\\\" Cancel OK \\\"\"]"
+[DOM_INSPECT] [09:08:06] DOM<ZeroHeight> | "[\"ZERO-H: BODY.uni-body pages-index w=369.231px\",\"HIDDEN: NOSCRIPT.\",\"ZERO-H: UNI-APP.uni-app--maxwidth w=369.231px\",\"ZERO-H: UNI-PAGE. w=369.231px\",\"ZERO-H: UNI-PAGE-WRAPPER. w=369.231px\",\"HIDDEN: UNI-MODAL.\",\"HIDDEN: DIV.uni-mask\",\"HIDDEN: DIV.uni-modal\",\"ZERO-H: DIV#geetest-captcha-container. w=300px\",\"HIDDEN: DIV#geetest-captcha-container.\",\"HIDDEN: DIV.geetest_panel geetes\",\"HIDDEN: DIV.geetest_panel_ghost\",\"HIDDEN: DIV.geetest_panel_box\",\"HIDDEN: DIV.geetest_other_offlin\",\"HIDDEN: DIV.geetest_panel_loadin\",\"HIDDEN: DIV.geetest_panel_succes\",\"HIDDEN: DIV.geetest_panel_error\",\"HIDDEN: DIV.geetest_panel_footer\",\"HIDDEN: DIV.geetest_panel_next\"]"
+[DOM_INSPECT] [09:08:06] DOM<ImageStatus> | "{\"total\":0,\"loaded\":0,\"failed\":0,\"rendered\":0}"
