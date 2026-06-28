@@ -81,5 +81,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // GeckoView
-    implementation("org.mozilla.geckoview:geckoview:130.0")
+    implementation("org.mozilla.geckoview:geckoview:130.0.20240913135723")
 }
