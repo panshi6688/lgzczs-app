@@ -122,17 +122,14 @@ class SessionManager(
         youkaSession = createSession(
             platform = "youka",
             onPageLoaded = { session ->
-                android.webkit.CookieManager.getInstance()
-                    .getCookie("http://supplier.ukayun.cn")
-                    ?.split(";")
-                    ?.map { it.trim() }
-                    ?.firstOrNull { it.startsWith("admin_token=") }
-                    ?.removePrefix("admin_token=")
-                    ?.takeIf { it.isNotEmpty() }
-                    ?.let { token ->
-                        onYoukaToken(token)
-                        onLog("JS_LOG", "youka", "Token extracted: ${token.take(8)}...")
+                runtime.cookieManagerController.getAllCookies().accept { cookies ->
+                    cookies?.forEach { cookie ->
+                        if (cookie.name == "admin_token" && cookie.value.isNotEmpty()) {
+                            onYoukaToken(cookie.value)
+                            onLog("JS_LOG", "youka", "Token extracted: ${cookie.value.take(8)}...")
+                        }
                     }
+                }
             }
         )
 
