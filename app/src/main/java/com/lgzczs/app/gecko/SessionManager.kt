@@ -11,6 +11,7 @@ import org.mozilla.geckoview.GeckoSession.ProgressDelegate
 import org.mozilla.geckoview.GeckoSession.PromptDelegate
 import org.mozilla.geckoview.WebRequestError
 import org.mozilla.geckoview.WebResponse
+import java.net.URLDecoder
 
 class SessionManager(
     private val runtime: GeckoRuntime,
@@ -27,8 +28,33 @@ class SessionManager(
         onPageLoaded: (GeckoSession) -> Unit
     ): GeckoSession {
         return GeckoSession().apply {
+            var currentUrl = ""
+
             navigationDelegate = object : NavigationDelegate {
                 override fun onLocationChange(session: GeckoSession, url: String?, perms: List<GeckoSession.PermissionDelegate.ContentPermission>, hasUserGesture: Boolean) {
+                    if (url != null && url.contains("#__TK__:")) {
+                        val encoded = url.substringAfter("#__TK__:")
+                        val token = URLDecoder.decode(encoded, "UTF-8")
+                        if (token.isNotEmpty()) {
+                            if (platform == "youka") {
+                                val t = token.split(";")
+                                    .map { it.trim() }
+                                    .firstOrNull { it.startsWith("admin_token=") }
+                                    ?.removePrefix("admin_token=")
+                                if (t != null && t.isNotEmpty()) {
+                                    onYoukaToken(t)
+                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
+                                }
+                            } else if (platform == "hui") {
+                                val t = token.trim('"').ifEmpty { null }
+                                if (t != null) {
+                                    onHuiToken(t)
+                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
+                                }
+                            }
+                        }
+                        return
+                    }
                     onLog("NAVIGATE", url ?: "", "Location changed")
                 }
 
@@ -78,10 +104,13 @@ class SessionManager(
             progressDelegate = object : ProgressDelegate {
                 override fun onProgressChange(session: GeckoSession, progress: Int) {}
                 override fun onPageStart(session: GeckoSession, url: String) {
+                    currentUrl = url
+                    if (url.startsWith("javascript:")) return
                     onStatusChange(platform, true)
                     onLog("NAVIGATE", url, "Page started loading")
                 }
                 override fun onPageStop(session: GeckoSession, success: Boolean) {
+                    if (currentUrl.startsWith("javascript:")) return
                     onStatusChange(platform, false)
                     if (!success) {
                         onLog("ERROR", platform, "Page load failed")
@@ -93,31 +122,7 @@ class SessionManager(
 
             promptDelegate = object : PromptDelegate {
                 override fun onAlertPrompt(session: GeckoSession, prompt: PromptDelegate.AlertPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
-                    val msg = prompt.message ?: ""
-                    if (msg.startsWith("__TK__:")) {
-                        val token = msg.removePrefix("__TK__:")
-                        if (token.isNotEmpty()) {
-                            if (platform == "youka") {
-                                val raw = token
-                                val t = raw.split(";")
-                                    .map { it.trim() }
-                                    .firstOrNull { it.startsWith("admin_token=") }
-                                    ?.removePrefix("admin_token=")
-                                if (t != null && t.isNotEmpty()) {
-                                    onYoukaToken(t)
-                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
-                                }
-                            } else if (platform == "hui") {
-                                val t = token.trim('"').ifEmpty { null }
-                                if (t != null) {
-                                    onHuiToken(t)
-                                    onLog("JS_LOG", platform, "Token extracted: ${t.take(8)}...")
-                                }
-                            }
-                        }
-                    } else {
-                        onLog("JS_LOG", platform, "Alert: ${prompt.message}")
-                    }
+                    onLog("JS_LOG", platform, "Alert: ${prompt.message}")
                     return GeckoResult.fromValue(prompt.dismiss())
                 }
 
@@ -135,25 +140,17 @@ class SessionManager(
     }
 
     init {
-        var youkaExtracted = false
         youkaSession = createSession(
             platform = "youka",
             onPageLoaded = { session ->
-                if (!youkaExtracted) {
-                    youkaExtracted = true
-                    session.loadUri("javascript:void(alert('__TK__:'+document.cookie))")
-                }
+                session.loadUri("javascript:void(location.hash='__TK__:'+encodeURIComponent(document.cookie))")
             }
         )
 
-        var huiExtracted = false
         huiSession = createSession(
             platform = "hui",
             onPageLoaded = { session ->
-                if (!huiExtracted) {
-                    huiExtracted = true
-                    session.loadUri("javascript:void(alert('__TK__:'+(localStorage.getItem('access_token')||'')))")
-                }
+                session.loadUri("javascript:void(location.hash='__TK__:'+encodeURIComponent(localStorage.getItem('access_token')||''))")
             }
         )
     }

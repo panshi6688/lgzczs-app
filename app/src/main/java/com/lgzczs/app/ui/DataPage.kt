@@ -69,7 +69,7 @@ fun DataPage(
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "流光之城出卡助手",
+            text = "流光之城",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
@@ -156,19 +156,12 @@ fun DataPage(
         Divider()
         Spacer(modifier = Modifier.height(16.dp))
 
-        SectionTitle("调试选项")
-
+        SectionTitle("关于软件")
         Spacer(modifier = Modifier.height(8.dp))
-
-        var debugMode by remember { mutableStateOf(tokenManager.debugModeEnabled) }
-        ToggleRow(
-            label = "调试模式",
-            description = "在 WebView 页面显示调试按钮，捕获 JS 错误和网络请求日志",
-            checked = debugMode,
-            onCheckedChange = {
-                debugMode = it
-                tokenManager.debugModeEnabled = it
-            }
+        Text(
+            text = "作者QQ：248617489",
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

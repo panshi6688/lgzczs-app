@@ -35,8 +35,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -104,9 +104,9 @@ sealed class BottomNavItem(
     val label: String,
     val icon: @Composable () -> Unit
 ) {
-    data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(24.dp)) })
-    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(24.dp)) })
-    data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(24.dp)) })
+    data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(20.dp)) })
+    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(20.dp)) })
+    data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(20.dp)) })
 }
 
 private val bottomNavItems = listOf(
@@ -223,11 +223,11 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(modifier = Modifier.height(56.dp)) {
                 bottomNavItems.forEach { item ->
                     NavigationBarItem(
-                        icon = item.icon,
-                        label = { Text(item.label) },
+                        icon = { item.icon() },
+                        label = { Text(item.label, fontSize = 11.sp) },
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         onClick = {
                             navController.navigate(item.route) {
@@ -237,7 +237,8 @@ fun MainScreen() {
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
+                        },
+                        modifier = Modifier.height(56.dp)
                     )
                 }
             }
@@ -252,7 +253,6 @@ fun MainScreen() {
                 HuiPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         huiStatus = status
                     }
@@ -262,7 +262,6 @@ fun MainScreen() {
                 YoukaPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         youkaStatus = status
                     }
