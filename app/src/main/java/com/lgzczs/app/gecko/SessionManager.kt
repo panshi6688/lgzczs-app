@@ -104,13 +104,15 @@ class SessionManager(
                 }
             }
 
-            consoleCallback = { message ->
-                val msg = message?.message() ?: ""
-                val src = "${message?.sourceId()}:${message?.lineNumber()}"
-                when (message?.level()) {
-                    GeckoSession.ConsoleCallback.Level.ERROR -> onLog("JS_ERROR", src, msg)
-                    GeckoSession.ConsoleCallback.Level.WARN -> onLog("JS_WARN", src, msg)
-                    else -> onLog("JS_LOG", src, msg)
+            consoleCallback = object : GeckoSession.ConsoleCallback {
+                override fun onMessage(message: GeckoSession.ConsoleCallback.Message) {
+                    val msg = message.message()
+                    val src = "${message.sourceId()}:${message.lineNumber()}"
+                    when (message.level()) {
+                        GeckoSession.ConsoleCallback.Level.ERROR -> onLog("JS_ERROR", src, msg)
+                        GeckoSession.ConsoleCallback.Level.WARN -> onLog("JS_WARN", src, msg)
+                        else -> onLog("JS_LOG", src, msg)
+                    }
                 }
             }
 
