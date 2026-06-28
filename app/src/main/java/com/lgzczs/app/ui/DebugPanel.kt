@@ -1,6 +1,5 @@
 package com.lgzczs.app.ui
 
-import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +43,7 @@ import java.util.Locale
 
 @Composable
 fun DebugPanel(
-    webView: WebView? = null,
+    session: org.mozilla.geckoview.GeckoSession? = null,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
@@ -73,9 +72,9 @@ fun DebugPanel(
                 )
                 Spacer(Modifier.weight(1f))
                 TextButtonSmall(if (running) "..." else "DOM") {
-                    if (!running && webView != null) {
+                    if (!running && session != null) {
                         running = true
-                        runDomDiagnostics(webView) { running = false; refresh() }
+                        runDomDiagnostics(session) { running = false; refresh() }
                     }
                 }
                 TextButtonSmall("清空") {
@@ -103,7 +102,7 @@ fun DebugPanel(
             }
 
             Text(
-                "连接电脑 → Chrome → chrome://inspect 可远程调试",
+                "连接电脑 → Firefox → about:debugging 可远程调试",
                 color = Color(0x99FFFFFF),
                 fontSize = 11.sp,
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
@@ -112,7 +111,7 @@ fun DebugPanel(
     }
 }
 
-private fun runDomDiagnostics(webView: WebView, onComplete: () -> Unit) {
+private fun runDomDiagnostics(session: org.mozilla.geckoview.GeckoSession, onComplete: () -> Unit) {
     val scripts = listOf(
         "PageMeta" to """(function(){
   return JSON.stringify({
@@ -205,7 +204,7 @@ private fun runDomDiagnostics(webView: WebView, onComplete: () -> Unit) {
         }
         val (name, script) = scripts[index]
         index++
-        webView.evaluateJavascript(script) { result ->
+        session.evaluateJavascript(script) { result ->
             WebViewDiagnostics.add(LogType.DOM_INSPECT, "DOM<$name>", result ?: "null")
             runNext()
         }
