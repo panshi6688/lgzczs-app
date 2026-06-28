@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -24,12 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.util.PermissionHelper
 import com.lgzczs.app.util.TokenManager
@@ -47,6 +52,7 @@ fun DataPage(
     var alertDialogEnabled by remember { mutableStateOf(tokenManager.alertDialogEnabled) }
     var notificationEnabled by remember { mutableStateOf(tokenManager.notificationEnabled) }
     var floatWindowEnabled by remember { mutableStateOf(tokenManager.floatWindowEnabled) }
+    var showOverlayGuide by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -65,103 +71,125 @@ fun DataPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = "流光之城",
-            fontSize = 22.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        SectionTitle("平台状态")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        PlatformStatusRow("汇权益", huiStatus)
-        PlatformStatusRow("优卡云", youkaStatus)
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider()
         Spacer(modifier = Modifier.height(16.dp))
 
-        SectionTitle("通知权限")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        PermissionStatusRow(
-            label = "系统通知",
-            granted = notificationGranted,
-            onSettingsClick = { PermissionHelper.openNotificationSettings(context) }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider()
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SectionTitle("悬浮窗权限")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        PermissionStatusRow(
-            label = "悬浮窗",
-            granted = overlayGranted,
-            onSettingsClick = { PermissionHelper.openOverlaySettings(context) }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider()
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SectionTitle("功能开关")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        ToggleRow(
-            label = "弹窗通知",
-            description = "有订单时在所有 App 上方弹窗提示",
-            checked = alertDialogEnabled,
-            onCheckedChange = {
-                alertDialogEnabled = it
-                tokenManager.alertDialogEnabled = it
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                SectionTitle("平台状态")
+                Spacer(modifier = Modifier.height(8.dp))
+                PlatformStatusRow("汇权益", huiStatus)
+                PlatformStatusRow("优卡云", youkaStatus)
             }
-        )
+        }
 
-        ToggleRow(
-            label = "状态栏通知",
-            description = "有订单时发送系统通知栏通知",
-            checked = notificationEnabled,
-            onCheckedChange = {
-                notificationEnabled = it
-                tokenManager.notificationEnabled = it
-            }
-        )
-
-        ToggleRow(
-            label = "悬浮窗",
-            description = "后台运行时显示可拖动的悬浮图标",
-            checked = floatWindowEnabled,
-            onCheckedChange = {
-                floatWindowEnabled = it
-                tokenManager.floatWindowEnabled = it
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider()
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SectionTitle("关于软件")
         Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                SectionTitle("权限")
+                Spacer(modifier = Modifier.height(8.dp))
+                PermissionStatusRow(
+                    label = "系统通知",
+                    granted = notificationGranted,
+                    onSettingsClick = { PermissionHelper.openNotificationSettings(context) }
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                PermissionStatusRow(
+                    label = "悬浮窗",
+                    granted = overlayGranted,
+                    onSettingsClick = { showOverlayGuide = true }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                SectionTitle("功能开关")
+                Spacer(modifier = Modifier.height(8.dp))
+                ToggleRow(
+                    label = "弹窗通知",
+                    description = "有订单时在所有 App 上方弹窗提示",
+                    checked = alertDialogEnabled,
+                    onCheckedChange = {
+                        alertDialogEnabled = it
+                        tokenManager.alertDialogEnabled = it
+                    }
+                )
+                ToggleRow(
+                    label = "状态栏通知",
+                    description = "有订单时发送系统通知栏通知",
+                    checked = notificationEnabled,
+                    onCheckedChange = {
+                        notificationEnabled = it
+                        tokenManager.notificationEnabled = it
+                    }
+                )
+                ToggleRow(
+                    label = "悬浮窗",
+                    description = "后台运行时显示可拖动的悬浮图标",
+                    checked = floatWindowEnabled,
+                    onCheckedChange = {
+                        floatWindowEnabled = it
+                        tokenManager.floatWindowEnabled = it
+                    }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "作者QQ：248617489",
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onBackground
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    if (showOverlayGuide) {
+        AlertDialog(
+            onDismissRequest = { showOverlayGuide = false },
+            title = { Text("悬浮窗权限") },
+            text = { Text("在跳转的页面中找到【流光之城】并点进去允许显示在其它应用上方后返回即可") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showOverlayGuide = false
+                    PermissionHelper.openOverlaySettings(context)
+                }) { Text("去设置") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showOverlayGuide = false }) { Text("取消") }
+            }
         )
     }
 }
@@ -170,7 +198,7 @@ fun DataPage(
 private fun SectionTitle(title: String) {
     Text(
         text = title,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onBackground
     )
@@ -194,12 +222,12 @@ private fun PlatformStatusRow(name: String, status: PlatformStatus) {
     ) {
         Text(
             text = name,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = statusText,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
     }
@@ -220,20 +248,20 @@ private fun PermissionStatusRow(
     ) {
         Text(
             text = label,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
         if (granted) {
             Text(
                 text = "✅ 已授权",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "❌ 未授权",
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -255,19 +283,19 @@ private fun ToggleRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = description,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

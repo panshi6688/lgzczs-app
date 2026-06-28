@@ -2,6 +2,7 @@ package com.lgzczs.app.service
 
 import android.app.Service
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -11,14 +12,17 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.FrameLayout
 import com.lgzczs.app.MainActivity
+import com.lgzczs.app.R
 
 class FloatWindowService : Service() {
 
     private lateinit var windowManager: WindowManager
-    private lateinit var floatView: ImageView
+    private lateinit var floatView: FrameLayout
     private lateinit var params: WindowManager.LayoutParams
     private var initialX = 0
     private var initialY = 0
@@ -44,13 +48,6 @@ class FloatWindowService : Service() {
         val density = displayMetrics.density
         val viewSize = (50 * density).toInt()
 
-        val shape = GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setSize(viewSize, viewSize)
-            setColor(0xFF2196F3.toInt())
-            setStroke((2 * density).toInt(), 0xFFFFFFFF.toInt())
-        }
-
         val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 onFloatViewClick()
@@ -58,8 +55,22 @@ class FloatWindowService : Service() {
             }
         })
 
-        floatView = ImageView(this).apply {
-            setImageDrawable(shape)
+        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+        val iconView = ImageView(this).apply {
+            setImageBitmap(icon)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+        }
+
+        floatView = FrameLayout(this).apply {
+            val bg = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setSize(viewSize, viewSize)
+                setColor(0xFFFFFFFF.toInt())
+                setStroke((2 * density).toInt(), 0xFFE0E0E0.toInt())
+            }
+            background = bg
+            addView(iconView, viewSize, viewSize)
+
             setOnTouchListener { v, event ->
                 gestureDetector.onTouchEvent(event)
                 when (event.action) {
@@ -111,10 +122,9 @@ class FloatWindowService : Service() {
 
     private fun onFloatViewClick() {
         Intent(this, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(this)
         }
-        stopSelf()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

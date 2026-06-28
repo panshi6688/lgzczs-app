@@ -43,6 +43,11 @@
             android:name=".service.FloatWindowService"
             android:exported="false" />
 
+        <service
+            android:name=".service.KeepAliveService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
     </application>
 
 </manifest>

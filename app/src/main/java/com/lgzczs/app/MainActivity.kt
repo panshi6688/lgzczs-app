@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,6 +60,7 @@ import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
 import com.lgzczs.app.service.FloatWindowService
+import com.lgzczs.app.service.KeepAliveService
 import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
@@ -77,6 +80,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.statusBarColor = Color.WHITE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
+        startForegroundService(Intent(this, KeepAliveService::class.java))
+
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT), Context.RECEIVER_NOT_EXPORTED)
         } else {
@@ -224,7 +235,7 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar(modifier = Modifier.height(56.dp)) {
+            NavigationBar(modifier = Modifier.height(64.dp)) {
                 bottomNavItems.forEach { item ->
                     NavigationBarItem(
                         icon = { item.icon() },
@@ -239,7 +250,7 @@ fun MainScreen() {
                                 restoreState = true
                             }
                         },
-                        modifier = Modifier.height(56.dp)
+                        modifier = Modifier.height(64.dp)
                     )
                 }
             }
