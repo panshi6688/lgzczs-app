@@ -122,11 +122,16 @@ class SessionManager(
         youkaSession = createSession(
             platform = "youka",
             onPageLoaded = { session ->
-                runtime.cookieManagerController.getAllCookies().accept { cookies ->
-                    cookies?.forEach { cookie ->
-                        if (cookie.name == "admin_token" && cookie.value.isNotEmpty()) {
-                            onYoukaToken(cookie.value)
-                            onLog("JS_LOG", "youka", "Token extracted: ${cookie.value.take(8)}...")
+                session.evaluateJavascript("document.cookie") { cookieStr ->
+                    if (cookieStr != null && cookieStr != "null" && cookieStr.isNotEmpty()) {
+                        val raw = cookieStr.trim('"')
+                        val token = raw.split(";")
+                            .map { it.trim() }
+                            .firstOrNull { it.startsWith("admin_token=") }
+                            ?.removePrefix("admin_token=")
+                        if (token != null && token.isNotEmpty()) {
+                            onYoukaToken(token)
+                            onLog("JS_LOG", "youka", "Token extracted: ${token.take(8)}...")
                         }
                     }
                 }
