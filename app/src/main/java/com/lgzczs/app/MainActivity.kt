@@ -44,6 +44,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lgzczs.app.gecko.GeckoRuntimeManager
+import com.lgzczs.app.gecko.SessionManager
+import com.lgzczs.app.util.WebViewDiagnostics
+import com.lgzczs.app.util.LogType
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.network.YoukaApiClient
 import com.lgzczs.app.service.PollingService
@@ -115,6 +119,35 @@ private val bottomNavItems = listOf(
 fun MainScreen() {
     val context = LocalContext.current
     val tokenManager = remember { TokenManager(context.applicationContext) }
+    val application = context.applicationContext as android.app.Application
+    val runtime = GeckoRuntimeManager.get(application)
+    val sessionManager = remember {
+        SessionManager(
+            runtime = runtime,
+            onYoukaToken = { token ->
+                tokenManager.youkaToken = token
+            },
+            onHuiToken = { token ->
+                tokenManager.huiToken = token
+            },
+            onLog = { type, source, message ->
+                WebViewDiagnostics.add(
+                    when (type) {
+                        "JS_ERROR" -> LogType.JS_ERROR
+                        "JS_WARN" -> LogType.JS_WARN
+                        "JS_LOG" -> LogType.JS_LOG
+                        "ERROR" -> LogType.ERROR
+                        "HTTP_ERROR" -> LogType.HTTP_ERROR
+                        "NETWORK_REQ" -> LogType.NETWORK_REQ
+                        else -> LogType.JS_DEBUG
+                    }, source, message
+                )
+            },
+            onStatusChange = { platform, isLoading ->
+                // optional: could update loading indicator
+            }
+        )
+    }
     var huiStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
     var youkaStatus by remember { mutableStateOf(PlatformStatus.NOT_LOGGED_IN) }
     val navController = rememberNavController()
@@ -183,6 +216,11 @@ fun MainScreen() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        sessionManager.loadYoukaPage()
+        sessionManager.loadHuiPage()
+    }
+
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -213,6 +251,7 @@ fun MainScreen() {
             composable(BottomNavItem.HuiQuanYi.route) {
                 HuiPage(
                     tokenManager = tokenManager,
+                    sessionManager = sessionManager,
                     debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         huiStatus = status
@@ -222,6 +261,7 @@ fun MainScreen() {
             composable(BottomNavItem.YouKaYun.route) {
                 YoukaPage(
                     tokenManager = tokenManager,
+                    sessionManager = sessionManager,
                     debugMode = tokenManager.debugModeEnabled,
                     onStatusChange = { status ->
                         youkaStatus = status
