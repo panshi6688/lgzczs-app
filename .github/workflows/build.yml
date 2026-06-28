@@ -48,7 +48,11 @@ jobs:
       - name: Show errors
         if: failure()
         run: |
-          tail -60 /tmp/build.log 2>/dev/null | while IFS= read -r line; do
+          grep -n -E "^e:|^Error|FAILED|error:|ERROR" /tmp/build.log 2>/dev/null | tail -40 | while IFS= read -r line; do
+            printf '::error file=build.log::%s\n' "$line"
+          done
+          echo "--- Last 20 lines ---"
+          tail -20 /tmp/build.log 2>/dev/null | while IFS= read -r line; do
             printf '::error file=build.log::%s\n' "$line"
           done
         shell: bash
