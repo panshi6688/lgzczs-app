@@ -43,24 +43,59 @@ jobs:
           name: lgzczs-app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Upload build log (always)
+      - name: Upload build logs as artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: lgzczs-app-build-log
-          path: /tmp/build.log
+          name: lgzczs-app-build-logs
+          path: /tmp/*.log
           retention-days: 1
 
       - name: Upload build logs to paste sites
         if: failure()
         continue-on-error: true
+        shell: bash
         run: |
-          echo "::group::ix.io paste (full config log)"
-          URL=$(cat /tmp/gradle_config.log 2>/dev/null | curl -s -F 'f:1=<-' https://ix.io) && echo "Config log: $URL" || echo "Config log paste failed"
+          echo "::group::Paste to ix.io (config log)"
+          CFG_URL=$(cat /tmp/gradle_config.log 2>/dev/null | curl -sS -F 'f:1=<-' https://ix.io) && echo "::notice title=ConfigLogPaste::$CFG_URL" || echo "Config log paste failed"
           echo "::endgroup::"
-          echo "::group::ix.io paste (build log)"
-          URL=$(curl -s -F 'f:1=@/tmp/build.log' https://ix.io) && echo "Build log: $URL" || echo "Build log paste failed"
+          echo "::group::Paste to ix.io (build log)"
+          BUILD_URL=$(curl -sS -F 'f:1=@/tmp/build.log' https://ix.io) && echo "::notice title=BuildLogPaste::$BUILD_URL" || echo "Build log paste failed"
           echo "::endgroup::"
-          echo "::group::Step summary"
-          { echo "# Build Log Summary"; echo '```'; cat /tmp/build.log 2>/dev/null | tail -60; echo '```'; } >> $GITHUB_STEP_SUMMARY
+          echo "::group::Paste last 200 lines of build log to ix.io"
+          tail -200 /tmp/build.log 2>/dev/null | curl -sS -F 'f:1=<-' https://ix.io | while IFS= read -r url; do echo "::notice title=BuildLogTail::$url"; done
           echo "::endgroup::"
+
+      - name: Dump logs as annotations (Python)
+        if: failure()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python3 << 'PYEOF'
+import os
+
+for path in ['/tmp/gradle_config.log', '/tmp/build.log']:
+    try:
+        with open(path) as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        continue
+    basename = os.path.basename(path)
+    for i, line in enumerate(lines[-80:], 1):
+        line = line.rstrip('\n').rstrip('\r')
+        if not line:
+            continue
+        escaped = line.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+        print(f'::warning title={basename}-L{i}::{escaped}')
+PYEOF
+
+      - name: Step summary
+        if: failure()
+        continue-on-error: true
+        run: |
+          {
+            echo "# Build Log"
+            echo '```'
+            cat /tmp/build.log 2>/dev/null | tail -60
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
