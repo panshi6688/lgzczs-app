@@ -6,6 +6,7 @@ import org.mozilla.geckoview.GeckoRuntime
 import org.mozilla.geckoview.GeckoSession
 import org.mozilla.geckoview.GeckoSession.ContentDelegate
 import org.mozilla.geckoview.GeckoSession.NavigationDelegate
+import org.mozilla.geckoview.GeckoSession.PermissionDelegate
 import org.mozilla.geckoview.GeckoSession.ProgressDelegate
 import org.mozilla.geckoview.GeckoSession.PromptDelegate
 import org.mozilla.geckoview.WebRequestError
@@ -43,20 +44,6 @@ class SessionManager(
                     return GeckoResult.fromValue(newSession)
                 }
 
-                override fun onPageStop(session: GeckoSession, success: Boolean) {
-                    onStatusChange(platform, false)
-                    if (!success) {
-                        onLog("ERROR", platform, "Page load failed")
-                        return
-                    }
-                    onPageLoaded(session)
-                }
-
-                override fun onPageStart(session: GeckoSession, url: String?) {
-                    onStatusChange(platform, true)
-                    onLog("NAVIGATE", url ?: "", "Page started loading")
-                }
-
                 override fun onLoadError(session: GeckoSession, uri: String?, error: WebRequestError): GeckoResult<String>? {
                     onLog("HTTP_ERROR", uri ?: "", "Error ${error.code}: ${error.message}")
                     return null
@@ -70,16 +57,11 @@ class SessionManager(
                     session.open(runtime)
                 }
 
-                override fun onContextMenu(session: GeckoSession, screenX: Int, screenY: Int, element: ContentDelegate.ContextElement): GeckoResult<AllowOrDeny>? {
-                    return null
+                override fun onContextMenu(session: GeckoSession, screenX: Int, screenY: Int, element: ContentDelegate.ContextElement) {
                 }
 
                 override fun onExternalResponse(session: GeckoSession, response: WebResponse) {
                     onLog("NETWORK_REQ", response.uri ?: "", "External response")
-                }
-
-                override fun onPermissionRequest(session: GeckoSession, request: ContentDelegate.PermissionRequest) {
-                    request.grant()
                 }
 
                 override fun onFirstComposite(session: GeckoSession) {}
@@ -87,22 +69,40 @@ class SessionManager(
                 override fun onFocusRequest(session: GeckoSession) {}
             }
 
+            permissionDelegate = object : PermissionDelegate {
+                override fun onContentPermissionRequest(session: GeckoSession, perm: PermissionDelegate.ContentPermission): GeckoResult<Int>? {
+                    return GeckoResult.fromValue(PermissionDelegate.ContentPermission.VALUE_ALLOW)
+                }
+            }
+
             progressDelegate = object : ProgressDelegate {
                 override fun onProgressChange(session: GeckoSession, progress: Int) {}
+                override fun onPageStart(session: GeckoSession, url: String) {
+                    onStatusChange(platform, true)
+                    onLog("NAVIGATE", url, "Page started loading")
+                }
+                override fun onPageStop(session: GeckoSession, success: Boolean) {
+                    onStatusChange(platform, false)
+                    if (!success) {
+                        onLog("ERROR", platform, "Page load failed")
+                        return
+                    }
+                    onPageLoaded(session)
+                }
             }
 
             promptDelegate = object : PromptDelegate {
-                override fun onAlert(session: GeckoSession, request: PromptDelegate.AlertRequest) {
-                    onLog("JS_LOG", platform, "Alert: ${request.message}")
-                    request.confirm()
+                override fun onAlertPrompt(session: GeckoSession, prompt: PromptDelegate.AlertPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
+                    onLog("JS_LOG", platform, "Alert: ${prompt.message}")
+                    return GeckoResult.fromValue(prompt.dismiss())
                 }
 
-                override fun onButtonPrompt(session: GeckoSession, request: PromptDelegate.ButtonPromptRequest) {
-                    request.confirm(PromptDelegate.ButtonPromptRequest.Type.POSITIVE)
+                override fun onButtonPrompt(session: GeckoSession, prompt: PromptDelegate.ButtonPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
+                    return GeckoResult.fromValue(prompt.confirm(PromptDelegate.ButtonPrompt.Type.POSITIVE))
                 }
 
-                override fun onTextPrompt(session: GeckoSession, request: PromptDelegate.TextPromptRequest) {
-                    request.confirm(request.defaultValue)
+                override fun onTextPrompt(session: GeckoSession, prompt: PromptDelegate.TextPrompt): GeckoResult<PromptDelegate.PromptResponse>? {
+                    return GeckoResult.fromValue(prompt.confirm(prompt.defaultValue))
                 }
             }
 
