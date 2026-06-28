@@ -232,7 +232,7 @@ fun MainScreen() {
     }
 
     LaunchedEffect(Unit) {
-        sessionManager.loadYoukaPage()
+        sessionManager.loadYoukaPage(tokenManager.youkaToken)
         sessionManager.loadHuiPage()
     }
 

@@ -159,12 +159,23 @@ class SessionManager(
         huiSession.loadUri("https://sup.78k.cn/")
     }
 
-    fun loadYoukaPage() {
+    fun loadYoukaPage(storedToken: String? = null) {
+        if (storedToken != null) {
+            youkaSession.loadUri("javascript:document.cookie='admin_token=$storedToken; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT'")
+        }
         youkaSession.loadUri("http://supplier.ukayun.cn/")
     }
 
     fun reloadAll() {
-        youkaSession.loadUri("http://supplier.ukayun.cn/")
-        huiSession.loadUri("https://sup.78k.cn/")
+        youkaSession.reload()
+        huiSession.reload()
+    }
+
+    fun reloadHuiPage() {
+        huiSession.reload()
+    }
+
+    fun reloadYoukaPage() {
+        youkaSession.reload()
     }
 }
