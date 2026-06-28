@@ -47,9 +47,9 @@ jobs:
       - name: Show errors
         if: failure()
         run: |
-          echo "::group::Compilation errors"
-          grep -n -i "error:" /tmp/build.log | head -80 | while IFS= read -r line; do echo "::error::$line"; done
+          echo "::group::Kotlin/Gradle errors"
+          grep -n -E "^(e:|error:|FAILED|> Task .*FAILED)" /tmp/build.log | head -80 | while IFS= read -r line; do echo "::error::$line"; done
           echo "::endgroup::"
-          echo "::group::Last 50 lines"
-          tail -50 /tmp/build.log
+          echo "::group::Last 60 lines"
+          tail -60 /tmp/build.log
           echo "::endgroup::"
