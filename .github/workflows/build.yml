@@ -44,12 +44,10 @@ jobs:
           path: /tmp/build.log
           retention-days: 1
 
-      - name: Show errors
+      - name: Show errors via annotations
         if: failure()
         run: |
-          echo "::group::Kotlin/Gradle errors"
-          grep -n -E "^(e:|error:|FAILED|> Task .*FAILED)" /tmp/build.log | head -80 | while IFS= read -r line; do echo "::error::$line"; done
-          echo "::endgroup::"
-          echo "::group::Last 60 lines"
-          tail -60 /tmp/build.log
-          echo "::endgroup::"
+          echo "::warning title=Full build.log::$(cat /tmp/build.log | head -50 | sed 's/%/%25/g; s/\n/%0A/g')"
+          tail -50 /tmp/build/log | while IFS= read -r line; do
+            echo "::warning title=BuildLog::$(echo "$line" | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g')"
+          done
