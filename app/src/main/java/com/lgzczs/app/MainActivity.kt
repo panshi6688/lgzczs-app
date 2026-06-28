@@ -233,14 +233,6 @@ fun MainScreen() {
         sessionManager.loadHuiPage()
     }
 
-    LaunchedEffect(currentDestination?.route) {
-        if (currentDestination?.route == "data") {
-            sessionManager.suspendAll()
-        } else {
-            sessionManager.resumeAll()
-        }
-    }
-
     Scaffold(
         bottomBar = {
             NavigationBar(modifier = Modifier.height(64.dp)) {
