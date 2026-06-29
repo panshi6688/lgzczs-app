@@ -16,7 +16,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.rememberLauncherForActivityResult
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -72,7 +72,7 @@ fun WebTestPage() {
         val uris = if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { arrayOf(it) }
         } else null
-        fileCallback?.onReceiveResult(uris)
+        fileCallback?.onReceiveValue(uris)
         fileCallback = null
     }
 
@@ -172,7 +172,7 @@ fun WebTestPage() {
                             callback?.invoke(origin, true, false)
                         }
                         override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: android.os.Message?): Boolean {
-                            val transport = android.webkit.WebView.WebViewTransport()
+                            val transport = view!!.WebViewTransport()
                             transport.webView = WebView(view?.context).apply {
                                 webChromeClient = this@apply.webChromeClient
                                 webViewClient = this@apply.webViewClient
