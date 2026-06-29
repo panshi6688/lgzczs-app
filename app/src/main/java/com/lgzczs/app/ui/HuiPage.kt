@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.GeolocationPermissions
@@ -25,10 +26,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
 import com.lgzczs.app.gecko.SessionManager
 import com.lgzczs.app.gecko.removeFromParent
 import com.lgzczs.app.util.TokenManager
+import java.io.File
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -37,16 +41,19 @@ fun HuiPage(
     sessionManager: SessionManager,
     huiToken: String?
 ) {
+    val context = LocalContext.current
     var fileCallback by remember { mutableStateOf<ValueCallback<Array<Uri>>?>(null) }
+    var photoUri by remember { mutableStateOf<Uri?>(null) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val uris = if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.let { arrayOf(it) }
+            result.data?.data?.let { arrayOf(it) } ?: photoUri?.let { arrayOf(it) }
         } else null
         fileCallback?.onReceiveValue(uris)
         fileCallback = null
+        photoUri = null
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -87,7 +94,7 @@ fun HuiPage(
                             override fun onPageFinished(view: WebView?, url: String?) {
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", false)
-                                view?.evaluateJavascript("localStorage.getItem('access_token') || ''") { value ->
+                                view?.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
                                     val token = value?.trim('"')?.trim()
                                     if (!token.isNullOrEmpty() && token != "null") {
                                         sessionManager.onHuiToken(token)
@@ -140,12 +147,26 @@ fun HuiPage(
                     }
                     override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: WebChromeClient.FileChooserParams?): Boolean {
                         fileCallback = filePathCallback
-                        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                        val ctx = webView?.context ?: return false
+                        val photoFile = File(ctx.cacheDir, "upload_${System.currentTimeMillis()}.jpg")
+                        photoFile.parentFile?.mkdirs()
+                        photoFile.createNewFile()
+                        val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", photoFile)
+                        photoUri = uri
+
+                        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
                             addCategory(Intent.CATEGORY_OPENABLE)
                             type = "*/*"
                             putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
                         }
-                        filePickerLauncher.launch(Intent.createChooser(intent, "选择文件"))
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                            putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        }
+                        val chooser = Intent.createChooser(galleryIntent, "选择文件").apply {
+                            putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
+                        }
+                        filePickerLauncher.launch(chooser)
                         return true
                     }
                 }

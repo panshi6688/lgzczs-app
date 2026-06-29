@@ -24,6 +24,30 @@ class SessionManager(
     private val huiDefaultUrl = "https://sup.78k.cn/"
     private val youkaDefaultUrl = "http://supplier.ukayun.cn/"
 
+    private val huiTokenJs = """
+        (() => {
+            try {
+                var t = localStorage.getItem('access_token');
+                if (t) return t;
+                t = sessionStorage.getItem('access_token');
+                if (t) return t;
+                var m = document.cookie.match(/access_token=([^;]+)/);
+                if (m) return m[1];
+            } catch(e) {}
+            return '';
+        })()
+    """.trimIndent()
+
+    private val youkaTokenJs = """
+        (() => {
+            try {
+                var m = document.cookie.match(/admin_token=([^;]+)/);
+                if (m) return m[1];
+            } catch(e) {}
+            return '';
+        })()
+    """.trimIndent()
+
     fun attachYoukaWebView(wv: WebView) {
         youkaWebView = wv
     }
@@ -63,6 +87,24 @@ class SessionManager(
     fun reloadYoukaPage() {
         youkaWebView?.loadUrl(youkaCurrentUrl ?: youkaDefaultUrl)
     }
+
+    fun refreshTokens() {
+        huiWebView?.evaluateJavascript(huiTokenJs) { value ->
+            val token = value?.trim('"')?.trim()
+            if (!token.isNullOrEmpty() && token != "null") {
+                onHuiToken(token)
+            }
+        }
+        youkaWebView?.evaluateJavascript(youkaTokenJs) { value ->
+            val token = value?.trim('"')?.trim()
+            if (!token.isNullOrEmpty() && token != "null") {
+                onYoukaToken(token)
+            }
+        }
+    }
+
+    fun getHuiTokenJs() = huiTokenJs
+    fun getYoukaTokenJs() = youkaTokenJs
 }
 
 fun View.removeFromParent() {

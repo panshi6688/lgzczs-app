@@ -45,7 +45,8 @@ import com.lgzczs.app.util.TokenManager
 fun DataPage(
     tokenManager: TokenManager,
     huiStatus: PlatformStatus,
-    youkaStatus: PlatformStatus
+    youkaStatus: PlatformStatus,
+    onRefresh: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -126,7 +127,16 @@ fun DataPage(
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                SectionTitle("平台状态")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SectionTitle("平台状态")
+                    Spacer(Modifier.weight(1f))
+                    OutlinedButton(onClick = onRefresh) {
+                        Text("🔄 刷新", fontSize = 12.sp)
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 PlatformStatusRow("汇权益", huiStatus)
                 PlatformStatusRow("优卡云", youkaStatus)
@@ -214,7 +224,7 @@ fun DataPage(
         AlertDialog(
             onDismissRequest = { showOverlayGuide = false },
             title = { Text("悬浮窗权限") },
-            text = { Text("在跳转的页面中找到【流光之城】并点进去允许显示在其它应用上方后返回即可") },
+            text = { Text("在跳转的页面中找到【1流光之城】并点进去允许显示在其它应用上方后返回即可") },
             confirmButton = {
                 TextButton(onClick = {
                     showOverlayGuide = false

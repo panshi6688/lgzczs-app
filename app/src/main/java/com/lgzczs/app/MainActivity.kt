@@ -275,7 +275,8 @@ fun MainScreen() {
                 DataPage(
                     tokenManager = tokenManager,
                     huiStatus = huiStatus,
-                    youkaStatus = youkaStatus
+                    youkaStatus = youkaStatus,
+                    onRefresh = { sessionManager.refreshTokens() }
                 )
             }
         }
