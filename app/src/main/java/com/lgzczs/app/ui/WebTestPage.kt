@@ -3,7 +3,12 @@ package com.lgzczs.app.ui
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
+import android.webkit.CookieManager
+import android.webkit.GeolocationPermissions
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -118,15 +122,23 @@ fun WebTestPage() {
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
                     settings.javaScriptEnabled = true
+                    settings.javaScriptCanOpenWindowsAutomatically = true
                     settings.domStorageEnabled = true
                     settings.databaseEnabled = true
-                    settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                     settings.loadWithOverviewMode = true
                     settings.useWideViewPort = true
                     settings.builtInZoomControls = true
                     settings.displayZoomControls = false
                     settings.setSupportZoom(true)
                     settings.allowFileAccess = false
+                    settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+                    settings.textZoom = 100
+                    settings.defaultFontSize = 16
+
+                    CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+                    setNetworkAvailable(true)
+
                     webChromeClient = object : WebChromeClient() {
                         override fun onJsAlert(view: WebView?, url: String?, message: String?, result: android.webkit.JsResult?): Boolean {
                             result?.confirm()
@@ -136,6 +148,26 @@ fun WebTestPage() {
                             result?.confirm()
                             return true
                         }
+                        override fun onPermissionRequest(request: PermissionRequest?) {
+                            request?.grant(request.resources)
+                        }
+                        override fun onGeolocationPermissionsShowPrompt(origin: String?, callback: GeolocationPermissions.Callback?) {
+                            callback?.invoke(origin, true, false)
+                        }
+                        override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: android.os.Message?): Boolean {
+                            val transport = android.webkit.WebView.WebViewTransport()
+                            transport.webView = WebView(view?.context).apply {
+                                webChromeClient = this@apply.webChromeClient
+                                webViewClient = this@apply.webViewClient
+                                settings.javaScriptEnabled = true
+                                settings.javaScriptCanOpenWindowsAutomatically = true
+                                settings.domStorageEnabled = true
+                                settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                            }
+                            resultMsg?.obj = transport
+                            resultMsg?.sendToTarget()
+                            return true
+                        }
                     }
                     webViewClient = object : WebViewClient() {
                         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -143,6 +175,12 @@ fun WebTestPage() {
                         }
                         override fun onPageFinished(view: WebView?, url: String?) {
                             loadUrl = url
+                        }
+                        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                            return false
+                        }
+                        override fun onReceivedSslError(view: WebView?, handler: android.webkit.SslErrorHandler?, error: android.net.http.SslError?) {
+                            handler?.proceed()
                         }
                     }
                     loadUrl("https://sup.78k.cn/")
