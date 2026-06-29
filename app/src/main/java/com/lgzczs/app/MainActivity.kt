@@ -139,15 +139,23 @@ fun MainScreen() {
     var huiTokenValue by remember { mutableStateOf(tokenManager.huiToken) }
     var youkaTokenValue by remember { mutableStateOf(tokenManager.youkaToken) }
 
+    val appContext = context.applicationContext
+
     val sessionManager = remember {
         SessionManager(
             onYoukaToken = { token ->
                 tokenManager.youkaToken = token
                 youkaTokenValue = token
+                appContext.startForegroundService(Intent(appContext, PollingService::class.java).apply {
+                    action = PollingService.ACTION_START_YOUKA
+                })
             },
             onHuiToken = { token ->
                 tokenManager.huiToken = token
                 huiTokenValue = token
+                appContext.startForegroundService(Intent(appContext, PollingService::class.java).apply {
+                    action = PollingService.ACTION_START_HUI
+                })
             },
             onLog = { type, source, message ->
                 // logging is disabled (DebugPanel removed)
@@ -167,39 +175,31 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    LaunchedEffect(huiStatus) {
-        when (huiStatus) {
-            PlatformStatus.LOGGED_IN -> {
-                Intent(context, PollingService::class.java).apply {
-                    action = PollingService.ACTION_START_HUI
-                    context.startForegroundService(this)
-                }
+    LaunchedEffect(huiTokenValue) {
+        if (huiTokenValue != null) {
+            Intent(context, PollingService::class.java).apply {
+                action = PollingService.ACTION_START_HUI
+                context.startForegroundService(this)
             }
-            PlatformStatus.NOT_LOGGED_IN, PlatformStatus.TOKEN_EXPIRED -> {
-                Intent(context, PollingService::class.java).apply {
-                    action = PollingService.ACTION_STOP_HUI
-                    context.startForegroundService(this)
-                }
+        } else {
+            Intent(context, PollingService::class.java).apply {
+                action = PollingService.ACTION_STOP_HUI
+                context.startForegroundService(this)
             }
-            else -> { }
         }
     }
 
-    LaunchedEffect(youkaStatus) {
-        when (youkaStatus) {
-            PlatformStatus.LOGGED_IN -> {
-                Intent(context, PollingService::class.java).apply {
-                    action = PollingService.ACTION_START_YOUKA
-                    context.startForegroundService(this)
-                }
+    LaunchedEffect(youkaTokenValue) {
+        if (youkaTokenValue != null) {
+            Intent(context, PollingService::class.java).apply {
+                action = PollingService.ACTION_START_YOUKA
+                context.startForegroundService(this)
             }
-            PlatformStatus.NOT_LOGGED_IN, PlatformStatus.TOKEN_EXPIRED -> {
-                Intent(context, PollingService::class.java).apply {
-                    action = PollingService.ACTION_STOP_YOUKA
-                    context.startForegroundService(this)
-                }
+        } else {
+            Intent(context, PollingService::class.java).apply {
+                action = PollingService.ACTION_STOP_YOUKA
+                context.startForegroundService(this)
             }
-            else -> { }
         }
     }
 
