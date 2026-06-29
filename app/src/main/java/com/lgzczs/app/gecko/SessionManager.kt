@@ -4,10 +4,10 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 
 class SessionManager(
-    private val onYoukaToken: (String) -> Unit,
-    private val onHuiToken: (String) -> Unit,
-    private val onLog: (type: String, source: String, message: String) -> Unit,
-    private val onStatusChange: (platform: String, isLoading: Boolean) -> Unit
+    val onYoukaToken: (String) -> Unit,
+    val onHuiToken: (String) -> Unit,
+    val onLog: (type: String, source: String, message: String) -> Unit,
+    val onStatusChange: (platform: String, isLoading: Boolean) -> Unit
 ) {
     var youkaCurrentUrl: String? = null
         private set
