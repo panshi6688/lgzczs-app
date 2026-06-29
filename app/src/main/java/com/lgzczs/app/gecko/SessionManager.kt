@@ -1,5 +1,7 @@
 package com.lgzczs.app.gecko
 
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 
@@ -54,11 +56,6 @@ class SessionManager(
         youkaWebView?.loadUrl(youkaDefaultUrl)
     }
 
-    fun reloadAll() {
-        huiWebView?.loadUrl(huiCurrentUrl ?: huiDefaultUrl)
-        youkaWebView?.loadUrl(youkaCurrentUrl ?: youkaDefaultUrl)
-    }
-
     fun reloadHuiPage() {
         huiWebView?.loadUrl(huiCurrentUrl ?: huiDefaultUrl)
     }
@@ -66,4 +63,8 @@ class SessionManager(
     fun reloadYoukaPage() {
         youkaWebView?.loadUrl(youkaCurrentUrl ?: youkaDefaultUrl)
     }
+}
+
+fun View.removeFromParent() {
+    (parent as? ViewGroup)?.removeView(this)
 }

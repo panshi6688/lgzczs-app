@@ -220,9 +220,6 @@ fun MainScreen() {
                         context.stopService(it)
                     }
                 }
-                Lifecycle.Event.ON_RESUME -> {
-                    sessionManager.reloadAll()
-                }
                 else -> {}
             }
         }
