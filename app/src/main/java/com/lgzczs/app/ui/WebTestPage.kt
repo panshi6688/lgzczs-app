@@ -173,7 +173,7 @@ fun WebTestPage() {
                         }
                         override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: android.os.Message?): Boolean {
                             val transport = view!!.WebViewTransport()
-                            transport.webView = WebView(view?.context).apply {
+                            transport.webView = WebView(view!!.context).apply {
                                 webChromeClient = this@apply.webChromeClient
                                 webViewClient = this@apply.webViewClient
                                 settings.javaScriptEnabled = true
