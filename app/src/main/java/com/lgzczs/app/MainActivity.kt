@@ -236,11 +236,6 @@ fun MainScreen() {
         }
     }
 
-    LaunchedEffect(Unit) {
-        sessionManager.loadYoukaPage(tokenManager.youkaToken)
-        sessionManager.loadHuiPage()
-    }
-
     Scaffold(
         bottomBar = {
             NavigationBar(modifier = Modifier.height(64.dp)) {
