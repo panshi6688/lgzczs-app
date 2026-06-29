@@ -28,6 +28,15 @@ class TokenManager(context: Context) {
         get() = prefs.getBoolean("float_window_enabled", true)
         set(value) = prefs.edit().putBoolean("float_window_enabled", value).apply()
 
+    fun getNotifiedOrderIds(): Set<String> =
+        prefs.getStringSet("notified_order_ids", emptySet()) ?: emptySet()
+
+    fun addNotifiedOrderIds(ids: Set<String>) {
+        val current = getNotifiedOrderIds().toMutableSet()
+        current.addAll(ids)
+        prefs.edit().putStringSet("notified_order_ids", current).apply()
+    }
+
     fun clearHuiToken() {
         prefs.edit().remove("hui_token").apply()
     }

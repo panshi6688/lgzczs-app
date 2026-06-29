@@ -1,10 +1,6 @@
 package com.lgzczs.app
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -64,19 +60,6 @@ import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
 
-    private val alertReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == PollingService.ACTION_SHOW_ALERT) {
-                val platform = intent.getStringExtra("platform") ?: return
-                Intent(context, com.lgzczs.app.ui.GlobalAlertActivity::class.java).apply {
-                    putExtra("platform", platform)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(this)
-                }
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,11 +76,6 @@ class MainActivity : ComponentActivity() {
 
         startForegroundService(Intent(this, KeepAliveService::class.java))
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT), Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(alertReceiver, IntentFilter(PollingService.ACTION_SHOW_ALERT))
-        }
         setContent {
             LgzczsTheme {
                 Surface(
@@ -110,10 +88,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(alertReceiver)
-    }
 }
 
 sealed class BottomNavItem(

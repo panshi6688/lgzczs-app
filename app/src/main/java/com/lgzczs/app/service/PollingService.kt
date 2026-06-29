@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.model.PollingEvent
 import com.lgzczs.app.network.HuiApiClient
 import com.lgzczs.app.network.YoukaApiClient
@@ -29,12 +28,6 @@ class PollingService : Service() {
         const val ACTION_START_YOUKA = "com.lgzczs.app.action.START_YOUKA"
         const val ACTION_STOP_YOUKA = "com.lgzczs.app.action.STOP_YOUKA"
         const val ACTION_STOP_ALL = "com.lgzczs.app.action.STOP_ALL"
-        const val ACTION_SHOW_ALERT = "com.lgzczs.app.action.SHOW_ALERT"
-        const val ACTION_STATUS_CHANGE = "com.lgzczs.app.action.STATUS_CHANGE"
-
-        const val EXTRA_PLATFORM = "platform"
-        const val EXTRA_STATUS = "status"
-
         private const val POLLING_INTERVAL = 10_000L
         private const val FOREGROUND_NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "polling_service"
@@ -103,28 +96,22 @@ class PollingService : Service() {
                         if (token == null) break
 
                         val client = HuiApiClient()
-                        when (client.checkOrders(token)) {
-                            PollingEvent.HAS_ORDERS -> {
-                                if (tokenManager.notificationEnabled) {
-                                    NotificationHelper.sendOrderNotification(
-                                        this@PollingService,
-                                        "汇权益"
-                                    )
-                                }
-                                if (tokenManager.alertDialogEnabled) {
-                                    sendBroadcast(
-                                        Intent(ACTION_SHOW_ALERT)
-                                            .putExtra(EXTRA_PLATFORM, "汇权益")
-                                    )
+                        val result = client.checkOrders(token)
+                        when (result.type) {
+                            PollingEvent.EventType.HAS_ORDERS -> {
+                                val newIds = result.orderIds.filter { it !in tokenManager.getNotifiedOrderIds() }
+                                if (newIds.isNotEmpty()) {
+                                    tokenManager.addNotifiedOrderIds(newIds.toSet())
+                                    if (tokenManager.notificationEnabled) {
+                                        NotificationHelper.sendOrderNotification(
+                                            this@PollingService,
+                                            "汇权益"
+                                        )
+                                    }
                                 }
                             }
-                            PollingEvent.TOKEN_INVALID -> {
+                            PollingEvent.EventType.TOKEN_INVALID -> {
                                 tokenManager.clearHuiToken()
-                                sendBroadcast(
-                                    Intent(ACTION_STATUS_CHANGE)
-                                        .putExtra(EXTRA_PLATFORM, "hui")
-                                        .putExtra(EXTRA_STATUS, PlatformStatus.TOKEN_EXPIRED.name)
-                                )
                                 break
                             }
                             else -> { }
@@ -141,28 +128,22 @@ class PollingService : Service() {
                         if (token == null) break
 
                         val client = YoukaApiClient()
-                        when (client.checkOrders(token)) {
-                            PollingEvent.HAS_ORDERS -> {
-                                if (tokenManager.notificationEnabled) {
-                                    NotificationHelper.sendOrderNotification(
-                                        this@PollingService,
-                                        "优卡云"
-                                    )
-                                }
-                                if (tokenManager.alertDialogEnabled) {
-                                    sendBroadcast(
-                                        Intent(ACTION_SHOW_ALERT)
-                                            .putExtra(EXTRA_PLATFORM, "优卡云")
-                                    )
+                        val result = client.checkOrders(token)
+                        when (result.type) {
+                            PollingEvent.EventType.HAS_ORDERS -> {
+                                val newIds = result.orderIds.filter { it !in tokenManager.getNotifiedOrderIds() }
+                                if (newIds.isNotEmpty()) {
+                                    tokenManager.addNotifiedOrderIds(newIds.toSet())
+                                    if (tokenManager.notificationEnabled) {
+                                        NotificationHelper.sendOrderNotification(
+                                            this@PollingService,
+                                            "优卡云"
+                                        )
+                                    }
                                 }
                             }
-                            PollingEvent.TOKEN_INVALID -> {
+                            PollingEvent.EventType.TOKEN_INVALID -> {
                                 tokenManager.clearYoukaToken()
-                                sendBroadcast(
-                                    Intent(ACTION_STATUS_CHANGE)
-                                        .putExtra(EXTRA_PLATFORM, "youka")
-                                        .putExtra(EXTRA_STATUS, PlatformStatus.TOKEN_EXPIRED.name)
-                                )
                                 break
                             }
                             else -> { }

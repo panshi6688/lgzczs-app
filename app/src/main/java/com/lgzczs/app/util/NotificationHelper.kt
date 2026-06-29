@@ -39,12 +39,18 @@ object NotificationHelper {
             context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        val fullScreenIntent = PendingIntent.getActivity(
+            context, 1, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("$platformName - 新订单提醒")
             .setContentText("$platformName 有新的可抢订单")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setFullScreenIntent(fullScreenIntent, true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()

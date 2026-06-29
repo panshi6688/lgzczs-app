@@ -13,9 +13,16 @@ data class PlatformState(
     val hasOrders: Boolean
 )
 
-enum class PollingEvent {
-    NO_ORDERS,
-    HAS_ORDERS,
-    TOKEN_INVALID,
-    ERROR
+data class PollingEvent(
+    val type: EventType,
+    val orderIds: List<String> = emptyList()
+) {
+    enum class EventType { NO_ORDERS, HAS_ORDERS, TOKEN_INVALID, ERROR }
+
+    companion object {
+        val NO_ORDERS = PollingEvent(EventType.NO_ORDERS)
+        val HAS_ORDERS = PollingEvent(EventType.HAS_ORDERS)
+        val TOKEN_INVALID = PollingEvent(EventType.TOKEN_INVALID)
+        val ERROR = PollingEvent(EventType.ERROR)
+    }
 }

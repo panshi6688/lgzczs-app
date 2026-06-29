@@ -56,19 +56,23 @@ class HuiApiClient {
             val response = client.newCall(request).execute()
 
             if (response.code == 401) {
-                return@withContext PollingEvent.TOKEN_INVALID
+                return@withContext PollingEvent(PollingEvent.EventType.TOKEN_INVALID)
             }
 
             val body = response.body?.string()
-            if (body == null) return@withContext PollingEvent.ERROR
+            if (body == null) return@withContext PollingEvent(PollingEvent.EventType.ERROR)
 
             val mapType = object : TypeToken<Map<String, Any>>() {}.type
             val json: Map<String, Any> = gson.fromJson(body, mapType)
             val count = (json["count"] as? Number)?.toInt() ?: 0
+            val orderIds = (json["data"] as? List<*>)?.mapNotNull {
+                (it as? Map<*, *>)?.get("orderno") as? String
+            } ?: emptyList()
 
-            if (count > 0) PollingEvent.HAS_ORDERS else PollingEvent.NO_ORDERS
+            if (count > 0) PollingEvent(PollingEvent.EventType.HAS_ORDERS, orderIds)
+            else PollingEvent(PollingEvent.EventType.NO_ORDERS)
         } catch (e: Exception) {
-            PollingEvent.ERROR
+            PollingEvent(PollingEvent.EventType.ERROR)
         }
     }
 }

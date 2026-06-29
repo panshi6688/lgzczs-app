@@ -121,10 +121,10 @@ class YoukaApiClient {
             val response = client.newCall(request).execute()
 
             if (response.code == 401 || response.code == 500) {
-                return@withContext PollingEvent.TOKEN_INVALID
+                return@withContext PollingEvent(PollingEvent.EventType.TOKEN_INVALID)
             }
 
-            val body = response.body?.string() ?: return@withContext PollingEvent.ERROR
+            val body = response.body?.string() ?: return@withContext PollingEvent(PollingEvent.EventType.ERROR)
 
             val decrypted = try {
                 val mapType = object : TypeToken<Map<String, Any>>() {}.type
@@ -141,11 +141,19 @@ class YoukaApiClient {
             val decryptedMapType = object : TypeToken<Map<String, Any>>() {}.type
             val decryptedJson: Map<String, Any> =
                 gson.fromJson(decrypted, decryptedMapType)
-            val count = (decryptedJson["count"] as? Number)?.toInt() ?: 0
+            val dataObj = decryptedJson["data"] as? Map<*, *>
+            val metaObj = dataObj?.get("meta") as? Map<*, *>
+            val paginationObj = metaObj?.get("pagination") as? Map<*, *>
+            val count = (paginationObj?.get("total") as? Number)?.toInt() ?: 0
+            val orderList = dataObj?.get("data") as? List<*>
+            val orderIds = orderList?.mapNotNull {
+                (it as? Map<*, *>)?.get("ordersn") as? String
+            } ?: emptyList()
 
-            if (count > 0) PollingEvent.HAS_ORDERS else PollingEvent.NO_ORDERS
+            if (count > 0) PollingEvent(PollingEvent.EventType.HAS_ORDERS, orderIds)
+            else PollingEvent(PollingEvent.EventType.NO_ORDERS)
         } catch (e: Exception) {
-            PollingEvent.ERROR
+            PollingEvent(PollingEvent.EventType.ERROR)
         }
     }
 }
