@@ -86,6 +86,13 @@ fun YoukaPage(
                         CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
                         setNetworkAvailable(true)
 
+                        addJavascriptInterface(object {
+                            @android.webkit.JavascriptInterface
+                            fun onToken(token: String) {
+                                sessionManager.onYoukaToken(token)
+                            }
+                        }, "YoukaBridge")
+
                         webViewClient = object : WebViewClient() {
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                 sessionManager.updateYoukaUrl(url)
@@ -100,6 +107,7 @@ fun YoukaPage(
                                         sessionManager.onYoukaToken(token)
                                     }
                                 }
+                                view?.loadUrl("javascript:(function(){if(window.__yb)return;window.__yb=true;var max=30;(function c(){var m=document.cookie.match(/admin_token=([^;]+)/);if(m){YoukaBridge.onToken(m[1]);return}if(--max>0)setTimeout(c,800)})()})()")
                             }
                             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                                 return false

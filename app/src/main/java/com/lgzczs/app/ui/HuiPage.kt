@@ -86,6 +86,13 @@ fun HuiPage(
                         CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
                         setNetworkAvailable(true)
 
+                        addJavascriptInterface(object {
+                            @android.webkit.JavascriptInterface
+                            fun onToken(token: String) {
+                                sessionManager.onHuiToken(token)
+                            }
+                        }, "HuiBridge")
+
                         webViewClient = object : WebViewClient() {
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                 sessionManager.updateHuiUrl(url)
@@ -100,6 +107,7 @@ fun HuiPage(
                                         sessionManager.onHuiToken(token)
                                     }
                                 }
+                                view?.loadUrl("javascript:(function(){if(window.__hb)return;window.__hb=true;var max=30;(function c(){var t=localStorage.getItem('access_token')||sessionStorage.getItem('access_token')||'';var m=document.cookie.match(/access_token=([^;]+)/);if(!t&&m)t=m[1];if(t){HuiBridge.onToken(t);return}if(--max>0)setTimeout(c,800)})()})()")
                             }
                             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                                 return false
