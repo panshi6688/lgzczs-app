@@ -1,16 +1,22 @@
 package com.lgzczs.app.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.GeolocationPermissions
 import android.webkit.PermissionRequest
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,6 +64,17 @@ fun WebTestPage() {
     var loadUrl by remember { mutableStateOf<String?>(null) }
     var loadUa by remember { mutableStateOf<String?>(null) }
     var trigger by remember { mutableStateOf(0) }
+    var fileCallback by remember { mutableStateOf<ValueCallback<Array<Uri>>?>(null) }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val uris = if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { arrayOf(it) }
+        } else null
+        fileCallback?.onReceiveResult(uris)
+        fileCallback = null
+    }
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
         Row(
@@ -166,6 +183,16 @@ fun WebTestPage() {
                             }
                             resultMsg?.obj = transport
                             resultMsg?.sendToTarget()
+                            return true
+                        }
+                        override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: WebChromeClient.FileChooserParams?): Boolean {
+                            fileCallback = filePathCallback
+                            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                addCategory(Intent.CATEGORY_OPENABLE)
+                                type = "*/*"
+                                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
+                            }
+                            filePickerLauncher.launch(Intent.createChooser(intent, "选择文件"))
                             return true
                         }
                     }
