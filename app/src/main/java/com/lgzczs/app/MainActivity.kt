@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -51,13 +50,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.lgzczs.app.gecko.GeckoRuntimeManager
 import com.lgzczs.app.gecko.SessionManager
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.service.PollingService
 import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.DataPage
-import com.lgzczs.app.ui.WebTestPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
@@ -127,28 +124,23 @@ sealed class BottomNavItem(
     data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(20.dp)) })
     data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(20.dp)) })
     data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(20.dp)) })
-    data object WebTest : BottomNavItem("test", "测试", { Icon(Icons.Default.Build, "测试", modifier = Modifier.size(20.dp)) })
 }
 
 private val bottomNavItems = listOf(
     BottomNavItem.HuiQuanYi,
     BottomNavItem.YouKaYun,
-    BottomNavItem.Data,
-    BottomNavItem.WebTest
+    BottomNavItem.Data
 )
 
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
     val tokenManager = remember { TokenManager(context.applicationContext) }
-    val application = context.applicationContext as android.app.Application
-    val runtime = GeckoRuntimeManager.get(application)
     var huiTokenValue by remember { mutableStateOf(tokenManager.huiToken) }
     var youkaTokenValue by remember { mutableStateOf(tokenManager.youkaToken) }
 
     val sessionManager = remember {
         SessionManager(
-            runtime = runtime,
             onYoukaToken = { token ->
                 tokenManager.youkaToken = token
                 youkaTokenValue = token
@@ -288,9 +280,6 @@ fun MainScreen() {
                     huiStatus = huiStatus,
                     youkaStatus = youkaStatus
                 )
-            }
-            composable(BottomNavItem.WebTest.route) {
-                WebTestPage()
             }
         }
     }
