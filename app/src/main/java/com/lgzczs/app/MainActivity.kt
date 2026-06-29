@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -56,6 +57,7 @@ import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.service.PollingService
 import com.lgzczs.app.ui.HuiPage
 import com.lgzczs.app.ui.DataPage
+import com.lgzczs.app.ui.WebTestPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
@@ -125,12 +127,14 @@ sealed class BottomNavItem(
     data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(20.dp)) })
     data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(20.dp)) })
     data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(20.dp)) })
+    data object WebTest : BottomNavItem("test", "测试", { Icon(Icons.Default.Build, "测试", modifier = Modifier.size(20.dp)) })
 }
 
 private val bottomNavItems = listOf(
     BottomNavItem.HuiQuanYi,
     BottomNavItem.YouKaYun,
-    BottomNavItem.Data
+    BottomNavItem.Data,
+    BottomNavItem.WebTest
 )
 
 @Composable
@@ -284,6 +288,9 @@ fun MainScreen() {
                     huiStatus = huiStatus,
                     youkaStatus = youkaStatus
                 )
+            }
+            composable(BottomNavItem.WebTest.route) {
+                WebTestPage()
             }
         }
     }

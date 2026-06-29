@@ -23,6 +23,16 @@ class SessionManager(
     val youkaSession: GeckoSession
     val huiSession: GeckoSession
 
+    var youkaCurrentUrl: String? = null
+        private set
+    var huiCurrentUrl: String? = null
+        private set
+
+    companion object {
+        private const val HUI_DEFAULT_URL = "https://sup.78k.cn/"
+        private const val YOUKA_DEFAULT_URL = "http://supplier.ukayun.cn/"
+    }
+
     private fun createSession(
         platform: String,
         onPageLoaded: (GeckoSession) -> Unit
@@ -54,6 +64,10 @@ class SessionManager(
                             }
                         }
                         return
+                    }
+                    if (url != null && !url.startsWith("javascript:")) {
+                        if (platform == "youka") youkaCurrentUrl = url
+                        else if (platform == "hui") huiCurrentUrl = url
                     }
                     onLog("NAVIGATE", url ?: "", "Location changed")
                 }
@@ -106,6 +120,8 @@ class SessionManager(
                 override fun onPageStart(session: GeckoSession, url: String) {
                     currentUrl = url
                     if (url.startsWith("javascript:")) return
+                    if (platform == "youka") youkaCurrentUrl = url
+                    else if (platform == "hui") huiCurrentUrl = url
                     onStatusChange(platform, true)
                     onLog("NAVIGATE", url, "Page started loading")
                 }
@@ -167,15 +183,15 @@ class SessionManager(
     }
 
     fun reloadAll() {
-        youkaSession.reload()
-        huiSession.reload()
+        youkaSession.loadUri(youkaCurrentUrl ?: YOUKA_DEFAULT_URL)
+        huiSession.loadUri(huiCurrentUrl ?: HUI_DEFAULT_URL)
     }
 
     fun reloadHuiPage() {
-        huiSession.reload()
+        huiSession.loadUri(huiCurrentUrl ?: HUI_DEFAULT_URL)
     }
 
     fun reloadYoukaPage() {
-        youkaSession.reload()
+        youkaSession.loadUri(youkaCurrentUrl ?: YOUKA_DEFAULT_URL)
     }
 }
