@@ -130,9 +130,10 @@ fun YoukaPage(
                         callback?.invoke(origin, true, false)
                     }
                     override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: android.os.Message?): Boolean {
+                        val chrome = this
                         val transport = view!!.WebViewTransport()
                         transport.webView = WebView(view!!.context).apply {
-                            webChromeClient = this@apply
+                            webChromeClient = chrome
                             webViewClient = view!!.webViewClient
                             settings.javaScriptEnabled = true
                             settings.javaScriptCanOpenWindowsAutomatically = true
