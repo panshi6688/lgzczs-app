@@ -103,7 +103,7 @@ fun HuiPage(
                             private var tokenFound = false
                             private var currentView: WebView? = null
 
-                            private val tokenPoll = Runnable {
+                            private val tokenPoll: Runnable = Runnable {
                                 val wv = currentView ?: return@Runnable
                                 if (tokenFound) return@Runnable
                                 wv.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
