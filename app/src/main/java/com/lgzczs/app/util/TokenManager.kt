@@ -17,7 +17,7 @@ class TokenManager(context: Context) {
         set(value) = prefs.edit().putString("youka_token", value).apply()
 
     var alertDialogEnabled: Boolean
-        get() = prefs.getBoolean("alert_dialog_enabled", false)
+        get() = prefs.getBoolean("alert_dialog_enabled", true)
         set(value) = prefs.edit().putBoolean("alert_dialog_enabled", value).apply()
 
     var notificationEnabled: Boolean
