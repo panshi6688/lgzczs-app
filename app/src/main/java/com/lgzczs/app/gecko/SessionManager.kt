@@ -41,6 +41,8 @@ class SessionManager(
     private val youkaTokenJs = """
         (() => {
             try {
+                var t = localStorage.getItem('admin_token');
+                if (t) return t;
                 var m = document.cookie.match(/admin_token=([^;]+)/);
                 if (m) return m[1];
             } catch(e) {}

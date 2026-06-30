@@ -15,6 +15,7 @@ import android.webkit.PermissionRequest
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -98,9 +99,47 @@ fun HuiPage(
                         }, "HuiBridge")
 
                         webViewClient = object : WebViewClient() {
-                            val handler = Handler(Looper.getMainLooper())
+                            private val pollHandler = Handler(Looper.getMainLooper())
+                            private var tokenFound = false
+                            private var currentView: WebView? = null
+
+                            private val tokenPoll = Runnable {
+                                val wv = currentView ?: return@Runnable
+                                if (tokenFound) return@Runnable
+                                wv.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
+                                    val token = value?.trim('"')?.trim()
+                                    if (!token.isNullOrEmpty() && token != "null") {
+                                        tokenFound = true
+                                        sessionManager.onHuiToken(token)
+                                        if (tokenManager.huiUsername == null) {
+                                            wv.evaluateJavascript("""
+                                                (function(){
+                                                    var acc=document.getElementById('account');
+                                                    var pwd=document.getElementById('password');
+                                                    if(acc&&pwd)return JSON.stringify({user:acc.value,pass:pwd.value});
+                                                    return '{}';
+                                                })()
+                                            """.trimIndent()) { json ->
+                                                try {
+                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                    val user = obj.optString("user", "")
+                                                    val pass = obj.optString("pass", "")
+                                                    if (user.isNotEmpty()) {
+                                                        tokenManager.huiUsername = user
+                                                        tokenManager.huiPassword = pass
+                                                    }
+                                                } catch (_: Exception) {}
+                                            }
+                                        }
+                                    } else {
+                                        pollHandler.postDelayed(tokenPoll, 2000L)
+                                    }
+                                }
+                            }
 
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                                tokenFound = false
+                                currentView = view
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", true)
                                 if (url?.contains("login") == true && tokenManager.huiToken != null) {
@@ -113,63 +152,53 @@ fun HuiPage(
 
                                 val savedUser = tokenManager.huiUsername
                                 val savedPass = tokenManager.huiPassword
-                                if (savedUser != null && savedPass != null && (url?.contains("login") == true || url?.contains("#/login") == true)) {
+                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
                                     val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
                                     val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
                                         (function(){
-                                            var acc = document.getElementById('account');
-                                            var pwd = document.getElementById('password');
-                                            if(acc && pwd) {
-                                                acc.value = '$safeUser';
-                                                pwd.value = '$safePass';
-                                            }
-                                        })()
-                                    """.trimIndent(), null)
-
-                                    view?.postDelayed({
-                                        view.evaluateJavascript("""
-                                            (function(){
-                                                var acc = document.getElementById('account');
-                                                var pwd = document.getElementById('password');
-                                                if(acc && pwd && !acc.value) {
-                                                    acc.value = '$safeUser';
-                                                    pwd.value = '$safePass';
+                                            var u='$safeUser',p='$safePass';
+                                            if(!u||!p)return;
+                                            function fill(){
+                                                var acc=document.getElementById('account');
+                                                var pwd=document.getElementById('password');
+                                                if(acc&&pwd&&acc.offsetParent!==null){
+                                                    acc.value=u;pwd.value=p;
+                                                    acc.dispatchEvent(new Event('input',{bubbles:true}));
+                                                    pwd.dispatchEvent(new Event('input',{bubbles:true}));
+                                                    acc.dispatchEvent(new Event('change',{bubbles:true}));
+                                                    pwd.dispatchEvent(new Event('change',{bubbles:true}));
+                                                    return true;
                                                 }
-                                            })()
-                                        """.trimIndent(), null)
-                                    }, 1500L)
+                                                return false;
+                                            }
+                                            if(!fill()){var ob=new MutationObserver(function(){if(fill())ob.disconnect()});ob.observe(document.body,{childList:true,subtree:true})}
+                                        })();
+                                    """.trimIndent(), null)
                                 }
 
-                                view?.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
-                                    val token = value?.trim('"')?.trim()
-                                    if (!token.isNullOrEmpty() && token != "null") {
-                                        sessionManager.onHuiToken(token)
-                                        if (tokenManager.huiUsername == null) {
-                                            view?.evaluateJavascript("""
-                                                (function(){
-                                                    var acc = document.getElementById('account');
-                                                    var pwd = document.getElementById('password');
-                                                    return JSON.stringify({
-                                                        user: acc ? acc.value : '',
-                                                        pass: pwd ? pwd.value : ''
-                                                    });
-                                                })()
-                                            """.trimIndent()) { json ->
-                                                try {
-                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
-                                                    val user = obj.optString("user", "")
-                                                    val pass = obj.optString("pass", "")
-                                                    if (user.isNotEmpty()) {
-                                                        tokenManager.huiUsername = user
-                                                        tokenManager.huiPassword = pass
-                                                    }
-                                                } catch (_: Exception) { }
+                                pollHandler.removeCallbacks(tokenPoll)
+                                tokenPoll.run()
+                            }
+                            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                                request?.requestHeaders?.forEach { (key, value) ->
+                                    if (key.equals("Authorization", ignoreCase = true) && value.startsWith("Bearer ") && !tokenFound) {
+                                        val token = value.removePrefix("Bearer ").trim()
+                                        if (token.isNotEmpty()) {
+                                            tokenFound = true
+                                            sessionManager.onHuiToken(token)
+                                        }
+                                    }
+                                    if (key.equals("Cookie", ignoreCase = true) && !tokenFound) {
+                                        Regex("access_token=([^;]+)").find(value)?.groupValues?.get(1)?.let { token ->
+                                            if (token.isNotEmpty()) {
+                                                tokenFound = true
+                                                sessionManager.onHuiToken(token)
                                             }
                                         }
                                     }
                                 }
-                                view?.loadUrl("javascript:(function(){if(window.__hb)return;window.__hb=true;var max=30;(function c(){var t=localStorage.getItem('access_token')||sessionStorage.getItem('access_token')||'';var m=document.cookie.match(/access_token=([^;]+)/);if(!t&&m)t=m[1];if(t){HuiBridge.onToken(t);return}if(--max>0)setTimeout(c,800)})()})()")
+                                return null
                             }
                             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                                 return false

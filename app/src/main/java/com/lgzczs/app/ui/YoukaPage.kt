@@ -15,6 +15,7 @@ import android.webkit.PermissionRequest
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -98,10 +99,54 @@ fun YoukaPage(
                         }, "YoukaBridge")
 
                         webViewClient = object : WebViewClient() {
-                            val handler = Handler(Looper.getMainLooper())
-                            var retryCount = 0
+                            private val pollHandler = Handler(Looper.getMainLooper())
+                            private var tokenFound = false
+                            private var currentView: WebView? = null
+
+                            private val tokenPoll = Runnable {
+                                val wv = currentView ?: return@Runnable
+                                if (tokenFound) return@Runnable
+                                wv.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
+                                    var token = value?.trim('"')?.trim()
+                                    if (token.isNullOrEmpty() || token == "null") {
+                                        val cookies = CookieManager.getInstance().getCookie("http://supplier.ukayun.cn/")
+                                        if (!cookies.isNullOrEmpty()) {
+                                            val match = Regex("admin_token=([^;]+)").find(cookies)
+                                            if (match != null) token = match.groupValues[1]
+                                        }
+                                    }
+                                    if (!token.isNullOrEmpty() && token != "null") {
+                                        tokenFound = true
+                                        sessionManager.onYoukaToken(token)
+                                        if (tokenManager.youkaUsername == null) {
+                                            wv.evaluateJavascript("""
+                                                (function(){
+                                                    var el=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input.ivu-input:not([type="password"])');
+                                                    var el2=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input.ivu-input[type="password"]');
+                                                    if(el&&el2)return JSON.stringify({user:el.value,pass:el2.value});
+                                                    return '{}';
+                                                })()
+                                            """.trimIndent()) { json ->
+                                                try {
+                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                    val user = obj.optString("user", "")
+                                                    val pass = obj.optString("pass", "")
+                                                    if (user.isNotEmpty()) {
+                                                        tokenManager.youkaUsername = user
+                                                        tokenManager.youkaPassword = pass
+                                                    }
+                                                } catch (_: Exception) {}
+                                            }
+                                        }
+                                    } else {
+                                        pollHandler.postDelayed(tokenPoll, 2000L)
+                                    }
+                                }
+                            }
 
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                                tokenFound = false
+                                currentView = view
                                 sessionManager.updateYoukaUrl(url)
                                 sessionManager.onStatusChange("youka", true)
                                 if (url?.contains("login") == true && tokenManager.youkaToken != null) {
@@ -114,89 +159,66 @@ fun YoukaPage(
 
                                 val savedUser = tokenManager.youkaUsername
                                 val savedPass = tokenManager.youkaPassword
-                                if (savedUser != null && savedPass != null && (url?.contains("login") == true || url?.contains("#/login") == true)) {
+                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
                                     val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
                                     val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
                                         (function(){
-                                            var inputs = document.querySelectorAll('input.ivu-input');
-                                            if(inputs.length >= 2) {
-                                                inputs[0].value = '$safeUser';
-                                                inputs[1].value = '$safePass';
-                                                inputs[0].setAttribute('autocomplete', 'username');
-                                                inputs[1].setAttribute('autocomplete', 'current-password');
-                                            }
-                                        })()
-                                    """.trimIndent(), null)
-
-                                    val handler = Handler(Looper.getMainLooper())
-                                    view?.postDelayed({
-                                        view.evaluateJavascript("""
-                                            (function(){
-                                                var inputs = document.querySelectorAll('input.ivu-input');
-                                                if(inputs.length >= 2 && !inputs[0].value) {
-                                                    inputs[0].value = '$safeUser';
-                                                    inputs[1].value = '$safePass';
+                                            var u='$safeUser',p='$safePass';
+                                            if(!u||!p)return;
+                                            function fill(){
+                                                var el=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input.ivu-input:not([type="password"])');
+                                                var el2=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input.ivu-input[type="password"]');
+                                                if(el&&el2&&el.offsetParent!==null){
+                                                    el.value=u;el2.value=p;
+                                                    el.setAttribute('autocomplete','username');
+                                                    el2.setAttribute('autocomplete','current-password');
+                                                    el.dispatchEvent(new Event('input',{bubbles:true}));
+                                                    el2.dispatchEvent(new Event('input',{bubbles:true}));
+                                                    return true;
                                                 }
-                                            })()
-                                        """.trimIndent(), null)
-                                    }, 1500L)
+                                                return false;
+                                            }
+                                            if(!fill()){var ob=new MutationObserver(function(){if(fill())ob.disconnect()});ob.observe(document.body,{childList:true,subtree:true})}
+                                        })();
+                                    """.trimIndent(), null)
                                 } else if (url?.contains("login") == true) {
                                     view?.evaluateJavascript("""
                                         (function(){
-                                            var inputs = document.querySelectorAll('input.ivu-input');
-                                            if(inputs.length >= 2) {
-                                                inputs[0].setAttribute('autocomplete', 'username');
-                                                inputs[1].setAttribute('autocomplete', 'current-password');
+                                            function ac(){
+                                                var el=document.querySelector('input.ivu-input:not([type="password"])');
+                                                var el2=document.querySelector('input.ivu-input[type="password"]');
+                                                if(el)el.setAttribute('autocomplete','username');
+                                                if(el2)el2.setAttribute('autocomplete','current-password');
                                             }
-                                        })()
+                                            ac();var ob=new MutationObserver(function(){ac()});
+                                            ob.observe(document.body,{childList:true,subtree:true});
+                                        })();
                                     """.trimIndent(), null)
                                 }
 
-                                fun tryExtractToken(attempt: Int) {
-                                    view?.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
-                                        var token = value?.trim('"')?.trim()
-                                        if (token.isNullOrEmpty() || token == "null") {
-                                            val cookies = CookieManager.getInstance().getCookie(url)
-                                            val cookieToken = cookies?.split(";")
-                                                ?.map { it.trim() }
-                                                ?.firstOrNull { it.startsWith("admin_token=") }
-                                                ?.substringAfter("=")
-                                            if (!cookieToken.isNullOrEmpty()) token = cookieToken
-                                        }
-                                        if (!token.isNullOrEmpty() && token != "null") {
+                                pollHandler.removeCallbacks(tokenPoll)
+                                tokenPoll.run()
+                            }
+                            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                                request?.requestHeaders?.forEach { (key, value) ->
+                                    if (key.equals("Authorization", ignoreCase = true) && value.startsWith("Bearer ") && !tokenFound) {
+                                        val token = value.removePrefix("Bearer ").trim()
+                                        if (token.isNotEmpty()) {
+                                            tokenFound = true
                                             sessionManager.onYoukaToken(token)
-                                            if (tokenManager.youkaUsername == null) {
-                                                view?.evaluateJavascript("""
-                                                    (function(){
-                                                        var inputs = document.querySelectorAll('input.ivu-input');
-                                                        if(inputs.length >= 2) {
-                                                            return JSON.stringify({
-                                                                user: inputs[0].value,
-                                                                pass: inputs[1].value
-                                                            });
-                                                        }
-                                                        return '{}';
-                                                    })()
-                                                """.trimIndent()) { json ->
-                                                    try {
-                                                        val obj = JSONObject(json?.trim('"') ?: "{}")
-                                                        val user = obj.optString("user", "")
-                                                        val pass = obj.optString("pass", "")
-                                                        if (user.isNotEmpty()) {
-                                                            tokenManager.youkaUsername = user
-                                                            tokenManager.youkaPassword = pass
-                                                        }
-                                                    } catch (_: Exception) { }
-                                                }
+                                        }
+                                    }
+                                    if (key.equals("Cookie", ignoreCase = true) && !tokenFound) {
+                                        Regex("admin_token=([^;]+)").find(value)?.groupValues?.get(1)?.let { token ->
+                                            if (token.isNotEmpty()) {
+                                                tokenFound = true
+                                                sessionManager.onYoukaToken(token)
                                             }
-                                        } else if (attempt < 10) {
-                                            handler.postDelayed({ tryExtractToken(attempt + 1) }, 1000L)
                                         }
                                     }
                                 }
-                                tryExtractToken(0)
-                                view?.loadUrl("javascript:(function(){if(window.__yb)return;window.__yb=true;var max=30;(function c(){var m=document.cookie.match(/admin_token=([^;]+)/);if(m){YoukaBridge.onToken(m[1]);return}if(--max>0)setTimeout(c,800)})()})()")
+                                return null
                             }
                             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                                 return false
