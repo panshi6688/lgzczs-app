@@ -96,6 +96,19 @@ fun YoukaPage(
                             fun onToken(token: String) {
                                 sessionManager.onYoukaToken(token)
                             }
+                            @android.webkit.JavascriptInterface
+                            fun onCredentials(json: String) {
+                                if (tokenManager.youkaUsername != null) return
+                                try {
+                                    val obj = JSONObject(json)
+                                    val user = obj.optString("user", "")
+                                    val pass = obj.optString("pass", "")
+                                    if (user.isNotEmpty() && pass.isNotEmpty()) {
+                                        tokenManager.youkaUsername = user
+                                        tokenManager.youkaPassword = pass
+                                    }
+                                } catch (_: Exception) {}
+                            }
                         }, "YoukaBridge")
 
                         webViewClient = object : WebViewClient() {
@@ -196,6 +209,17 @@ fun YoukaPage(
                                             ac();var ob=new MutationObserver(function(){ac()});
                                             ob.observe(document.body,{childList:true,subtree:true});
                                         })();
+                                    """.trimIndent(), null)
+                                }
+
+                                if (tokenManager.youkaUsername == null) {
+                                    view?.evaluateJavascript("""
+                                        (function(){if(window.__ycw)return;window.__ycw=true;var _s=false;
+                                        setInterval(function(){if(_s)return;
+                                            var u=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input[type="text"]');
+                                            var p=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input[type="password"]');
+                                            if(u&&p&&u.value&&p.value){_s=true;YoukaBridge.onCredentials(JSON.stringify({user:u.value,pass:p.value}));}
+                                        },1500);})();
                                     """.trimIndent(), null)
                                 }
 

@@ -96,6 +96,19 @@ fun HuiPage(
                             fun onToken(token: String) {
                                 sessionManager.onHuiToken(token)
                             }
+                            @android.webkit.JavascriptInterface
+                            fun onCredentials(json: String) {
+                                if (tokenManager.huiUsername != null) return
+                                try {
+                                    val obj = JSONObject(json)
+                                    val user = obj.optString("user", "")
+                                    val pass = obj.optString("pass", "")
+                                    if (user.isNotEmpty() && pass.isNotEmpty()) {
+                                        tokenManager.huiUsername = user
+                                        tokenManager.huiPassword = pass
+                                    }
+                                } catch (_: Exception) {}
+                            }
                         }, "HuiBridge")
 
                         webViewClient = object : WebViewClient() {
@@ -176,6 +189,17 @@ fun HuiPage(
                                             }
                                             if(!fill()){var ob=new MutationObserver(function(){if(fill())ob.disconnect()});ob.observe(document.body,{childList:true,subtree:true})}
                                         })();
+                                    """.trimIndent(), null)
+                                }
+
+                                if (tokenManager.huiUsername == null) {
+                                    view?.evaluateJavascript("""
+                                        (function(){if(window.__hcw)return;window.__hcw=true;var _s=false;
+                                        setInterval(function(){if(_s)return;
+                                            var u=document.getElementById('account');
+                                            var p=document.getElementById('password');
+                                            if(u&&p&&u.value&&p.value){_s=true;HuiBridge.onCredentials(JSON.stringify({user:u.value,pass:p.value}));}
+                                        },1500);})();
                                     """.trimIndent(), null)
                                 }
 
