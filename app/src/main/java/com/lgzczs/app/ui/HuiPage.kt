@@ -175,8 +175,8 @@ fun HuiPage(
                                             var u='$safeUser',p='$safePass';
                                             if(!u||!p)return;
                                             function fill(){
-                                                var acc=document.getElementById('account');
-                                                var pwd=document.getElementById('password');
+                                                var acc=document.getElementById('account')||document.querySelector('[name="account"]')||document.querySelector('input.uni-input-input[type="text"]')||document.querySelector('input[type="text"]');
+                                                var pwd=document.getElementById('password')||document.querySelector('[name="password"]')||document.querySelector('input[placeholder="密码"]')||document.querySelector('input[type="password"]');
                                                 if(acc&&pwd&&acc.offsetParent!==null){
                                                     acc.value=u;pwd.value=p;
                                                     acc.dispatchEvent(new Event('input',{bubbles:true}));
@@ -194,12 +194,24 @@ fun HuiPage(
 
                                 if (tokenManager.huiUsername == null) {
                                     view?.evaluateJavascript("""
-                                        (function(){if(window.__hcw)return;window.__hcw=true;var _s=false;
-                                        setInterval(function(){if(_s)return;
-                                            var u=document.getElementById('account');
-                                            var p=document.getElementById('password');
-                                            if(u&&p&&u.value&&p.value){_s=true;HuiBridge.onCredentials(JSON.stringify({user:u.value,pass:p.value}));}
-                                        },1500);})();
+                                        (function(){if(window.__hci)return;window.__hci=true;
+                                        var _o=XMLHttpRequest.prototype.open;
+                                        XMLHttpRequest.prototype.open=function(m,u){this._u=u;return _o.apply(this,arguments);};
+                                        var _s=XMLHttpRequest.prototype.send;
+                                        XMLHttpRequest.prototype.send=function(b){
+                                            if(b&&typeof b=='string'&&this._u&&(this._u.indexOf('auth/loginbypassword')>=0||this._u.indexOf('auth/login')>=0)){
+                                                try{var d=JSON.parse(b);if(d.account&&d.password)HuiBridge.onCredentials(JSON.stringify({user:d.account,pass:d.password}));}catch(e){}
+                                            }
+                                            return _s.apply(this,arguments);
+                                        };
+                                        var _f=window.fetch;
+                                        if(_f)window.fetch=function(u,i){
+                                            var url=typeof u=='string'?u:(u.url||'');
+                                            if(i&&i.body&&typeof i.body=='string'&&(url.indexOf('auth/loginbypassword')>=0||url.indexOf('auth/login')>=0)){
+                                                try{var d=JSON.parse(i.body);if(d.account&&d.password)HuiBridge.onCredentials(JSON.stringify({user:d.account,pass:d.password}));}catch(e){}
+                                            }
+                                            return _f.apply(this,arguments);
+                                        };})();
                                     """.trimIndent(), null)
                                 }
 

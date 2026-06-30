@@ -214,12 +214,24 @@ fun YoukaPage(
 
                                 if (tokenManager.youkaUsername == null) {
                                     view?.evaluateJavascript("""
-                                        (function(){if(window.__ycw)return;window.__ycw=true;var _s=false;
-                                        setInterval(function(){if(_s)return;
-                                            var u=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input[type="text"]');
-                                            var p=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input[type="password"]');
-                                            if(u&&p&&u.value&&p.value){_s=true;YoukaBridge.onCredentials(JSON.stringify({user:u.value,pass:p.value}));}
-                                        },1500);})();
+                                        (function(){if(window.__yci)return;window.__yci=true;
+                                        var _o=XMLHttpRequest.prototype.open;
+                                        XMLHttpRequest.prototype.open=function(m,u){this._u=u;return _o.apply(this,arguments);};
+                                        var _s=XMLHttpRequest.prototype.send;
+                                        XMLHttpRequest.prototype.send=function(b){
+                                            if(b&&typeof b=='string'&&this._u&&this._u.indexOf('auth/login')>=0){
+                                                try{var d=JSON.parse(b);if(d.account&&d.password)YoukaBridge.onCredentials(JSON.stringify({user:d.account,pass:d.password}));}catch(e){}
+                                            }
+                                            return _s.apply(this,arguments);
+                                        };
+                                        var _f=window.fetch;
+                                        if(_f)window.fetch=function(u,i){
+                                            var url=typeof u=='string'?u:(u.url||'');
+                                            if(i&&i.body&&typeof i.body=='string'&&url.indexOf('auth/login')>=0){
+                                                try{var d=JSON.parse(i.body);if(d.account&&d.password)YoukaBridge.onCredentials(JSON.stringify({user:d.account,pass:d.password}));}catch(e){}
+                                            }
+                                            return _f.apply(this,arguments);
+                                        };})();
                                     """.trimIndent(), null)
                                 }
 
