@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Handler
+import android.os.Looper
 import android.net.Uri
 import android.provider.MediaStore
 import android.view.ViewGroup
@@ -96,6 +98,8 @@ fun HuiPage(
                         }, "HuiBridge")
 
                         webViewClient = object : WebViewClient() {
+                            val handler = Handler(Looper.getMainLooper())
+
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", true)
@@ -122,6 +126,19 @@ fun HuiPage(
                                             }
                                         })()
                                     """.trimIndent(), null)
+
+                                    view?.postDelayed({
+                                        view.evaluateJavascript("""
+                                            (function(){
+                                                var acc = document.getElementById('account');
+                                                var pwd = document.getElementById('password');
+                                                if(acc && pwd && !acc.value) {
+                                                    acc.value = '$safeUser';
+                                                    pwd.value = '$safePass';
+                                                }
+                                            })()
+                                        """.trimIndent(), null)
+                                    }, 1500L)
                                 }
 
                                 view?.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
