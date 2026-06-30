@@ -21,6 +21,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PollingService : Service() {
 
@@ -117,7 +118,7 @@ class PollingService : Service() {
                                             putStringArrayListExtra("order_ids", ArrayList(newIds))
                                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                         }
-                                        startActivity(alertIntent)
+                                        withContext(Dispatchers.Main) { startActivity(alertIntent) }
                                     }
                                     if (tokenManager.soundEnabled) {
                                         SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)
@@ -161,7 +162,7 @@ class PollingService : Service() {
                                             putStringArrayListExtra("order_ids", ArrayList(newIds))
                                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                         }
-                                        startActivity(alertIntent)
+                                        withContext(Dispatchers.Main) { startActivity(alertIntent) }
                                     }
                                     if (tokenManager.soundEnabled) {
                                         SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)

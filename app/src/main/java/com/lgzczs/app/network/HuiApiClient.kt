@@ -64,8 +64,16 @@ class HuiApiClient {
 
             val mapType = object : TypeToken<Map<String, Any>>() {}.type
             val json: Map<String, Any> = gson.fromJson(body, mapType)
-            val count = (json["count"] as? Number)?.toInt() ?: 0
-            val orderIds = (json["data"] as? List<*>)?.mapNotNull {
+
+            var count = (json["count"] as? Number)?.toInt() ?: 0
+            var rawData = json["data"]
+
+            if (count == 0 && rawData is Map<*, *>) {
+                count = (rawData["count"] as? Number)?.toInt() ?: 0
+                rawData = rawData["data"]
+            }
+
+            val orderIds = (rawData as? List<*>)?.mapNotNull {
                 (it as? Map<*, *>)?.get("orderno") as? String
             } ?: emptyList()
 
