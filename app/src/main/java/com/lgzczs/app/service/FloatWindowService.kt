@@ -79,7 +79,7 @@ class FloatWindowService : Service() {
 
             val hasOrders = tokenManager.hasUnviewedOrders
 
-            val badge = View(this@apply).apply {
+            val badge = View(this@FloatWindowService).apply {
                 val gd = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
                     setSize((10 * density).toInt(), (10 * density).toInt())
@@ -98,7 +98,7 @@ class FloatWindowService : Service() {
             addView(badge, badgeParams)
             badgeView = badge
 
-            val textView = TextView(this@apply).apply {
+            val textView = TextView(this@FloatWindowService).apply {
                 text = "● 新订单"
                 textSize = 10f
                 setTextColor(AndroidColor.RED)
