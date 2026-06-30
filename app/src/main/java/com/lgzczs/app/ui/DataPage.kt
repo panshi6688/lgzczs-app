@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,6 +68,7 @@ fun DataPage(
     var ringtoneUri by remember { mutableStateOf(tokenManager.ringtoneUri) }
     var showOverlayGuide by remember { mutableStateOf(false) }
     var showUsageGuide by remember { mutableStateOf(false) }
+    var showNotificationGuide by remember { mutableStateOf(false) }
 
     val ringtoneLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -207,26 +209,18 @@ fun DataPage(
                     onCheckedChange = {
                         alertDialogEnabled = it
                         tokenManager.alertDialogEnabled = it
-                    }
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedButton(
-                        onClick = {
+                    },
+                    actions = {
+                        TextButton(onClick = {
                             val intent = Intent(context, OrderAlertActivity::class.java).apply {
                                 putExtra("platform", "汇权益 (测试)")
                                 putStringArrayListExtra("order_ids", arrayListOf("TEST202606300001"))
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             }
                             context.startActivity(intent)
-                        }
-                    ) { Text("测试弹窗", fontSize = 12.sp) }
-                }
+                        }) { Text("测试弹窗", fontSize = 12.sp) }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
                 ToggleRow(
@@ -236,19 +230,16 @@ fun DataPage(
                     onCheckedChange = {
                         notificationEnabled = it
                         tokenManager.notificationEnabled = it
+                    },
+                    actions = {
+                        TextButton(onClick = { NotificationHelper.sendTestNotification(context) }) {
+                            Text("发送测试通知", fontSize = 12.sp)
+                        }
+                        TextButton(onClick = { showNotificationGuide = true }) {
+                            Text("去设置通知", fontSize = 12.sp)
+                        }
                     }
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedButton(
-                        onClick = { NotificationHelper.sendTestNotification(context) }
-                    ) { Text("发送测试通知", fontSize = 12.sp) }
-                }
 
                 Spacer(modifier = Modifier.height(4.dp))
                 ToggleRow(
@@ -259,17 +250,9 @@ fun DataPage(
                         soundEnabled = it
                         tokenManager.soundEnabled = it
                         if (!it) SoundManager.stop()
-                    }
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedButton(
-                        onClick = {
+                    },
+                    actions = {
+                        TextButton(onClick = {
                             val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
                                 putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
                                 putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri?.let { Uri.parse(it) })
@@ -277,13 +260,12 @@ fun DataPage(
                                 putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
                             }
                             ringtoneLauncher.launch(intent)
+                        }) { Text("选择铃声", fontSize = 12.sp) }
+                        TextButton(onClick = { SoundManager.playNotificationSound(context, ringtoneUri) }) {
+                            Text("试听", fontSize = 12.sp)
                         }
-                    ) { Text("选择铃声", fontSize = 12.sp) }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    OutlinedButton(
-                        onClick = { SoundManager.playNotificationSound(context, ringtoneUri) }
-                    ) { Text("试听", fontSize = 12.sp) }
-                }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
                 ToggleRow(
@@ -337,6 +319,23 @@ fun DataPage(
             },
             confirmButton = {
                 TextButton(onClick = { showUsageGuide = false }) { Text("知道了") }
+            }
+        )
+    }
+
+    if (showNotificationGuide) {
+        AlertDialog(
+            onDismissRequest = { showNotificationGuide = false },
+            title = { Text("设置悬浮通知") },
+            text = { Text("请在本页面的最下面找到[订单提醒]进入后开启[悬浮通知]后即可在屏幕顶部发出提醒通知") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showNotificationGuide = false
+                    PermissionHelper.openNotificationSettings(context)
+                }) { Text("去设置") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showNotificationGuide = false }) { Text("取消") }
             }
         )
     }
@@ -426,30 +425,28 @@ private fun ToggleRow(
     label: String,
     description: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = label,
                 fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
             )
-            Text(
-                text = description,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            actions()
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
         }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange
+        Text(
+            text = description,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

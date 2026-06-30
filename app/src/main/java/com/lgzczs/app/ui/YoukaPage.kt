@@ -40,7 +40,8 @@ import java.io.File
 fun YoukaPage(
     tokenManager: TokenManager,
     sessionManager: SessionManager,
-    youkaToken: String?
+    youkaToken: String?,
+    onLogout: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var fileCallback by remember { mutableStateOf<ValueCallback<Array<Uri>>?>(null) }
@@ -98,6 +99,9 @@ fun YoukaPage(
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                 sessionManager.updateYoukaUrl(url)
                                 sessionManager.onStatusChange("youka", true)
+                                if (url?.contains("login") == true && tokenManager.youkaToken != null) {
+                                    onLogout()
+                                }
                             }
                             override fun onPageFinished(view: WebView?, url: String?) {
                                 sessionManager.updateYoukaUrl(url)
@@ -105,20 +109,42 @@ fun YoukaPage(
 
                                 val savedUser = tokenManager.youkaUsername
                                 val savedPass = tokenManager.youkaPassword
-                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                if (savedUser != null && savedPass != null && (url?.contains("login") == true || url?.contains("#/login") == true)) {
+                                    val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
+                                    val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
                                         (function(){
                                             var inputs = document.querySelectorAll('input.ivu-input');
                                             if(inputs.length >= 2) {
-                                                inputs[0].value = '$savedUser';
-                                                inputs[1].value = '$savedPass';
+                                                inputs[0].value = '$safeUser';
+                                                inputs[1].value = '$safePass';
+                                                inputs[0].setAttribute('autocomplete', 'username');
+                                                inputs[1].setAttribute('autocomplete', 'current-password');
+                                            }
+                                        })()
+                                    """.trimIndent(), null)
+                                } else if (url?.contains("login") == true) {
+                                    view?.evaluateJavascript("""
+                                        (function(){
+                                            var inputs = document.querySelectorAll('input.ivu-input');
+                                            if(inputs.length >= 2) {
+                                                inputs[0].setAttribute('autocomplete', 'username');
+                                                inputs[1].setAttribute('autocomplete', 'current-password');
                                             }
                                         })()
                                     """.trimIndent(), null)
                                 }
 
                                 view?.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
-                                    val token = value?.trim('"')?.trim()
+                                    var token = value?.trim('"')?.trim()
+                                    if (token.isNullOrEmpty() || token == "null") {
+                                        val cookies = CookieManager.getInstance().getCookie(url)
+                                        val cookieToken = cookies?.split(";")
+                                            ?.map { it.trim() }
+                                            ?.firstOrNull { it.startsWith("admin_token=") }
+                                            ?.substringAfter("=")
+                                        if (!cookieToken.isNullOrEmpty()) token = cookieToken
+                                    }
                                     if (!token.isNullOrEmpty() && token != "null") {
                                         sessionManager.onYoukaToken(token)
                                         if (tokenManager.youkaUsername == null) {

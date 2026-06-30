@@ -240,14 +240,22 @@ fun MainScreen() {
                 HuiPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    huiToken = huiTokenValue
+                    huiToken = huiTokenValue,
+                    onLogout = {
+                        huiTokenValue = null
+                        tokenManager.clearHuiToken()
+                    }
                 )
             }
             composable(BottomNavItem.YouKaYun.route) {
                 YoukaPage(
                     tokenManager = tokenManager,
                     sessionManager = sessionManager,
-                    youkaToken = youkaTokenValue
+                    youkaToken = youkaTokenValue,
+                    onLogout = {
+                        youkaTokenValue = null
+                        tokenManager.clearYoukaToken()
+                    }
                 )
             }
             composable(BottomNavItem.Data.route) {

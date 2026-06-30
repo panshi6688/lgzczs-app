@@ -40,7 +40,8 @@ import java.io.File
 fun HuiPage(
     tokenManager: TokenManager,
     sessionManager: SessionManager,
-    huiToken: String?
+    huiToken: String?,
+    onLogout: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var fileCallback by remember { mutableStateOf<ValueCallback<Array<Uri>>?>(null) }
@@ -98,6 +99,9 @@ fun HuiPage(
                             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", true)
+                                if (url?.contains("login") == true && tokenManager.huiToken != null) {
+                                    onLogout()
+                                }
                             }
                             override fun onPageFinished(view: WebView?, url: String?) {
                                 sessionManager.updateHuiUrl(url)
@@ -105,14 +109,16 @@ fun HuiPage(
 
                                 val savedUser = tokenManager.huiUsername
                                 val savedPass = tokenManager.huiPassword
-                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                if (savedUser != null && savedPass != null && (url?.contains("login") == true || url?.contains("#/login") == true)) {
+                                    val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
+                                    val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
                                         (function(){
                                             var acc = document.getElementById('account');
                                             var pwd = document.getElementById('password');
                                             if(acc && pwd) {
-                                                acc.value = '$savedUser';
-                                                pwd.value = '$savedPass';
+                                                acc.value = '$safeUser';
+                                                pwd.value = '$safePass';
                                             }
                                         })()
                                     """.trimIndent(), null)
