@@ -103,36 +103,38 @@ fun HuiPage(
                             private var tokenFound = false
                             private var currentView: WebView? = null
 
-                            private val tokenPoll: Runnable = Runnable {
-                                val wv = currentView ?: return@Runnable
-                                if (tokenFound) return@Runnable
-                                wv.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
-                                    val token = value?.trim('"')?.trim()
-                                    if (!token.isNullOrEmpty() && token != "null") {
-                                        tokenFound = true
-                                        sessionManager.onHuiToken(token)
-                                        if (tokenManager.huiUsername == null) {
-                                            wv.evaluateJavascript("""
-                                                (function(){
-                                                    var acc=document.getElementById('account');
-                                                    var pwd=document.getElementById('password');
-                                                    if(acc&&pwd)return JSON.stringify({user:acc.value,pass:pwd.value});
-                                                    return '{}';
-                                                })()
-                                            """.trimIndent()) { json ->
-                                                try {
-                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
-                                                    val user = obj.optString("user", "")
-                                                    val pass = obj.optString("pass", "")
-                                                    if (user.isNotEmpty()) {
-                                                        tokenManager.huiUsername = user
-                                                        tokenManager.huiPassword = pass
-                                                    }
-                                                } catch (_: Exception) {}
+                            private val tokenPoll = object : Runnable {
+                                override fun run() {
+                                    val wv = currentView ?: return
+                                    if (tokenFound) return
+                                    wv.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
+                                        val token = value?.trim('"')?.trim()
+                                        if (!token.isNullOrEmpty() && token != "null") {
+                                            tokenFound = true
+                                            sessionManager.onHuiToken(token)
+                                            if (tokenManager.huiUsername == null) {
+                                                wv.evaluateJavascript("""
+                                                    (function(){
+                                                        var acc=document.getElementById('account');
+                                                        var pwd=document.getElementById('password');
+                                                        if(acc&&pwd)return JSON.stringify({user:acc.value,pass:pwd.value});
+                                                        return '{}';
+                                                    })()
+                                                """.trimIndent()) { json ->
+                                                    try {
+                                                        val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                        val user = obj.optString("user", "")
+                                                        val pass = obj.optString("pass", "")
+                                                        if (user.isNotEmpty()) {
+                                                            tokenManager.huiUsername = user
+                                                            tokenManager.huiPassword = pass
+                                                        }
+                                                    } catch (_: Exception) {}
+                                                }
                                             }
+                                        } else {
+                                            pollHandler.postDelayed(this, 2000L)
                                         }
-                                    } else {
-                                        pollHandler.postDelayed(tokenPoll, 2000L)
                                     }
                                 }
                             }

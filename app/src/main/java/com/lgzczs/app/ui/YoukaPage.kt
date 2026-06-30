@@ -103,43 +103,45 @@ fun YoukaPage(
                             private var tokenFound = false
                             private var currentView: WebView? = null
 
-                            private val tokenPoll: Runnable = Runnable {
-                                val wv = currentView ?: return@Runnable
-                                if (tokenFound) return@Runnable
-                                wv.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
-                                    var token = value?.trim('"')?.trim()
-                                    if (token.isNullOrEmpty() || token == "null") {
-                                        val cookies = CookieManager.getInstance().getCookie("http://supplier.ukayun.cn/")
-                                        if (!cookies.isNullOrEmpty()) {
-                                            val match = Regex("admin_token=([^;]+)").find(cookies)
-                                            if (match != null) token = match.groupValues[1]
-                                        }
-                                    }
-                                    if (!token.isNullOrEmpty() && token != "null") {
-                                        tokenFound = true
-                                        sessionManager.onYoukaToken(token)
-                                        if (tokenManager.youkaUsername == null) {
-                                            wv.evaluateJavascript("""
-                                                (function(){
-                                                    var el=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input.ivu-input:not([type="password"])');
-                                                    var el2=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input.ivu-input[type="password"]');
-                                                    if(el&&el2)return JSON.stringify({user:el.value,pass:el2.value});
-                                                    return '{}';
-                                                })()
-                                            """.trimIndent()) { json ->
-                                                try {
-                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
-                                                    val user = obj.optString("user", "")
-                                                    val pass = obj.optString("pass", "")
-                                                    if (user.isNotEmpty()) {
-                                                        tokenManager.youkaUsername = user
-                                                        tokenManager.youkaPassword = pass
-                                                    }
-                                                } catch (_: Exception) {}
+                            private val tokenPoll = object : Runnable {
+                                override fun run() {
+                                    val wv = currentView ?: return
+                                    if (tokenFound) return
+                                    wv.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
+                                        var token = value?.trim('"')?.trim()
+                                        if (token.isNullOrEmpty() || token == "null") {
+                                            val cookies = CookieManager.getInstance().getCookie("http://supplier.ukayun.cn/")
+                                            if (!cookies.isNullOrEmpty()) {
+                                                val match = Regex("admin_token=([^;]+)").find(cookies)
+                                                if (match != null) token = match.groupValues[1]
                                             }
                                         }
-                                    } else {
-                                        pollHandler.postDelayed(tokenPoll, 2000L)
+                                        if (!token.isNullOrEmpty() && token != "null") {
+                                            tokenFound = true
+                                            sessionManager.onYoukaToken(token)
+                                            if (tokenManager.youkaUsername == null) {
+                                                wv.evaluateJavascript("""
+                                                    (function(){
+                                                        var el=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input.ivu-input:not([type="password"])');
+                                                        var el2=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input.ivu-input[type="password"]');
+                                                        if(el&&el2)return JSON.stringify({user:el.value,pass:el2.value});
+                                                        return '{}';
+                                                    })()
+                                                """.trimIndent()) { json ->
+                                                    try {
+                                                        val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                        val user = obj.optString("user", "")
+                                                        val pass = obj.optString("pass", "")
+                                                        if (user.isNotEmpty()) {
+                                                            tokenManager.youkaUsername = user
+                                                            tokenManager.youkaPassword = pass
+                                                        }
+                                                    } catch (_: Exception) {}
+                                                }
+                                            }
+                                        } else {
+                                            pollHandler.postDelayed(this, 2000L)
+                                        }
                                     }
                                 }
                             }
