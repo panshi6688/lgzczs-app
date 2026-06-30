@@ -32,6 +32,7 @@ import androidx.core.content.FileProvider
 import com.lgzczs.app.gecko.SessionManager
 import com.lgzczs.app.gecko.removeFromParent
 import com.lgzczs.app.util.TokenManager
+import org.json.JSONObject
 import java.io.File
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -101,10 +102,49 @@ fun YoukaPage(
                             override fun onPageFinished(view: WebView?, url: String?) {
                                 sessionManager.updateYoukaUrl(url)
                                 sessionManager.onStatusChange("youka", false)
+
+                                val savedUser = tokenManager.youkaUsername
+                                val savedPass = tokenManager.youkaPassword
+                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                    view?.evaluateJavascript("""
+                                        (function(){
+                                            var inputs = document.querySelectorAll('input.ivu-input');
+                                            if(inputs.length >= 2) {
+                                                inputs[0].value = '$savedUser';
+                                                inputs[1].value = '$savedPass';
+                                            }
+                                        })()
+                                    """.trimIndent(), null)
+                                }
+
                                 view?.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
                                     val token = value?.trim('"')?.trim()
                                     if (!token.isNullOrEmpty() && token != "null") {
                                         sessionManager.onYoukaToken(token)
+                                        if (tokenManager.youkaUsername == null) {
+                                            view?.evaluateJavascript("""
+                                                (function(){
+                                                    var inputs = document.querySelectorAll('input.ivu-input');
+                                                    if(inputs.length >= 2) {
+                                                        return JSON.stringify({
+                                                            user: inputs[0].value,
+                                                            pass: inputs[1].value
+                                                        });
+                                                    }
+                                                    return '{}';
+                                                })()
+                                            """.trimIndent()) { json ->
+                                                try {
+                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                    val user = obj.optString("user", "")
+                                                    val pass = obj.optString("pass", "")
+                                                    if (user.isNotEmpty()) {
+                                                        tokenManager.youkaUsername = user
+                                                        tokenManager.youkaPassword = pass
+                                                    }
+                                                } catch (_: Exception) { }
+                                            }
+                                        }
                                     }
                                 }
                                 view?.loadUrl("javascript:(function(){if(window.__yb)return;window.__yb=true;var max=30;(function c(){var m=document.cookie.match(/admin_token=([^;]+)/);if(m){YoukaBridge.onToken(m[1]);return}if(--max>0)setTimeout(c,800)})()})()")

@@ -9,7 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.lgzczs.app.model.PollingEvent
 import com.lgzczs.app.network.HuiApiClient
 import com.lgzczs.app.network.YoukaApiClient
+import com.lgzczs.app.ui.OrderAlertActivity
 import com.lgzczs.app.util.NotificationHelper
+import com.lgzczs.app.util.SoundManager
 import com.lgzczs.app.util.TokenManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -102,11 +104,23 @@ class PollingService : Service() {
                                 val newIds = result.orderIds.filter { it !in tokenManager.getNotifiedOrderIds() }
                                 if (newIds.isNotEmpty()) {
                                     tokenManager.addNotifiedOrderIds(newIds.toSet())
+                                    tokenManager.hasUnviewedOrders = true
                                     if (tokenManager.notificationEnabled) {
                                         NotificationHelper.sendOrderNotification(
                                             this@PollingService,
                                             "汇权益"
                                         )
+                                    }
+                                    if (tokenManager.alertDialogEnabled) {
+                                        val alertIntent = Intent(this@PollingService, OrderAlertActivity::class.java).apply {
+                                            putExtra("platform", "汇权益")
+                                            putStringArrayListExtra("order_ids", ArrayList(newIds))
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        }
+                                        startActivity(alertIntent)
+                                    }
+                                    if (tokenManager.soundEnabled) {
+                                        SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)
                                     }
                                 }
                             }
@@ -134,11 +148,23 @@ class PollingService : Service() {
                                 val newIds = result.orderIds.filter { it !in tokenManager.getNotifiedOrderIds() }
                                 if (newIds.isNotEmpty()) {
                                     tokenManager.addNotifiedOrderIds(newIds.toSet())
+                                    tokenManager.hasUnviewedOrders = true
                                     if (tokenManager.notificationEnabled) {
                                         NotificationHelper.sendOrderNotification(
                                             this@PollingService,
                                             "优卡云"
                                         )
+                                    }
+                                    if (tokenManager.alertDialogEnabled) {
+                                        val alertIntent = Intent(this@PollingService, OrderAlertActivity::class.java).apply {
+                                            putExtra("platform", "优卡云")
+                                            putStringArrayListExtra("order_ids", ArrayList(newIds))
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        }
+                                        startActivity(alertIntent)
+                                    }
+                                    if (tokenManager.soundEnabled) {
+                                        SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)
                                     }
                                 }
                             }

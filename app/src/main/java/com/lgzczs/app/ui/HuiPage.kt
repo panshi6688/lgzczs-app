@@ -32,6 +32,7 @@ import androidx.core.content.FileProvider
 import com.lgzczs.app.gecko.SessionManager
 import com.lgzczs.app.gecko.removeFromParent
 import com.lgzczs.app.util.TokenManager
+import org.json.JSONObject
 import java.io.File
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -101,10 +102,48 @@ fun HuiPage(
                             override fun onPageFinished(view: WebView?, url: String?) {
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", false)
+
+                                val savedUser = tokenManager.huiUsername
+                                val savedPass = tokenManager.huiPassword
+                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                    view?.evaluateJavascript("""
+                                        (function(){
+                                            var acc = document.getElementById('account');
+                                            var pwd = document.getElementById('password');
+                                            if(acc && pwd) {
+                                                acc.value = '$savedUser';
+                                                pwd.value = '$savedPass';
+                                            }
+                                        })()
+                                    """.trimIndent(), null)
+                                }
+
                                 view?.evaluateJavascript(sessionManager.getHuiTokenJs()) { value ->
                                     val token = value?.trim('"')?.trim()
                                     if (!token.isNullOrEmpty() && token != "null") {
                                         sessionManager.onHuiToken(token)
+                                        if (tokenManager.huiUsername == null) {
+                                            view?.evaluateJavascript("""
+                                                (function(){
+                                                    var acc = document.getElementById('account');
+                                                    var pwd = document.getElementById('password');
+                                                    return JSON.stringify({
+                                                        user: acc ? acc.value : '',
+                                                        pass: pwd ? pwd.value : ''
+                                                    });
+                                                })()
+                                            """.trimIndent()) { json ->
+                                                try {
+                                                    val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                    val user = obj.optString("user", "")
+                                                    val pass = obj.optString("pass", "")
+                                                    if (user.isNotEmpty()) {
+                                                        tokenManager.huiUsername = user
+                                                        tokenManager.huiPassword = pass
+                                                    }
+                                                } catch (_: Exception) { }
+                                            }
+                                        }
                                     }
                                 }
                                 view?.loadUrl("javascript:(function(){if(window.__hb)return;window.__hb=true;var max=30;(function c(){var t=localStorage.getItem('access_token')||sessionStorage.getItem('access_token')||'';var m=document.cookie.match(/access_token=([^;]+)/);if(!t&&m)t=m[1];if(t){HuiBridge.onToken(t);return}if(--max>0)setTimeout(c,800)})()})()")

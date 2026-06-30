@@ -28,6 +28,34 @@ class TokenManager(context: Context) {
         get() = prefs.getBoolean("float_window_enabled", true)
         set(value) = prefs.edit().putBoolean("float_window_enabled", value).apply()
 
+    var huiUsername: String?
+        get() = prefs.getString("hui_username", null)
+        set(value) = prefs.edit().putString("hui_username", value).apply()
+
+    var huiPassword: String?
+        get() = prefs.getString("hui_password", null)
+        set(value) = prefs.edit().putString("hui_password", value).apply()
+
+    var youkaUsername: String?
+        get() = prefs.getString("youka_username", null)
+        set(value) = prefs.edit().putString("youka_username", value).apply()
+
+    var youkaPassword: String?
+        get() = prefs.getString("youka_password", null)
+        set(value) = prefs.edit().putString("youka_password", value).apply()
+
+    var soundEnabled: Boolean
+        get() = prefs.getBoolean("sound_enabled", true)
+        set(value) = prefs.edit().putBoolean("sound_enabled", value).apply()
+
+    var ringtoneUri: String?
+        get() = prefs.getString("ringtone_uri", null)
+        set(value) = prefs.edit().putString("ringtone_uri", value).apply()
+
+    var hasUnviewedOrders: Boolean
+        get() = prefs.getBoolean("has_unviewed_orders", false)
+        set(value) = prefs.edit().putBoolean("has_unviewed_orders", value).apply()
+
     fun getNotifiedOrderIds(): Set<String> =
         prefs.getStringSet("notified_order_ids", emptySet()) ?: emptySet()
 

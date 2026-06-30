@@ -57,6 +57,7 @@ import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
 import com.lgzczs.app.service.FloatWindowService
 import com.lgzczs.app.service.KeepAliveService
+import com.lgzczs.app.util.NotificationHelper
 import com.lgzczs.app.util.TokenManager
 
 class MainActivity : ComponentActivity() {
@@ -74,6 +75,8 @@ class MainActivity : ComponentActivity() {
                 requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 100)
             }
         }
+
+        NotificationHelper.createNotificationChannel(this)
 
         startForegroundService(Intent(this, KeepAliveService::class.java))
 
@@ -191,6 +194,7 @@ fun MainScreen() {
                     }
                 }
                 Lifecycle.Event.ON_START -> {
+                    tokenManager.hasUnviewedOrders = false
                     Intent(context, FloatWindowService::class.java).also {
                         context.stopService(it)
                     }

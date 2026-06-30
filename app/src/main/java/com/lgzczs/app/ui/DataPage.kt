@@ -1,5 +1,11 @@
 package com.lgzczs.app.ui
 
+import android.app.Activity
+import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.lgzczs.app.model.PlatformStatus
+import com.lgzczs.app.util.NotificationHelper
 import com.lgzczs.app.util.PermissionHelper
+import com.lgzczs.app.util.SoundManager
 import com.lgzczs.app.util.TokenManager
 
 @Composable
@@ -55,8 +63,22 @@ fun DataPage(
     var alertDialogEnabled by remember { mutableStateOf(tokenManager.alertDialogEnabled) }
     var notificationEnabled by remember { mutableStateOf(tokenManager.notificationEnabled) }
     var floatWindowEnabled by remember { mutableStateOf(tokenManager.floatWindowEnabled) }
+    var soundEnabled by remember { mutableStateOf(tokenManager.soundEnabled) }
+    var ringtoneUri by remember { mutableStateOf(tokenManager.ringtoneUri) }
     var showOverlayGuide by remember { mutableStateOf(false) }
     var showUsageGuide by remember { mutableStateOf(false) }
+
+    val ringtoneLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            if (uri != null) {
+                ringtoneUri = uri.toString()
+                tokenManager.ringtoneUri = ringtoneUri
+            }
+        }
+    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -177,6 +199,7 @@ fun DataPage(
             Column(modifier = Modifier.padding(16.dp)) {
                 SectionTitle("功能开关")
                 Spacer(modifier = Modifier.height(8.dp))
+
                 ToggleRow(
                     label = "弹窗通知",
                     description = "有订单时在所有 App 上方弹窗提示",
@@ -186,6 +209,26 @@ fun DataPage(
                         tokenManager.alertDialogEnabled = it
                     }
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            val intent = Intent(context, OrderAlertActivity::class.java).apply {
+                                putExtra("platform", "汇权益 (测试)")
+                                putStringArrayListExtra("order_ids", arrayListOf("TEST202606300001"))
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            }
+                            context.startActivity(intent)
+                        }
+                    ) { Text("测试弹窗", fontSize = 12.sp) }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
                 ToggleRow(
                     label = "状态栏通知",
                     description = "有订单时发送系统通知栏通知",
@@ -195,6 +238,54 @@ fun DataPage(
                         tokenManager.notificationEnabled = it
                     }
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = { NotificationHelper.sendTestNotification(context) }
+                    ) { Text("发送测试通知", fontSize = 12.sp) }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+                ToggleRow(
+                    label = "声音提醒",
+                    description = "新订单提醒时声音同步提醒",
+                    checked = soundEnabled,
+                    onCheckedChange = {
+                        soundEnabled = it
+                        tokenManager.soundEnabled = it
+                        if (!it) SoundManager.stop()
+                    }
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
+                                putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+                                putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri?.let { Uri.parse(it) })
+                                putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+                                putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+                            }
+                            ringtoneLauncher.launch(intent)
+                        }
+                    ) { Text("选择铃声", fontSize = 12.sp) }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    OutlinedButton(
+                        onClick = { SoundManager.playNotificationSound(context, ringtoneUri) }
+                    ) { Text("试听", fontSize = 12.sp) }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
                 ToggleRow(
                     label = "悬浮窗",
                     description = "后台运行时显示可拖动的悬浮图标",

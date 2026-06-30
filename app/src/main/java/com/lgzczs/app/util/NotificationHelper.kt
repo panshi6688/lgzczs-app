@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.lgzczs.app.MainActivity
@@ -14,7 +14,6 @@ object NotificationHelper {
 
     private const val CHANNEL_ID = "order_alert"
     private const val CHANNEL_NAME = "订单提醒"
-    private const val NOTIFICATION_ID = 1001
 
     fun createNotificationChannel(context: Context) {
         val channel = NotificationChannel(
@@ -55,6 +54,12 @@ object NotificationHelper {
             .setAutoCancel(true)
             .build()
 
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+        val notificationId = System.currentTimeMillis().toInt()
+        NotificationManagerCompat.from(context).notify(notificationId, notification)
+    }
+
+    fun sendTestNotification(context: Context) {
+        sendOrderNotification(context, "测试")
+        Toast.makeText(context, "已发送测试通知，请查看屏幕上方是否有通知弹出。如没有，请到系统设置中开启【订单提醒】通知类别的悬浮通知权限", Toast.LENGTH_LONG).show()
     }
 }

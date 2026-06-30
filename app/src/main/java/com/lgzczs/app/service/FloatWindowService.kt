@@ -2,6 +2,7 @@ package com.lgzczs.app.service
 
 import android.app.Service
 import android.content.Intent
+import android.graphics.Color as AndroidColor
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -15,13 +16,18 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.lgzczs.app.MainActivity
+import com.lgzczs.app.util.TokenManager
 
 class FloatWindowService : Service() {
 
     private lateinit var windowManager: WindowManager
     private lateinit var floatView: FrameLayout
     private lateinit var params: WindowManager.LayoutParams
+    private lateinit var tokenManager: TokenManager
+    private var badgeView: View? = null
+    private var orderText: TextView? = null
     private var initialX = 0
     private var initialY = 0
     private var initialTouchX = 0f
@@ -34,6 +40,7 @@ class FloatWindowService : Service() {
             stopSelf()
             return
         }
+        tokenManager = TokenManager(applicationContext)
         createFloatView()
     }
 
@@ -69,6 +76,44 @@ class FloatWindowService : Service() {
             }
             background = bg
             addView(iconView, viewSize, viewSize)
+
+            val hasOrders = tokenManager.hasUnviewedOrders
+
+            val badge = View(this@apply).apply {
+                val gd = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setSize((10 * density).toInt(), (10 * density).toInt())
+                    setColor(AndroidColor.RED)
+                }
+                background = gd
+                visibility = if (hasOrders) View.VISIBLE else View.GONE
+            }
+            val badgeParams = FrameLayout.LayoutParams(
+                (10 * density).toInt(), (10 * density).toInt()
+            ).apply {
+                gravity = Gravity.TOP or Gravity.END
+                topMargin = (2 * density).toInt()
+                rightMargin = (2 * density).toInt()
+            }
+            addView(badge, badgeParams)
+            badgeView = badge
+
+            val textView = TextView(this@apply).apply {
+                text = "● 新订单"
+                textSize = 10f
+                setTextColor(AndroidColor.RED)
+                gravity = Gravity.CENTER
+                visibility = if (hasOrders) View.VISIBLE else View.GONE
+            }
+            val textParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                bottomMargin = (2 * density).toInt()
+            }
+            addView(textView, textParams)
+            orderText = textView
 
             setOnTouchListener { v, event ->
                 gestureDetector.onTouchEvent(event)
@@ -120,6 +165,9 @@ class FloatWindowService : Service() {
     }
 
     private fun onFloatViewClick() {
+        tokenManager.hasUnviewedOrders = false
+        badgeView?.visibility = View.GONE
+        orderText?.visibility = View.GONE
         Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(this)
