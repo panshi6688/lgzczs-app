@@ -33,16 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.lgzczs.app.MainActivity
 import com.lgzczs.app.util.SoundManager
 import com.lgzczs.app.util.TokenManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-
 class OrderAlertActivity : ComponentActivity() {
-
-    private var autoDismissJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,19 +68,10 @@ class OrderAlertActivity : ComponentActivity() {
                 )
             }
         }
-
-        autoDismissJob = CoroutineScope(Dispatchers.Main).launch {
-            delay(30_000L)
-            if (isActive) {
-                SoundManager.stop()
-                finish()
-            }
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        autoDismissJob?.cancel()
         SoundManager.stop()
     }
 }

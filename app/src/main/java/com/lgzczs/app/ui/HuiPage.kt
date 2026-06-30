@@ -109,6 +109,10 @@ fun HuiPage(
                                     }
                                 } catch (_: Exception) {}
                             }
+                            @android.webkit.JavascriptInterface
+                            fun onLogoutDetected() {
+                                Handler(Looper.getMainLooper()).post { onLogout() }
+                            }
                         }, "HuiBridge")
 
                         webViewClient = object : WebViewClient() {
@@ -217,6 +221,20 @@ fun HuiPage(
 
                                 pollHandler.removeCallbacks(tokenPoll)
                                 tokenPoll.run()
+
+                                if (tokenManager.huiToken != null) {
+                                    view?.evaluateJavascript("""
+                                        if(!window.__hkLM){
+                                            window.__hkLM=setInterval(function(){
+                                                var tk=localStorage.getItem('access_token');
+                                                if(!tk&&document.cookie.indexOf('access_token')<0){
+                                                    HuiBridge.onLogoutDetected();
+                                                    clearInterval(window.__hkLM);
+                                                }
+                                            },3000);
+                                        }
+                                    """.trimIndent(), null)
+                                }
                             }
                             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
                                 val reqUrl = request?.url?.toString()

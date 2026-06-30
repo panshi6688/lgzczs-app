@@ -109,6 +109,10 @@ fun YoukaPage(
                                     }
                                 } catch (_: Exception) {}
                             }
+                            @android.webkit.JavascriptInterface
+                            fun onLogoutDetected() {
+                                Handler(Looper.getMainLooper()).post { onLogout() }
+                            }
                         }, "YoukaBridge")
 
                         webViewClient = object : WebViewClient() {
@@ -237,6 +241,20 @@ fun YoukaPage(
 
                                 pollHandler.removeCallbacks(tokenPoll)
                                 tokenPoll.run()
+
+                                if (tokenManager.youkaToken != null) {
+                                    view?.evaluateJavascript("""
+                                        if(!window.__ykLM){
+                                            window.__ykLM=setInterval(function(){
+                                                var tk=localStorage.getItem('admin_token');
+                                                if(!tk&&document.cookie.indexOf('admin_token')<0){
+                                                    YoukaBridge.onLogoutDetected();
+                                                    clearInterval(window.__ykLM);
+                                                }
+                                            },3000);
+                                        }
+                                    """.trimIndent(), null)
+                                }
                             }
                             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
                                 val reqUrl = request?.url?.toString()
