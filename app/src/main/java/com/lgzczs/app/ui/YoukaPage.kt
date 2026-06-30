@@ -161,7 +161,7 @@ fun YoukaPage(
 
                                 val savedUser = tokenManager.youkaUsername
                                 val savedPass = tokenManager.youkaPassword
-                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                if (savedUser != null && savedPass != null) {
                                     val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
                                     val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
@@ -203,6 +203,29 @@ fun YoukaPage(
                                 tokenPoll.run()
                             }
                             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                                val reqUrl = request?.url?.toString()
+                                if (reqUrl != null && reqUrl.contains("spa/auth/login") && tokenManager.youkaUsername == null) {
+                                    pollHandler.post {
+                                        view?.evaluateJavascript("""
+                                            (function(){
+                                                var el=document.querySelector('input[placeholder*="用户名"]')||document.querySelector('input[type="text"]');
+                                                var el2=document.querySelector('input[placeholder*="密码"]')||document.querySelector('input[type="password"]');
+                                                if(el&&el2)return JSON.stringify({user:el.value,pass:el2.value});
+                                                return '{}';
+                                            })()
+                                        """.trimIndent()) { json ->
+                                            try {
+                                                val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                val user = obj.optString("user", "")
+                                                val pass = obj.optString("pass", "")
+                                                if (user.isNotEmpty()) {
+                                                    tokenManager.youkaUsername = user
+                                                    tokenManager.youkaPassword = pass
+                                                }
+                                            } catch (_: Exception) {}
+                                        }
+                                    }
+                                }
                                 request?.requestHeaders?.forEach { (key, value) ->
                                     if (key.equals("Authorization", ignoreCase = true) && value.startsWith("Bearer ") && !tokenFound) {
                                         val token = value.removePrefix("Bearer ").trim()

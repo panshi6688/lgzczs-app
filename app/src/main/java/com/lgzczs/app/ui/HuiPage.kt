@@ -144,7 +144,7 @@ fun HuiPage(
                                 currentView = view
                                 sessionManager.updateHuiUrl(url)
                                 sessionManager.onStatusChange("hui", true)
-                                if (url?.contains("login") == true && tokenManager.huiToken != null) {
+                                if ((url?.contains("login") == true || url?.contains("supwap") == true) && tokenManager.huiToken != null) {
                                     onLogout()
                                 }
                             }
@@ -154,7 +154,7 @@ fun HuiPage(
 
                                 val savedUser = tokenManager.huiUsername
                                 val savedPass = tokenManager.huiPassword
-                                if (savedUser != null && savedPass != null && url?.contains("login") == true) {
+                                if (savedUser != null && savedPass != null) {
                                     val safeUser = savedUser.replace("\\", "\\\\").replace("'", "\\'")
                                     val safePass = savedPass.replace("\\", "\\\\").replace("'", "\\'")
                                     view?.evaluateJavascript("""
@@ -183,6 +183,29 @@ fun HuiPage(
                                 tokenPoll.run()
                             }
                             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                                val reqUrl = request?.url?.toString()
+                                if (reqUrl != null && reqUrl.contains("auth/loginbypassword") && tokenManager.huiUsername == null) {
+                                    pollHandler.post {
+                                        view?.evaluateJavascript("""
+                                            (function(){
+                                                var acc=document.getElementById('account');
+                                                var pwd=document.getElementById('password');
+                                                if(acc&&pwd)return JSON.stringify({user:acc.value,pass:pwd.value});
+                                                return '{}';
+                                            })()
+                                        """.trimIndent()) { json ->
+                                            try {
+                                                val obj = JSONObject(json?.trim('"') ?: "{}")
+                                                val user = obj.optString("user", "")
+                                                val pass = obj.optString("pass", "")
+                                                if (user.isNotEmpty()) {
+                                                    tokenManager.huiUsername = user
+                                                    tokenManager.huiPassword = pass
+                                                }
+                                            } catch (_: Exception) {}
+                                        }
+                                    }
+                                }
                                 request?.requestHeaders?.forEach { (key, value) ->
                                     if (key.equals("Authorization", ignoreCase = true) && value.startsWith("Bearer ") && !tokenFound) {
                                         val token = value.removePrefix("Bearer ").trim()
