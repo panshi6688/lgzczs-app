@@ -1,6 +1,7 @@
 package com.lgzczs.app.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Person
@@ -573,7 +575,7 @@ private fun Context.openUrl(url: String) {
 private fun Context.openQQGroup() {
     try {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(QQ_GROUP_SCHEME)).apply {
-            `package` = "com.tencent.mobileqq"
+            setPackage("com.tencent.mobileqq")
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         })
         Log.d("DataPage", "已打开QQ群")
