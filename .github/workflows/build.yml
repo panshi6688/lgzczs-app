@@ -24,18 +24,18 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build Debug APK
+      - name: Build Release APK
         run: |
           set -o pipefail
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee /tmp/build.log
+          ./gradlew assembleRelease --stacktrace 2>&1 | tee /tmp/build.log
         shell: bash
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: lgzczs-app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: lgzczs-app-release
+          path: app/build/outputs/apk/release/app-release.apk
 
       - name: Upload build log
         if: failure()
