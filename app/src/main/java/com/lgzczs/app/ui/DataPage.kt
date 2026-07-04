@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -52,7 +50,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -375,27 +372,13 @@ fun DataPage(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { context.openQQChat("248617489") },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Person,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "作者QQ：248617489",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
+                Text(
+                    text = "作者QQ：248617489",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
@@ -581,16 +564,6 @@ private fun Context.openQQGroup() {
         Log.d("DataPage", "已打开QQ群")
     } catch (e: Exception) {
         Log.e("DataPage", "打开QQ群失败", e)
-        Toast.makeText(this, "请先安装QQ", Toast.LENGTH_SHORT).show()
-    }
-}
-
-private fun Context.openQQChat(qq: String) {
-    try {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("mqqwpa://im/chat?chat_type=wpa&uin=$qq&version=1")))
-        Log.d("DataPage", "已打开QQ聊天: $qq")
-    } catch (e: Exception) {
-        Log.e("DataPage", "打开QQ聊天失败: $qq", e)
         Toast.makeText(this, "请先安装QQ", Toast.LENGTH_SHORT).show()
     }
 }

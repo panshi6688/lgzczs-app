@@ -8,7 +8,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.lgzczs.app.MainActivity
+import com.lgzczs.app.ui.OrderAlertActivity
 
 object NotificationHelper {
 
@@ -28,10 +28,12 @@ object NotificationHelper {
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun sendOrderNotification(context: Context, platformName: String) {
+    fun sendOrderNotification(context: Context, platformName: String, orderIds: List<String> = emptyList(), showPopup: Boolean = true) {
         createNotificationChannel(context)
 
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, OrderAlertActivity::class.java).apply {
+            putExtra("platform", platformName)
+            putStringArrayListExtra("order_ids", ArrayList(orderIds))
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pendingIntent = PendingIntent.getActivity(
@@ -49,9 +51,13 @@ object NotificationHelper {
             .setContentText("$platformName 有新的可抢订单")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_CALL)
-            .setFullScreenIntent(fullScreenIntent, true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .apply {
+                if (showPopup) {
+                    setFullScreenIntent(fullScreenIntent, true)
+                }
+            }
             .build()
 
         val notificationId = System.currentTimeMillis().toInt()
@@ -59,7 +65,7 @@ object NotificationHelper {
     }
 
     fun sendTestNotification(context: Context) {
-        sendOrderNotification(context, "测试")
+        sendOrderNotification(context, "测试", showPopup = true)
         Toast.makeText(context, "已发送测试通知，请查看屏幕上方是否有通知弹出。如没有，请到系统设置中开启【订单提醒】通知类别的悬浮通知权限", Toast.LENGTH_LONG).show()
     }
 }
