@@ -24,11 +24,6 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Install OpenGL
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq libgl1-mesa-glx libegl1-mesa libgles2-mesa
-        shell: bash
-
       - name: Generate Screenshot
         run: |
           MESA_GL_VERSION_OVERRIDE=3.3 ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace 2>&1
