@@ -27,17 +27,15 @@ jobs:
       - name: Build Release APK
         run: |
           set -o pipefail
-          ls -la "$JAVA_HOME/bin/keytool" || echo "keytool not found at JAVA_HOME"
-          which keytool || echo "keytool not in PATH"
           echo "JAVA_HOME=$JAVA_HOME"
-          "$JAVA_HOME/bin/keytool" -genkey -v -keystore keystore.jks \
+          keytool -genkey -v -keystore "$GITHUB_WORKSPACE/keystore.jks" \
             -alias lgzczs \
             -keyalg RSA -keysize 2048 \
             -validity 10000 \
             -storepass lgzczs123 \
             -keypass lgzczs123 \
-            -dname "CN=lgzczs, OU=lgzczs, O=lgzczs, L=Unknown, ST=Unknown, C=CN"
-          echo "Keystore: $(ls -la keystore.jks 2>&1)"
+            -dname "CN=lgzczs, OU=lgzczs, O=lgzczs, L=Unknown, ST=Unknown, C=CN" 2>&1
+          ls -la "$GITHUB_WORKSPACE/keystore.jks"
           ./gradlew assembleRelease --stacktrace 2>&1 | tee /tmp/build.log
         shell: bash
 
