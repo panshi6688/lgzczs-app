@@ -2,6 +2,7 @@ package com.lgzczs.app.service
 
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color as AndroidColor
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
@@ -26,12 +27,18 @@ class FloatWindowService : Service() {
     private lateinit var floatView: FrameLayout
     private lateinit var params: WindowManager.LayoutParams
     private lateinit var tokenManager: TokenManager
+    private lateinit var prefs: SharedPreferences
     private var badgeView: View? = null
     private var orderText: TextView? = null
     private var initialX = 0
     private var initialY = 0
     private var initialTouchX = 0f
     private var initialTouchY = 0f
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "has_unviewed_orders") {
+            updateBadge()
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -41,6 +48,8 @@ class FloatWindowService : Service() {
             return
         }
         tokenManager = TokenManager(applicationContext)
+        prefs = getSharedPreferences("token_prefs", MODE_PRIVATE)
+        prefs.registerOnSharedPreferenceChangeListener(prefsListener)
         createFloatView()
     }
 
@@ -174,10 +183,19 @@ class FloatWindowService : Service() {
         }
     }
 
+    private fun updateBadge() {
+        val hasOrders = tokenManager.hasUnviewedOrders
+        badgeView?.visibility = if (hasOrders) View.VISIBLE else View.GONE
+        orderText?.visibility = if (hasOrders) View.VISIBLE else View.GONE
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
         try {
+            if (::prefs.isInitialized) {
+                prefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+            }
             if (::floatView.isInitialized) {
                 windowManager.removeView(floatView)
             }

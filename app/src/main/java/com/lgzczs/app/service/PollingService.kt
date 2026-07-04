@@ -9,17 +9,19 @@ import androidx.core.app.NotificationCompat
 import com.lgzczs.app.model.PollingEvent
 import com.lgzczs.app.network.HuiApiClient
 import com.lgzczs.app.network.YoukaApiClient
+import com.lgzczs.app.ui.OrderAlertActivity
 import com.lgzczs.app.util.NotificationHelper
 import com.lgzczs.app.util.SoundManager
 import com.lgzczs.app.util.TokenManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PollingService : Service() {
 
@@ -112,6 +114,14 @@ class PollingService : Service() {
                                             tokenManager.alertDialogEnabled
                                         )
                                     }
+                                    if (tokenManager.alertDialogEnabled) {
+                                        val alertIntent = Intent(this@PollingService, OrderAlertActivity::class.java).apply {
+                                            putExtra("platform", "汇权益")
+                                            putStringArrayListExtra("order_ids", ArrayList(newIds))
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        }
+                                        withContext(Dispatchers.Main) { startActivity(alertIntent) }
+                                    }
                                     if (tokenManager.soundEnabled) {
                                         SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)
                                     }
@@ -149,6 +159,14 @@ class PollingService : Service() {
                                             newIds,
                                             tokenManager.alertDialogEnabled
                                         )
+                                    }
+                                    if (tokenManager.alertDialogEnabled) {
+                                        val alertIntent = Intent(this@PollingService, OrderAlertActivity::class.java).apply {
+                                            putExtra("platform", "优卡云")
+                                            putStringArrayListExtra("order_ids", ArrayList(newIds))
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        }
+                                        withContext(Dispatchers.Main) { startActivity(alertIntent) }
                                     }
                                     if (tokenManager.soundEnabled) {
                                         SoundManager.playNotificationSound(this@PollingService, tokenManager.ringtoneUri)

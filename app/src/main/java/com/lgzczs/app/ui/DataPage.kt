@@ -46,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -246,7 +247,7 @@ fun DataPage(
                             Text("发送测试通知", fontSize = 12.sp)
                         }
                         TextButton(onClick = { showNotificationGuide = true }) {
-                            Text("去设置通知", fontSize = 12.sp)
+                            Text("去设置通知", fontSize = 12.sp, color = Color.Red)
                         }
                     }
                 )
