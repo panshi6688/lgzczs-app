@@ -15,7 +15,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
-@GraphicsMode(GraphicsMode.Mode.SOFTWARE)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
 class DataPageScreenshotTest {
 
     @get:Rule

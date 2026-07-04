@@ -26,6 +26,7 @@ jobs:
 
       - name: Generate Screenshot
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgles2 libgl1-mesa-dri mesa-utils 2>&1 || true
           MESA_GL_VERSION_OVERRIDE=3.3 ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace 2>&1
         shell: bash
 
