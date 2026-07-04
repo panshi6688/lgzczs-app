@@ -24,6 +24,19 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Generate Screenshot
+        run: |
+          ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace
+        shell: bash
+
+      - name: Upload Screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-datapage
+          path: screenshots/DataPage.png
+          retention-days: 7
+
       - name: Build Release APK
         run: |
           set -o pipefail
