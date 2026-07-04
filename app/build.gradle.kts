@@ -3,28 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-fun generateKeystoreIfMissing() {
-    val ksFile = rootProject.file("keystore.jks")
-    if (ksFile.exists()) return
-    val ks = KeyStore.getInstance("JKS").apply { load(null, null) }
-    val alg = KeyGenerator.getInstance("RSA").apply { init(2048, java.security.SecureRandom()) }
-    val key = alg.generateKey()
-    val cert = generateSelfSignedCertificate(key, "CN=lgzczs, OU=lgzczs, O=lgzczs, L=Unknown, ST=Unknown, C=CN")
-    ks.setKeyEntry("lgzczs", key, "lgzczs123".toCharArray(), arrayOf(cert))
-    ksFile.outputStream().use { ks.store(it, "lgzczs123".toCharArray()) }
-    logger.lifecycle("Generated keystore.jks")
-}
-
-fun generateSelfSignedCertificate(key: java.security.Key, dn: String): java.security.cert.X509Certificate {
-    import java.security.cert.X509Certificate
-    import java.math.BigInteger
-    import java.util.Date
-    import javax.security.auth.x500.X500Principal
-    import org.bouncycastle.x509.X509V3CertificateGenerator
-    // BouncyCastle works but let's use a pure JDK approach
-    return com.android.ide.common.signing.KeystoreHelper.createSelfSignedCertificate(key, dn)!!
-}
-
 android {
     namespace = "com.lgzczs.app"
     compileSdk = 34
