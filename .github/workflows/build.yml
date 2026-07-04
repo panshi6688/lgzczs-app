@@ -24,10 +24,25 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Install OpenGL
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libgl1-mesa-glx libegl1-mesa libgles2-mesa
+        shell: bash
+
       - name: Generate Screenshot
         run: |
-          ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace
+          MESA_GL_VERSION_OVERRIDE=3.3 ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace 2>&1
         shell: bash
+
+      - name: Upload Test Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+          retention-days: 3
 
       - name: Upload Screenshot
         if: always()
