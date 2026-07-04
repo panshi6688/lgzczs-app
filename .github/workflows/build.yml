@@ -24,6 +24,18 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Generate release keystore
+        run: |
+          keytool -genkey -v -keystore keystore.jks \
+            -alias lgzczs \
+            -keyalg RSA -keysize 2048 \
+            -validity 10000 \
+            -storepass lgzczs123 \
+            -keypass lgzczs123 \
+            -dname "CN=lgzczs, OU=lgzczs, O=lgzczs, L=Unknown, ST=Unknown, C=CN"
+          ls -la keystore.jks
+        shell: bash
+
       - name: Build Release APK
         run: |
           set -o pipefail
