@@ -16,10 +16,21 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,45 +43,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lgzczs.app.data.ToolsRepository
 import com.lgzczs.app.model.ToolConfig
-import com.lgzczs.app.model.ToolGroup
-import com.lgzczs.app.model.ToolItem
 import com.lgzczs.app.util.UrlOpener
+import kotlinx.coroutines.launch
 
 @Composable
 fun ToolsPage(
     repository: ToolsRepository
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    val config = remember {
-        ToolConfig(
-            groups = listOf(
-                ToolGroup(
-                    id = "g1",
-                    name = "测试分组",
-                    order = 1,
-                    hints = listOf("提示信息"),
-                    buttons = listOf(
-                        ToolItem(id = "b1", label = "按钮1", url = "https://example.com", badge = "热门", order = 1),
-                        ToolItem(id = "b2", label = "按钮2", url = "https://example.com", badge = null, order = 2),
-                        ToolItem(id = "b3", label = "按钮3", url = "https://example.com", badge = "New", order = 3),
-                        ToolItem(id = "b4", label = "按钮4", url = "https://example.com", badge = null, order = 4),
-                        ToolItem(id = "b5", label = "按钮5", url = "https://example.com", badge = null, order = 5)
-                    )
-                ),
-                ToolGroup(
-                    id = "g2",
-                    name = "第二组",
-                    order = 2,
-                    hints = emptyList(),
-                    buttons = listOf(
-                        ToolItem(id = "b6", label = "按钮6", url = "https://example.com", badge = null, order = 1),
-                        ToolItem(id = "b7", label = "按钮7很长很长很长很长很长很长", url = "https://example.com", badge = "推荐", order = 2)
-                    )
-                )
-            )
-        )
+    var config by remember { mutableStateOf(repository.getCachedConfig()) }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    fun load() {
+        scope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                val result = repository.fetchButtons()
+                result.onSuccess {
+                    config = it
+                    errorMessage = null
+                }.onFailure { e ->
+                    if (config == null) {
+                        errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
+                            "无法连接服务器，请检查网络"
+                        } else {
+                            "加载失败：${e.message}"
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+                if (config == null) errorMessage = "加载失败"
+            }
+            isLoading = false
+        }
     }
+
+    LaunchedEffect(Unit) { load() }
+
+    val hasError = errorMessage != null && config == null
+    val showLoading = isLoading && config == null
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)
@@ -87,85 +102,121 @@ fun ToolsPage(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
+            if (isLoading && !hasError) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                IconButton(onClick = { load() }) {
+                    Icon(
+                        Icons.Default.Refresh,
+                        contentDescription = "刷新",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val sortedGroups = config.groups.sortedBy { it.order }
-        sortedGroups.forEach { group ->
-            Spacer(modifier = Modifier.height(8.dp))
+        if (hasError) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "\u3000\u3000 ${group.name} \u3000\u3000",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = errorMessage!!,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(onClick = { load() }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(6.dp))
+                Text("重试")
+            }
+        }
 
-            group.hints.forEach { hint ->
+        if (showLoading) {
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        }
+
+        if (config != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val sortedGroups = config!!.groups.sortedBy { it.order }
+            sortedGroups.forEach { group ->
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = hint,
-                    fontSize = 12.sp,
-                    color = Color(0xFFFF6200),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                    text = "\u3000\u3000 ${group.name} \u3000\u3000",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-            }
 
-            Spacer(modifier = Modifier.height(6.dp))
+                group.hints.forEach { hint ->
+                    Text(
+                        text = hint,
+                        fontSize = 12.sp,
+                        color = Color(0xFFFF6200),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
 
-            val buttons = group.buttons.sortedBy { it.order }
-            val rows = buttons.chunked(4)
-            rows.forEach { row ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    row.forEach { item ->
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable { UrlOpener.open(context, item.url) }
-                                .padding(vertical = 10.dp, horizontal = 4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxWidth()
+                Spacer(modifier = Modifier.height(6.dp))
+
+                val buttons = group.buttons.sortedBy { it.order }
+                val rows = buttons.chunked(4)
+                rows.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        row.forEach { item ->
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .clickable { UrlOpener.open(context, item.url) }
+                                    .padding(vertical = 10.dp, horizontal = 4.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = item.label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                if (item.badge != null) {
-                                    Spacer(modifier = Modifier.height(2.dp))
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
                                     Text(
-                                        text = item.badge,
-                                        fontSize = 9.sp,
-                                        color = Color(0xFFFF6200),
-                                        fontWeight = FontWeight.Bold,
+                                        text = item.label,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         textAlign = TextAlign.Center,
-                                        maxLines = 1
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
                                     )
+                                    if (item.badge != null) {
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = item.badge,
+                                            fontSize = 9.sp,
+                                            color = Color(0xFFFF6200),
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center,
+                                            maxLines = 1
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (row.size < 4) {
-                        repeat(4 - row.size) {
-                            Spacer(modifier = Modifier.weight(1f))
+                        if (row.size < 4) {
+                            repeat(4 - row.size) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.height(6.dp))
                 }
-                Spacer(modifier = Modifier.height(6.dp))
             }
         }
     }
