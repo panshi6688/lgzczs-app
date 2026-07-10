@@ -274,14 +274,9 @@ fun MainScreen() {
                 )
             }
             composable(BottomNavItem.Tools.route) {
-                Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = "Tools",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                ToolsPage(
+                    repository = toolsRepository
+                )
             }
         }
     }
