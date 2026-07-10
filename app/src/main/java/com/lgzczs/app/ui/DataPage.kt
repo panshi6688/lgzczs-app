@@ -345,7 +345,7 @@ fun DataPage(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     OutlinedButton(
-                        onClick = { context.openUrl("http://supplier.hgmqy.cn/register?invite_code=507653") },
+                        onClick = { context.openUrl("http://supplier.hgmqy.cn/register?invite_code=50765") },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium
                     ) {
