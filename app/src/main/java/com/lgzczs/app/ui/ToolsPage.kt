@@ -18,12 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lgzczs.app.data.ToolsRepository
 import com.lgzczs.app.model.ToolConfig
+import com.lgzczs.app.model.ToolGroup
+import com.lgzczs.app.model.ToolItem
 import com.lgzczs.app.util.UrlOpener
+import kotlinx.coroutines.delay
 
 @Composable
 fun ToolsPage(
@@ -48,11 +51,26 @@ fun ToolsPage(
 ) {
     val context = LocalContext.current
 
-    var config by remember { mutableStateOf(repository.getCachedConfig()) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var config by remember { mutableStateOf<ToolConfig?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
-    val hasError = errorMessage != null && config == null
-    val isLoading = false
+    LaunchedEffect(Unit) {
+        isLoading = true
+        delay(100)
+        config = ToolConfig(
+            groups = listOf(
+                ToolGroup(id = "g1", name = "测试分组", order = 1, hints = listOf("提示信息"),
+                    buttons = listOf(
+                        ToolItem(id = "b1", label = "按钮1", url = "https://example.com", badge = "热门", order = 1),
+                        ToolItem(id = "b2", label = "按钮2", url = "https://example.com", badge = null, order = 2)
+                    )
+                )
+            )
+        )
+        isLoading = false
+    }
+
+    val showLoading = isLoading && config == null
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)
@@ -66,21 +84,19 @@ fun ToolsPage(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f), textAlign = TextAlign.Center
             )
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Refresh, contentDescription = "刷新", tint = MaterialTheme.colorScheme.primary)
+            if (isLoading) {
+                Text(text = "加载中...", fontSize = 11.sp, color = MaterialTheme.colorScheme.primary)
+            } else {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Refresh, contentDescription = "刷新", tint = MaterialTheme.colorScheme.primary)
+                }
             }
         }
 
-        if (hasError) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = errorMessage!!, fontSize = 14.sp, color = MaterialTheme.colorScheme.error,
+        if (showLoading) {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = "正在加载...", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(onClick = { }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("重试")
-            }
         }
 
         if (config != null) {
