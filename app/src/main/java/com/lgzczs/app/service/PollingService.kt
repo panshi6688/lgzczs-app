@@ -155,14 +155,14 @@ class PollingService : Service() {
                                     if (tokenManager.notificationEnabled) {
                                         NotificationHelper.sendOrderNotification(
                                             this@PollingService,
-                                            "优卡云",
+                                            "好哥们",
                                             newIds,
                                             tokenManager.alertDialogEnabled
                                         )
                                     }
                                     if (tokenManager.alertDialogEnabled) {
                                         val alertIntent = Intent(this@PollingService, OrderAlertActivity::class.java).apply {
-                                            putExtra("platform", "优卡云")
+                                            putExtra("platform", "好哥们")
                                             putStringArrayListExtra("order_ids", ArrayList(newIds))
                                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                         }

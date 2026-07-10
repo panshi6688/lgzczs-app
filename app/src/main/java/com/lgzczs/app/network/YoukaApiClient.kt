@@ -29,7 +29,7 @@ class YoukaApiClient {
 
     companion object {
         private const val KEY = "7aca3c37e3745f8768b0e559797d521f"
-        private const val API_BASE = "http://supplier.ukayun.cn"
+        private const val API_BASE = "http://supplier.hgmqy.cn"
         private const val CHARSET =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
     }
@@ -96,7 +96,7 @@ class YoukaApiClient {
 
             val url = HttpUrl.Builder()
                 .scheme("http")
-                .host("supplier.ukayun.cn")
+                .host("supplier.hgmqy.cn")
                 .addPathSegments("spa/order")
                 .addQueryParameter("limit", "15")
                 .addQueryParameter("page", "1")

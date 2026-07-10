@@ -22,7 +22,7 @@ class SessionManager(
         private set
 
     private val huiDefaultUrl = "https://sup.78k.cn/"
-    private val youkaDefaultUrl = "http://supplier.ukayun.cn/"
+    private val youkaDefaultUrl = "http://supplier.hgmqy.cn/"
 
     private val huiTokenJs = """
         (() => {

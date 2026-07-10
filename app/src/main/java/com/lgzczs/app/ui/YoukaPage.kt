@@ -127,7 +127,7 @@ fun YoukaPage(
                                     wv.evaluateJavascript(sessionManager.getYoukaTokenJs()) { value ->
                                         var token = value?.trim('"')?.trim()
                                         if (token.isNullOrEmpty() || token == "null") {
-                                            val cookies = CookieManager.getInstance().getCookie("http://supplier.ukayun.cn/")
+                                            val cookies = CookieManager.getInstance().getCookie("http://supplier.hgmqy.cn/")
                                             if (!cookies.isNullOrEmpty()) {
                                                 val match = Regex("admin_token=([^;]+)").find(cookies)
                                                 if (match != null) token = match.groupValues[1]

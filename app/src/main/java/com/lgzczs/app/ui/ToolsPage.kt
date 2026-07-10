@@ -76,18 +76,22 @@ fun ToolsPage(
         scope.launch {
             isLoading = true
             errorMessage = null
-            val result = repository.fetchButtons()
-            result.onSuccess {
-                config = it
-                errorMessage = null
-            }.onFailure { e ->
-                if (config == null) {
-                    errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
-                        "无法连接服务器，请检查网络"
-                    } else {
-                        "加载失败：${e.message}"
+            try {
+                val result = repository.fetchButtons()
+                result.onSuccess {
+                    config = it
+                    errorMessage = null
+                }.onFailure { e ->
+                    if (config == null) {
+                        errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
+                            "无法连接服务器，请检查网络"
+                        } else {
+                            "加载失败：${e.message}"
+                        }
                     }
                 }
+            } catch (e: Throwable) {
+                if (config == null) errorMessage = "加载失败"
             }
             isLoading = false
         }
@@ -223,7 +227,7 @@ fun ToolsPage(
 
                 item { Spacer(modifier = Modifier.height(4.dp)) }
 
-                val sortedGroups = config!!.groups.sortedBy { it.order }
+                val sortedGroups = config?.groups?.sortedBy { it.order } ?: emptyList()
                 sortedGroups.forEach { group ->
                     item {
                         Text(
@@ -236,7 +240,7 @@ fun ToolsPage(
                         )
                     }
 
-                    group.hints.forEach { hint ->
+                    (group.hints ?: emptyList()).forEach { hint ->
                         item {
                             Text(
                                 text = hint,
@@ -248,9 +252,10 @@ fun ToolsPage(
                         }
                     }
 
+                    val buttons = group.buttons ?: emptyList()
                     item {
                         ToolGrid(
-                            items = group.buttons.sortedBy { it.order },
+                            items = buttons.sortedBy { it.order },
                             columns = 4,
                             onButtonClick = { item -> UrlOpener.open(context, item.url) },
                             onButtonLongClick = { item ->

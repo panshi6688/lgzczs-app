@@ -174,7 +174,7 @@ fun DataPage(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 PlatformStatusRow("汇权益", huiStatus)
-                PlatformStatusRow("优卡云", youkaStatus)
+                PlatformStatusRow("好哥们", youkaStatus)
             }
         }
 
@@ -345,13 +345,13 @@ fun DataPage(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     OutlinedButton(
-                        onClick = { context.openUrl("http://supplier.ukayun.cn/register?invite_code=17985") },
+                        onClick = { context.openUrl("http://supplier.hgmqy.cn/register?invite_code=507653") },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium
                     ) {
                         Icon(Icons.Default.AppRegistration, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("优卡云注册", fontSize = 13.sp)
+                        Text("好哥们注册", fontSize = 13.sp)
                     }
                 }
 
@@ -408,7 +408,7 @@ fun DataPage(
             onDismissRequest = { showUsageGuide = false },
             title = { Text("使用说明") },
             text = {
-                Text("① 依次登录汇权益和优卡云后台\n② 打开弹窗/通知/悬浮窗功能开关\n③ 保持 App 后台运行即可自动监控")
+                Text("① 依次登录汇权益和好哥们后台\n② 打开弹窗/通知/悬浮窗功能开关\n③ 保持 App 后台运行即可自动监控")
             },
             confirmButton = {
                 TextButton(onClick = { showUsageGuide = false }) { Text("知道了") }

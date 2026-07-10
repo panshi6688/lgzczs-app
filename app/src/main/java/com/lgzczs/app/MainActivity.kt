@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -103,9 +103,9 @@ sealed class BottomNavItem(
     val icon: @Composable () -> Unit
 ) {
     data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(20.dp)) })
-    data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(20.dp)) })
+    data object YouKaYun : BottomNavItem("youka", "好哥们", { Icon(painterResource(R.drawable.ic_youka), "好哥们", modifier = Modifier.size(20.dp)) })
     data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(20.dp)) })
-    data object Tools : BottomNavItem("tools", "工具", { Icon(Icons.Default.Build, "工具", modifier = Modifier.size(20.dp)) })
+    data object Tools : BottomNavItem("tools", "工具", { Icon(Icons.Default.Settings, "工具", modifier = Modifier.size(20.dp)) })
 }
 
 private val bottomNavItems = listOf(
