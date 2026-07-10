@@ -62,19 +62,8 @@ fun ToolsPage(
             isLoading = true
             errorMessage = null
             try {
-                val result = repository.fetchButtons()
-                result.onSuccess {
-                    config = it
-                    errorMessage = null
-                }.onFailure { e ->
-                    if (config == null) {
-                        errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
-                            "无法连接服务器，请检查网络"
-                        } else {
-                            "加载失败：${e.message}"
-                        }
-                    }
-                }
+                kotlinx.coroutines.delay(100)
+                config = repository.getCachedConfig()
             } catch (e: Throwable) {
                 if (config == null) errorMessage = "加载失败"
             }
