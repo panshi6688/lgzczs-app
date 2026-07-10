@@ -70,10 +70,15 @@ fun ToolsPage(
                 errorMessage = null
             }.onFailure { e ->
                 if (config == null) {
-                    errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
-                        "无法连接服务器，请检查网络"
+                    val fallback = repository.loadDefaultConfig()
+                    if (fallback != null) {
+                        config = fallback
                     } else {
-                        "加载失败：${e.message}"
+                        errorMessage = if (e.message?.contains("Unable to resolve host") == true) {
+                            "无法连接服务器，请检查网络"
+                        } else {
+                            "加载失败：${e.message}"
+                        }
                     }
                 }
             }

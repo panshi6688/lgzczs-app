@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.lgzczs.app.R
 import com.lgzczs.app.model.ToolConfig
 import com.lgzczs.app.model.ToolItem
 import kotlinx.coroutines.Dispatchers
@@ -97,4 +98,15 @@ class ToolsRepository(private val context: Context) {
     }
 
     fun getMaxQuickAccess() = MAX_QUICK_ACCESS
+
+    fun loadDefaultConfig(): ToolConfig? {
+        return try {
+            val inputStream = context.resources.openRawResource(R.raw.tools_default_config)
+            val json = inputStream.bufferedReader().use { it.readText() }
+            val configType = object : TypeToken<ToolConfig>() {}.type
+            gson.fromJson(json, configType)
+        } catch (_: Exception) {
+            null
+        }
+    }
 }
