@@ -24,30 +24,6 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Generate Screenshot
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgles2 libgl1-mesa-dri mesa-utils 2>&1 || true
-          MESA_GL_VERSION_OVERRIDE=3.3 ./gradlew testDebugUnitTest --tests "com.lgzczs.app.ui.DataPageScreenshotTest" --stacktrace 2>&1
-        shell: bash
-
-      - name: Upload Test Report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            app/build/reports/tests/testDebugUnitTest/
-            app/build/test-results/testDebugUnitTest/
-          retention-days: 3
-
-      - name: Upload Screenshot
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshot-datapage
-          path: screenshots/DataPage.png
-          retention-days: 7
-
       - name: Build Release APK
         run: |
           set -o pipefail

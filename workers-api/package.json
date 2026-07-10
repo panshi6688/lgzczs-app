@@ -1,0 +1,14 @@
+{
+  "name": "tools-buttons-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy src/index.ts",
+    "deploy:admin": "wrangler pages deploy admin --project-name=tools-buttons-admin"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "wrangler": "^3.0.0"
+  }
+}

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工具按钮管理后台</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #333; }
+  .container { max-width: 900px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; text-align: center; color: #1976D2; margin-bottom: 16px; }
+  .login-form { max-width: 320px; margin: 80px auto; background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+  .login-form input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; margin-bottom: 12px; }
+  .card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .hidden { display: none !important; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999; }
+  .toast.show { opacity: 1; }
+  .btn { padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+  .btn-primary { background: #1976D2; color: #fff; }
+  .btn-primary:hover { background: #1565C0; }
+  .btn-danger { background: #e53935; color: #fff; }
+  .btn-danger:hover { background: #c62828; }
+  .btn-success { background: #43a047; color: #fff; }
+  .btn-success:hover { background: #2e7d32; }
+  .btn-outline { background: #fff; border: 1px solid #ddd; color: #666; }
+  .btn-outline:hover { background: #f5f5f5; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* Header */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .header h1 { margin: 0; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 16px; background: #fff; border-radius: 12px; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow-x: auto; }
+  .tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; white-space: nowrap; border: none; background: none; color: #666; transition: all 0.2s; }
+  .tab:hover { background: #f0f0f0; }
+  .tab.active { background: #1976D2; color: #fff; }
+  .tab-add { color: #1976D2; font-weight: bold; font-size: 18px; padding: 8px 12px; }
+
+  /* Grid */
+  .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .grid-btn { background: #f5f5f5; border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 4px; text-align: center; cursor: pointer; transition: all 0.15s; position: relative; user-select: none; }
+  .grid-btn:hover { border-color: #1976D2; background: #e8f0fe; }
+  .grid-btn.dragging { opacity: 0.4; }
+  .grid-btn.drag-over { border-color: #1976D2; border-style: dashed; background: #e3f2fd; }
+  .grid-btn .label { font-size: 13px; font-weight: 500; color: #333; }
+  .grid-btn .badge { font-size: 10px; color: #FF6200; font-weight: 600; margin-top: 2px; }
+  .grid-btn .drag-handle { position: absolute; top: 2px; left: 6px; font-size: 14px; color: #bbb; cursor: grab; }
+  .grid-btn .del-btn { position: absolute; top: 2px; right: 6px; font-size: 14px; color: #ccc; cursor: pointer; display: none; }
+  .grid-btn:hover .del-btn { display: block; }
+  .grid-btn .del-btn:hover { color: #e53935; }
+  .grid-slot { background: #fafafa; border: 2px dashed #ddd; border-radius: 10px; min-height: 60px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 12px; cursor: pointer; }
+  .grid-slot:hover { border-color: #1976D2; color: #1976D2; }
+
+  /* Hints */
+  .hints-row { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+  .hints-row input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+  .hints-row input:focus { outline: none; border-color: #1976D2; }
+
+  /* Bottom actions */
+  .bottom-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .bottom-actions .btn { flex: 1; padding: 12px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .modal h2 { font-size: 18px; margin-bottom: 16px; text-align: center; }
+  .modal label { display: block; font-size: 12px; color: #888; margin-bottom: 2px; }
+  .modal input, .modal textarea { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 10px; }
+  .modal input:focus, .modal textarea:focus { outline: none; border-color: #1976D2; }
+  .modal textarea { min-height: 60px; resize: vertical; font-size: 12px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+  .modal-actions .btn { flex: 1; }
+
+  .empty-state { text-align: center; padding: 48px 16px; color: #999; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <div id="loginView" class="login-form">
+    <h1>工具按钮管理后台</h1>
+    <input type="password" id="passwordInput" placeholder="请输入管理员密码" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn btn-primary" onclick="login()" style="width:100%;padding:12px">登录</button>
+  </div>
+
+  <div id="adminView" class="hidden">
+    <div class="header">
+      <h1>工具按钮管理</h1>
+      <button class="btn btn-outline btn-sm" onclick="logout()">退出</button>
+    </div>
+
+    <div id="tabsContainer" class="tabs"></div>
+
+    <div class="card">
+      <div class="hints-row">
+        <label style="white-space:nowrap;font-size:13px;color:#888">提示文本:</label>
+        <input id="hintsInput" placeholder="多个提示用 | 分隔" onchange="saveHints()">
+      </div>
+
+      <div id="gridContainer"></div>
+
+      <div class="bottom-actions">
+        <button class="btn btn-outline" onclick="addButton()">+ 新增按钮</button>
+        <button class="btn btn-success" onclick="saveAll()">保存全部</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal-overlay hidden" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="modalTitle">编辑按钮</h2>
+    <label>名称</label>
+    <input id="editLabel" placeholder="按钮名称">
+    <label>URL</label>
+    <textarea id="editUrl" placeholder="https://..." rows="2"></textarea>
+    <label>Badge（角标文字）</label>
+    <input id="editBadge" placeholder="如 10次、乐动力">
+    <label>排序</label>
+    <input id="editOrder" type="number" placeholder="数字越小越靠前">
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="deleteBtn" onclick="deleteCurrentButton()">删除</button>
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveButton()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://lgzc-toolsmenu.lghaomaauto.workers.dev';
+let token = localStorage.getItem('admin_token');
+let config = { groups: [] };
+let currentGroupId = null;
+let editingButtonId = null;
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API}${path}`, { ...options, headers });
+  if (res.status === 401) { token = null; localStorage.removeItem('admin_token'); render(); }
+  const text = await res.text();
+  try { return JSON.parse(text); } catch { return { error: text }; }
+}
+
+async function login() {
+  const pw = document.getElementById('passwordInput').value;
+  if (!pw) return toast('请输入密码');
+  const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ password: pw }) });
+  if (data.token) {
+    token = data.token;
+    localStorage.setItem('admin_token', token);
+    await loadConfig();
+    render();
+    toast('登录成功');
+  } else {
+    toast(data.error || '登录失败');
+  }
+}
+
+function logout() {
+  token = null;
+  localStorage.removeItem('admin_token');
+  render();
+  toast('已退出');
+}
+
+async function loadConfig() {
+  const data = await api('/api/admin/buttons');
+  if (data.groups) {
+    config = data;
+    if (!currentGroupId && config.groups.length) currentGroupId = config.groups[0].id;
+  }
+}
+
+function render() {
+  document.getElementById('loginView').classList.toggle('hidden', !!token);
+  document.getElementById('adminView').classList.toggle('hidden', !token);
+  if (!token) return;
+  renderTabs();
+  renderGrid();
+}
+
+function getCurrentGroup() {
+  return config.groups.find(g => g.id === currentGroupId);
+}
+
+function renderTabs() {
+  const container = document.getElementById('tabsContainer');
+  container.innerHTML = '';
+  config.groups.sort((a, b) => a.order - b.order).forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = `tab ${g.id === currentGroupId ? 'active' : ''}`;
+    btn.textContent = g.name;
+    btn.onclick = () => { currentGroupId = g.id; render(); };
+    container.appendChild(btn);
+  });
+  const addBtn = document.createElement('button');
+  addBtn.className = 'tab tab-add';
+  addBtn.textContent = '+';
+  addBtn.title = '新增分组';
+  addBtn.onclick = addGroup;
+  container.appendChild(addBtn);
+}
+
+function renderGrid() {
+  const group = getCurrentGroup();
+  const container = document.getElementById('gridContainer');
+  if (!group) {
+    container.innerHTML = '<div class="empty-state">暂无分组，点击上方 + 新增</div>';
+    document.getElementById('hintsInput').value = '';
+    return;
+  }
+
+  document.getElementById('hintsInput').value = (group.hints || []).join(' | ');
+
+  if (!group.buttons || group.buttons.length === 0) {
+    container.innerHTML = '<div class="empty-state">暂无按钮，点击下方新增</div>';
+    return;
+  }
+
+  const sorted = [...group.buttons].sort((a, b) => a.order - b.order);
+  let html = '<div class="btn-grid">';
+  sorted.forEach((btn, i) => {
+    html += `
+      <div class="grid-btn" draggable="true"
+           data-btn-id="${escHtml(btn.id)}"
+           ondragstart="onDragStart(event, '${escHtml(btn.id)}')"
+           ondragover="onDragOver(event)"
+           ondrop="onDrop(event, '${escHtml(btn.id)}')"
+           ondragend="onDragEnd(event)"
+           onclick="openEdit('${escHtml(btn.id)}')">
+        <span class="drag-handle">⠿</span>
+        <span class="del-btn" onclick="event.stopPropagation();deleteButton('${escHtml(btn.id)}')">✕</span>
+        <div class="label">${escHtml(btn.label)}</div>
+        ${btn.badge ? `<div class="badge">${escHtml(btn.badge)}</div>` : ''}
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+/* Drag and Drop */
+let draggedId = null;
+function onDragStart(e, id) {
+  draggedId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const target = e.target.closest('.grid-btn');
+  if (target) target.classList.add('drag-over');
+}
+function onDrop(e, targetId) {
+  e.preventDefault();
+  document.querySelectorAll('.grid-btn').forEach(el => el.classList.remove('drag-over', 'dragging'));
+  if (!draggedId || draggedId === targetId) { draggedId = null; return; }
+  const group = getCurrentGroup();
+  if (!group) return;
+  const buttons = group.buttons;
+  const fromIdx = buttons.findIndex(b => b.id === draggedId);
+  const toIdx = buttons.findIndex(b => b.id === targetId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [item] = buttons.splice(fromIdx, 1);
+  buttons.splice(toIdx, 0, item);
+  buttons.forEach((b, i) => b.order = i + 1);
+  renderGrid();
+  draggedId = null;
+}
+function onDragEnd(e) {
+  document.querySelectorAll('.grid-btn').forEach(el => el.classList.remove('drag-over', 'dragging'));
+}
+
+/* Button CRUD */
+function openEdit(btnId) {
+  const group = getCurrentGroup();
+  if (!group) return;
+  const btn = group.buttons.find(b => b.id === btnId);
+  if (!btn) return;
+  editingButtonId = btnId;
+  document.getElementById('modalTitle').textContent = '编辑按钮';
+  document.getElementById('editLabel').value = btn.label || '';
+  document.getElementById('editUrl').value = btn.url || '';
+  document.getElementById('editBadge').value = btn.badge || '';
+  document.getElementById('editOrder').value = btn.order || 0;
+  document.getElementById('deleteBtn').classList.remove('hidden');
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('editModal').classList.add('hidden');
+  editingButtonId = null;
+}
+
+function saveButton() {
+  const group = getCurrentGroup();
+  if (!group) return;
+  const label = document.getElementById('editLabel').value.trim();
+  const url = document.getElementById('editUrl').value.trim();
+  const badge = document.getElementById('editBadge').value.trim();
+  const order = parseInt(document.getElementById('editOrder').value) || 0;
+
+  if (!label) return toast('请输入名称');
+  if (!url) return toast('请输入URL');
+
+  if (editingButtonId) {
+    const btn = group.buttons.find(b => b.id === editingButtonId);
+    if (btn) {
+      btn.label = label;
+      btn.url = url;
+      btn.badge = badge || null;
+      btn.order = order;
+    }
+  }
+  renderGrid();
+  closeModal();
+  toast('已更新');
+}
+
+function deleteCurrentButton() {
+  if (!editingButtonId) return;
+  if (!confirm('确定删除此按钮？')) return;
+  const group = getCurrentGroup();
+  if (!group) return;
+  group.buttons = group.buttons.filter(b => b.id !== editingButtonId);
+  renderGrid();
+  closeModal();
+  toast('已删除');
+}
+
+function deleteButton(btnId) {
+  if (!confirm('确定删除此按钮？')) return;
+  const group = getCurrentGroup();
+  if (!group) return;
+  group.buttons = group.buttons.filter(b => b.id !== btnId);
+  renderGrid();
+  toast('已删除');
+}
+
+function addButton() {
+  const group = getCurrentGroup();
+  if (!group) return toast('请先选择分组');
+  editingButtonId = null;
+  document.getElementById('modalTitle').textContent = '新增按钮';
+  document.getElementById('editLabel').value = '';
+  document.getElementById('editUrl').value = '';
+  document.getElementById('editBadge').value = '';
+  document.getElementById('editOrder').value = (group.buttons.length + 1);
+  document.getElementById('deleteBtn').classList.add('hidden');
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function saveHints() {
+  const group = getCurrentGroup();
+  if (!group) return;
+  const val = document.getElementById('hintsInput').value.trim();
+  group.hints = val ? val.split('|').map(s => s.trim()).filter(s => s) : [];
+}
+
+function addGroup() {
+  const name = prompt('请输入分组名称：');
+  if (!name) return;
+  const newGroup = {
+    id: 'group_' + Date.now(),
+    name,
+    order: config.groups.length + 1,
+    hints: [],
+    buttons: []
+  };
+  config.groups.push(newGroup);
+  currentGroupId = newGroup.id;
+  render();
+  toast('分组已添加');
+}
+
+async function saveAll() {
+  saveHints();
+  const data = await api('/api/admin/reorder', {
+    method: 'PUT',
+    body: JSON.stringify({ groups: config.groups })
+  });
+  if (data.success) toast('已保存');
+}
+
+// Init
+if (token) { loadConfig().then(render); } else { render(); }
+</script>
+</body>
+</html>

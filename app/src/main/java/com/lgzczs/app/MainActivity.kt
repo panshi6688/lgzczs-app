@@ -50,8 +50,10 @@ import androidx.navigation.compose.rememberNavController
 import com.lgzczs.app.gecko.SessionManager
 import com.lgzczs.app.model.PlatformStatus
 import com.lgzczs.app.service.PollingService
-import com.lgzczs.app.ui.HuiPage
+import com.lgzczs.app.data.ToolsRepository
 import com.lgzczs.app.ui.DataPage
+import com.lgzczs.app.ui.HuiPage
+import com.lgzczs.app.ui.ToolsPage
 import com.lgzczs.app.ui.YoukaPage
 import com.lgzczs.app.ui.theme.LgzczsTheme
 import com.lgzczs.app.util.PermissionHelper
@@ -102,12 +104,14 @@ sealed class BottomNavItem(
     data object HuiQuanYi : BottomNavItem("hui", "汇权益", { Icon(painterResource(R.drawable.ic_hui), "汇权益", modifier = Modifier.size(20.dp)) })
     data object YouKaYun : BottomNavItem("youka", "优卡云", { Icon(painterResource(R.drawable.ic_youka), "优卡云", modifier = Modifier.size(20.dp)) })
     data object Data : BottomNavItem("data", "数据", { Icon(Icons.Default.Dashboard, "数据", modifier = Modifier.size(20.dp)) })
+    data object Tools : BottomNavItem("tools", "工具", { Icon(Icons.Default.Build, "工具", modifier = Modifier.size(20.dp)) })
 }
 
 private val bottomNavItems = listOf(
     BottomNavItem.HuiQuanYi,
     BottomNavItem.YouKaYun,
-    BottomNavItem.Data
+    BottomNavItem.Data,
+    BottomNavItem.Tools
 )
 
 @Composable
@@ -118,6 +122,8 @@ fun MainScreen() {
     var youkaTokenValue by remember { mutableStateOf(tokenManager.youkaToken) }
 
     val appContext = context.applicationContext
+
+    val toolsRepository = remember { ToolsRepository(context.applicationContext) }
 
     val sessionManager = remember {
         SessionManager(
@@ -264,6 +270,11 @@ fun MainScreen() {
                     huiStatus = huiStatus,
                     youkaStatus = youkaStatus,
                     onRefresh = { sessionManager.refreshTokens() }
+                )
+            }
+            composable(BottomNavItem.Tools.route) {
+                ToolsPage(
+                    repository = toolsRepository
                 )
             }
         }

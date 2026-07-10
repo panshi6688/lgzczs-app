@@ -1,0 +1,12 @@
+name = "lgzc-toolsmenu"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "BUTTONS_KV"
+id = "34600171f4594bc687d7b1661995550a"
+preview_id = "2801c4bb324143b49cc59024ec1a08f8"
+
+[[rules]]
+type = "ESModule"
+globs = ["**/*.ts"]

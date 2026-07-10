@@ -3,3 +3,11 @@ yaml
 
 13.txt
 keystore.jks
+.wrangler/
+bbzs/
+bbzs (9)/
+DataPage.html
+workers-api/node_modules/
+workers-api/.wrangler/
+.gradle/
+local.properties
