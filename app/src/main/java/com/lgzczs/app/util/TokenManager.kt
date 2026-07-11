@@ -28,6 +28,10 @@ class TokenManager(context: Context) {
         get() = prefs.getBoolean("float_window_enabled", true)
         set(value) = prefs.edit().putBoolean("float_window_enabled", value).apply()
 
+    var floatToolsEnabled: Boolean
+        get() = prefs.getBoolean("float_tools_enabled", false)
+        set(value) = prefs.edit().putBoolean("float_tools_enabled", value).apply()
+
     var huiUsername: String?
         get() = prefs.getString("hui_username", null)
         set(value) = prefs.edit().putString("hui_username", value).apply()

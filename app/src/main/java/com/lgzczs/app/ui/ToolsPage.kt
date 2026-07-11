@@ -33,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lgzczs.app.data.ToolsRepository
 import com.lgzczs.app.model.ToolItem
+import com.lgzczs.app.util.TokenManager
 import com.lgzczs.app.util.UrlOpener
 import kotlinx.coroutines.launch
 
@@ -79,6 +81,8 @@ fun ToolsPage(
     var keywordDropdownExpanded by remember { mutableStateOf(false) }
     var showCustomKeywordDialog by remember { mutableStateOf(false) }
     var customKeywordInput by remember { mutableStateOf("") }
+    val tokenManager = remember { TokenManager(context) }
+    var floatToolsEnabled by remember { mutableStateOf(tokenManager.floatToolsEnabled) }
 
     fun addToQuickAccess(item: ToolItem) {
         val items = quickAccess.toMutableList()
@@ -216,14 +220,30 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                 .padding(vertical = 8.dp, horizontal = 4.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = item.label,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = item.label,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                if (item.badge != null) {
+                                    Spacer(modifier = Modifier.height(1.dp))
+                                    Text(
+                                        text = item.badge,
+                                        fontSize = 8.sp,
+                                        color = Color(0xFFFF6200),
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
                         }
                     } else {
                         Box(
@@ -264,7 +284,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Box {
+                Box(modifier = Modifier.widthIn(max = 110.dp)) {
                     Text(
                         text = currentKeywordLabel,
                         modifier = Modifier
@@ -272,7 +292,8 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                             .background(Color(0xFFF0F0F0), RoundedCornerShape(4.dp))
                             .padding(horizontal = 10.dp, vertical = 4.dp),
                         fontSize = 13.sp,
-                        maxLines = 1
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     DropdownMenu(
                         expanded = keywordDropdownExpanded,
@@ -306,7 +327,23 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
+                } else {
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    "悬浮显示",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Switch(
+                    checked = floatToolsEnabled,
+                    onCheckedChange = {
+                        floatToolsEnabled = it
+                        tokenManager.floatToolsEnabled = it
+                    }
+                )
             }
             if (tabs.isNotEmpty()) {
                 ScrollableTabRow(
