@@ -104,6 +104,15 @@
         <button class="btn btn-success" onclick="saveAll()">保存全部</button>
       </div>
     </div>
+
+    <div class="card" style="margin-top:12px">
+      <h2 style="font-size:16px;margin-bottom:12px">标签管理</h2>
+      <div class="hints-row">
+        <input id="newTabInput" placeholder="新标签名称" onkeydown="if(event.key==='Enter')addTab()">
+        <button class="btn btn-primary btn-sm" onclick="addTab()">添加</button>
+      </div>
+      <div id="tabList"></div>
+    </div>
   </div>
 </div>
 <div id="toast" class="toast"></div>
@@ -183,6 +192,10 @@ async function loadConfig() {
   const data = await api('/api/admin/buttons');
   if (data && data.groups) {
     config = data;
+    if (!config.tabs) config.tabs = [];
+    if (!config.tabs.some(t => t.name === '全部')) {
+      config.tabs.unshift({ name: '全部', order: 0 });
+    }
     if (!currentGroupId && config.groups.length) currentGroupId = config.groups[0].id;
   }
 }
@@ -193,6 +206,7 @@ function render() {
   if (!token) return;
   renderTabs();
   renderGrid();
+  renderTabManager();
 }
 
 function getCurrentGroup() {
@@ -395,6 +409,63 @@ function addGroup() {
   currentGroupId = newGroup.id;
   render();
   toast('分组已添加');
+}
+
+function renderTabManager() {
+  const container = document.getElementById('tabList');
+  if (!config.tabs) config.tabs = [];
+  const sorted = [...config.tabs].sort((a, b) => a.order - b.order);
+  let html = '';
+  sorted.forEach((t, i) => {
+    const isAll = t.name === '全部';
+    html += `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0">
+        <span style="flex:1;font-size:14px">${escHtml(t.name)}</span>
+        ${!isAll ? `
+          <button class="btn btn-outline btn-sm" onclick="moveTab(${i}, -1)" ${i === 0 || (i === 1 && sorted[0].name === '全部') ? 'disabled' : ''}>↑</button>
+          <button class="btn btn-outline btn-sm" onclick="moveTab(${i}, 1)" ${i === sorted.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTab('${escHtml(t.name)}')">删除</button>
+        ` : '<span style="color:#999;font-size:12px">固定标签</span>'}
+      </div>
+    `;
+  });
+  if (sorted.length === 0) html = '<div style="color:#999;font-size:13px;padding:8px 0">暂无标签，添加一个开始</div>';
+  container.innerHTML = html;
+}
+
+function addTab() {
+  const input = document.getElementById('newTabInput');
+  const name = input.value.trim();
+  if (!name) return toast('请输入标签名称');
+  if (!config.tabs) config.tabs = [];
+  if (config.tabs.some(t => t.name === name)) return toast('标签已存在');
+  if (!config.tabs.some(t => t.name === '全部')) {
+    config.tabs.push({ name: '全部', order: 0 });
+  }
+  config.tabs.push({ name, order: config.tabs.length });
+  input.value = '';
+  renderTabManager();
+  toast('标签已添加');
+}
+
+function deleteTab(name) {
+  if (!confirm('确定删除标签「' + name + '」？')) return;
+  config.tabs = config.tabs.filter(t => t.name !== name);
+  config.groups.forEach(g => { if (g.tab === name) g.tab = null; });
+  renderTabManager();
+  toast('已删除');
+}
+
+function moveTab(index, direction) {
+  if (!config.tabs) return;
+  const sorted = [...config.tabs].sort((a, b) => a.order - b.order);
+  const targetIdx = index + direction;
+  if (targetIdx < 0 || targetIdx >= sorted.length) return;
+  if (sorted[index].name === '全部' || sorted[targetIdx].name === '全部') return;
+  [sorted[index], sorted[targetIdx]] = [sorted[targetIdx], sorted[index]];
+  sorted.forEach((t, i) => t.order = i);
+  config.tabs = sorted;
+  renderTabManager();
 }
 
 async function saveAll() {
