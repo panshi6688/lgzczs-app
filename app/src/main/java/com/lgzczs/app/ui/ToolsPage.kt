@@ -1,8 +1,9 @@
 package com.lgzczs.app.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -45,10 +47,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lgzczs.app.data.ToolsRepository
-import com.lgzczs.app.model.ToolConfig
+import com.lgzczs.app.model.ToolItem
 import com.lgzczs.app.util.UrlOpener
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolsPage(
     repository: ToolsRepository
@@ -59,6 +62,31 @@ fun ToolsPage(
     var config by remember { mutableStateOf(repository.getCachedConfig()) }
     var isLoading by remember { mutableStateOf(config == null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var quickAccess by remember { mutableStateOf(repository.getQuickAccessButtons()) }
+
+    fun addToQuickAccess(item: ToolItem) {
+        val items = quickAccess.toMutableList()
+        val emptyIndex = items.indexOfFirst { it == null }
+        if (emptyIndex >= 0) {
+            items[emptyIndex] = item
+            quickAccess = items
+            repository.setQuickAccess(emptyIndex, item)
+            Toast.makeText(context, "已添加到快速访问", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "快速访问已满，请先长按移除一个", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun removeQuickAccess(index: Int) {
+        val items = quickAccess.toMutableList()
+        val item = items[index]
+        items[index] = null
+        quickAccess = items
+        repository.setQuickAccess(index, null)
+        if (item != null) {
+            Toast.makeText(context, "已移除「${item.label}」", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     suspend fun load() {
         isLoading = true
@@ -96,22 +124,21 @@ fun ToolsPage(
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "工具",
+                modifier = Modifier.align(Alignment.Center),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
             )
             if (isLoading && !hasError) {
-                LoadingIndicator(modifier = Modifier.size(20.dp))
+                LoadingIndicator(modifier = Modifier.align(Alignment.CenterEnd).size(20.dp))
             } else {
-                IconButton(onClick = { scope.launch { load() } }) {
+                IconButton(
+                    onClick = { scope.launch { load() } },
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
                     Icon(
                         Icons.Default.Refresh,
                         contentDescription = "刷新",
@@ -147,6 +174,53 @@ fun ToolsPage(
         }
 
         if (config != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                quickAccess.forEachIndexed { index, item ->
+                    if (item != null) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFE8E8E8))
+                                .combinedClickable(
+                                    onClick = { UrlOpener.open(context, item.url) },
+                                    onLongClick = { removeQuickAccess(index) }
+                                )
+                                .padding(vertical = 8.dp, horizontal = 4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = item.label,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(36.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFF0F0F0)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "+",
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
 
             val sortedGroups = config!!.groups.sortedBy { it.order }
@@ -186,7 +260,10 @@ fun ToolsPage(
                                     .weight(1f)
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .clickable { UrlOpener.open(context, item.url) }
+                                    .combinedClickable(
+                                        onClick = { UrlOpener.open(context, item.url) },
+                                        onLongClick = { addToQuickAccess(item) }
+                                    )
                                     .padding(vertical = 10.dp, horizontal = 4.dp),
                                 contentAlignment = Alignment.Center
                             ) {
