@@ -126,11 +126,11 @@ fun ToolsPage(
     val hasError = errorMessage != null && config == null
     val showLoading = isLoading && config == null
 
-    val tabs = if (config?.tabs != null && config!!.tabs.isNotEmpty()) {
-        config!!.tabs.filter { it.name != "全部" }.sortedBy { it.order }.map { it.name }.let { listOf("全部") + it }
-    } else {
-        emptyList()
-    }
+val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
+    config!!.tabs!!.filter { it.name != "全部" }.sortedBy { it.order }.map { it.name }.let { listOf("全部") + it }
+} else {
+    emptyList()
+}
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)
