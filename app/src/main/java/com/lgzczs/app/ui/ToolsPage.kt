@@ -3,6 +3,7 @@ package com.lgzczs.app.ui
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,10 +26,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -63,6 +67,7 @@ fun ToolsPage(
     var isLoading by remember { mutableStateOf(config == null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var quickAccess by remember { mutableStateOf(repository.getQuickAccessButtons()) }
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     fun addToQuickAccess(item: ToolItem) {
         val items = quickAccess.toMutableList()
@@ -120,6 +125,12 @@ fun ToolsPage(
 
     val hasError = errorMessage != null && config == null
     val showLoading = isLoading && config == null
+
+    val tabs = if (config?.tabs != null && config!!.tabs.isNotEmpty()) {
+        config!!.tabs.filter { it.name != "全部" }.sortedBy { it.order }.map { it.name }.let { listOf("全部") + it }
+    } else {
+        emptyList()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)
@@ -209,7 +220,8 @@ fun ToolsPage(
                                 .weight(1f)
                                 .height(36.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(Color(0xFFF0F0F0)),
+                                .background(Color(0xFFF0F0F0))
+                                .clickable { Toast.makeText(context, "长按下面的功能按钮可添加至快速访问栏", Toast.LENGTH_SHORT).show() },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -221,9 +233,28 @@ fun ToolsPage(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            if (tabs.isNotEmpty()) {
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    edgePadding = 0.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    tabs.forEachIndexed { index, name ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            text = { Text(name, maxLines = 1) }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
+            val selectedTabName = tabs.getOrNull(selectedTabIndex) ?: "全部"
             val sortedGroups = config!!.groups.sortedBy { it.order }
+                .filter { group ->
+                    selectedTabName == "全部" || group.tab == selectedTabName
+                }
             sortedGroups.forEach { group ->
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
