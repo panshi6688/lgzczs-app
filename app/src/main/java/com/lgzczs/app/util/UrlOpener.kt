@@ -14,7 +14,16 @@ object UrlOpener {
     private const val TAOBAO_PACKAGE = "com.taobao.taobao"
     private const val DIANTAO_PACKAGE = "com.taobao.live"
 
-    fun open(context: Context, url: String) {
+    fun open(context: Context, url: String, keyword: String? = null) {
+        val finalUrl = if (!keyword.isNullOrBlank() && url.contains("s.m.taobao.com")) {
+            replaceQParam(url, keyword)
+        } else {
+            url
+        }
+        openInternal(context, finalUrl)
+    }
+
+    private fun openInternal(context: Context, url: String) {
         if (url.isBlank()) {
             Toast.makeText(context, "链接地址无效", Toast.LENGTH_SHORT).show()
             return
@@ -114,5 +123,17 @@ object UrlOpener {
             Log.e("UrlOpener", "WebView fallback failed", e)
             Toast.makeText(context, "打开链接失败", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun replaceQParam(url: String, keyword: String): String {
+        val uri = Uri.parse(url)
+        val qValue = uri.getQueryParameter("q") ?: return url
+        return uri.buildUpon().clearQuery()
+            .apply {
+                uri.queryParameterNames.forEach { name ->
+                    val value = if (name == "q") keyword else uri.getQueryParameter(name)
+                    appendQueryParameter(name, value!!)
+                }
+            }.build().toString()
     }
 }
