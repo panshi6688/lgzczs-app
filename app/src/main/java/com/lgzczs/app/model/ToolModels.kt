@@ -7,7 +7,8 @@ data class TabConfig(
 
 data class ToolConfig(
     val groups: List<ToolGroup>,
-    val tabs: List<TabConfig>? = null
+    val tabs: List<TabConfig>? = null,
+    val keywords: List<String>? = null
 )
 
 data class ToolGroup(

@@ -10,15 +10,24 @@ interface ToolItem {
   order: number;
 }
 
+interface TabItem {
+  name: string;
+  order: number;
+}
+
 interface ToolGroup {
   id: string;
   name: string;
+  tab?: string;
   order: number;
+  hints?: string[];
   buttons: ToolItem[];
 }
 
 interface ToolConfig {
   groups: ToolGroup[];
+  tabs?: TabItem[];
+  keywords?: string[];
 }
 
 interface AdminPayload {
@@ -130,7 +139,9 @@ export default {
       const newGroup: ToolGroup = {
         id: body.id || `group_${Date.now()}`,
         name: body.name || '新分组',
+        tab: body.tab,
         order: config.groups.length + 1,
+        hints: body.hints || [],
         buttons: [],
       };
       config.groups.push(newGroup);
@@ -150,7 +161,7 @@ export default {
 
       if (method === 'PUT') {
         const body = await request.json() as Partial<ToolGroup>;
-        config.groups[groupIndex] = { ...config.groups[groupIndex], ...body };
+        config.groups[groupIndex] = { ...config.groups[groupIndex], ...body, tab: body.tab };
         await saveConfig(env, config);
         return jsonResponse(config.groups[groupIndex]);
       }
@@ -208,8 +219,11 @@ export default {
     }
 
     if (path === '/api/admin/reorder' && method === 'PUT') {
-      const body = await request.json() as { groups: ToolGroup[] };
-      await saveConfig(env, { groups: body.groups });
+      const body = await request.json() as ToolConfig;
+      const config: ToolConfig = { groups: body.groups || [] };
+      if (body.tabs) config.tabs = body.tabs;
+      if (body.keywords) config.keywords = body.keywords;
+      await saveConfig(env, config);
       return jsonResponse({ success: true });
     }
 
