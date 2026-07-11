@@ -26,7 +26,7 @@ class ToolsRepository(private val context: Context) {
     private val gson = Gson()
 
     companion object {
-        var apiBaseUrl: String = "https://lgzc-toolsmenu-admin.pages.dev"
+        var apiBaseUrl: String = "https://master.lgzc-toolsmenu-admin.pages.dev"
         private const val PREFS_QUICK = "quick_access"
         private const val KEY_QUICK_PREFIX = "qa_"
         private const val MAX_QUICK_ACCESS = 4
