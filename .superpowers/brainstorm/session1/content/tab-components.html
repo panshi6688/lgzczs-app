@@ -1,0 +1,86 @@
+<h2>选择快速访问栏下方的标签选项卡组件</h2>
+<p class="subtitle">这些是现有分组上方切换不同"页面"的候选组件方案</p>
+
+<div class="options">
+  <div class="option" data-choice="scrollabletabrow" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>ScrollableTabRow（推荐）</h3>
+      <p>Material3 标准标签栏，选项过多时自动可左右滑动</p>
+      <div class="pros-cons" style="font-size: 13px; margin-top: 8px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>标准 Material Design，用户熟悉</li>
+          <li>内置滑动支持（ScrollableTabRow）</li>
+          <li>选中项有下划线指示器</li>
+          <li>与现有 Material3 主题一致</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>样式固定，定制空间有限</li>
+        </ul></div>
+      </div>
+      <div style="margin-top: 8px; background: #e8e8e8; border-radius: 8px; padding: 8px; font-size: 12px;">
+        <div style="display: flex; gap: 0;">
+          <div style="padding: 6px 16px; border-bottom: 2px solid #1976d2; color: #1976d2; font-weight: 500;">全部</div>
+          <div style="padding: 6px 16px; color: #666;">红包</div>
+          <div style="padding: 6px 16px; color: #666;">点淘</div>
+          <div style="padding: 6px 16px; color: #666;">其他</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="chipgroup" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>FilterChip 行</h3>
+      <p>使用 Material3 FilterChip 或 AssistChip 横向排列</p>
+      <div class="pros-cons" style="font-size: 13px; margin-top: 8px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>视觉轻量，不占高度</li>
+          <li>每个 chip 可以单独设置样式</li>
+          <li>可配合 LazyRow 实现滑动</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>没有"指示器"效果，选中态不太明显</li>
+          <li>滑动体验不如 ScrollableTabRow 流畅</li>
+        </ul></div>
+      </div>
+      <div style="margin-top: 8px; background: #e8e8e8; border-radius: 8px; padding: 8px; font-size: 12px;">
+        <div style="display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto;">
+          <div style="padding: 4px 12px; background: #1976d2; color: white; border-radius: 16px;">全部</div>
+          <div style="padding: 4px 12px; background: #f0f0f0; color: #666; border-radius: 16px;">红包</div>
+          <div style="padding: 4px 12px; background: #f0f0f0; color: #666; border-radius: 16px;">点淘</div>
+          <div style="padding: 4px 12px; background: #f0f0f0; color: #666; border-radius: 16px;">其他</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="custom" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>自定义 LazyRow + 指示器</h3>
+      <p>纯自定义实现：LazyRow + 底部指示条 + 自定义样式</p>
+      <div class="pros-cons" style="font-size: 13px; margin-top: 8px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>完全控制样式</li>
+          <li>可添加图标、角标等</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>需要更多代码</li>
+          <li>可能与其他 Material3 组件风格不一致</li>
+          <li>需要自己处理动画和滑动</li>
+        </ul></div>
+      </div>
+      <div style="margin-top: 8px; background: #e8e8e8; border-radius: 8px; padding: 8px; font-size: 12px;">
+        <div style="display: flex; gap: 0; position: relative;">
+          <div style="padding: 6px 16px; color: #1976d2; font-weight: 500;">📋 全部</div>
+          <div style="padding: 6px 16px; color: #666;">🧧 红包</div>
+          <div style="padding: 6px 16px; color: #666;">🛒 点淘</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 12px; font-size: 13px; color: #666;">点击选择一个选项，或直接在终端跟我说你的想法。</p>

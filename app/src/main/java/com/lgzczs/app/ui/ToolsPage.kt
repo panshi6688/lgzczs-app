@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -214,6 +215,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color(0xFFE8E8E8))
+                                .heightIn(min = 45.dp)
                                 .combinedClickable(
                                     onClick = { UrlOpener.open(context, item.url, selectedKeyword) },
                                     onLongClick = { removeQuickAccess(index) }

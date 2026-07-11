@@ -47,7 +47,6 @@ class FloatWindowService : Service() {
     private var toolsEnabled: Boolean = false
     private var panelExpanded: Boolean = false
     private var collapsedIcon: View? = null
-    private var scrimView: View? = null
     private var toolsPanelView: View? = null
     private var quickAccessItems: List<ToolItem?> = emptyList()
     private var savedKeyword: String = ""
@@ -290,37 +289,13 @@ class FloatWindowService : Service() {
         val anchorY = ((screenHeight * 0.3).toInt() - estH / 2)
             .coerceIn(0, screenHeight - estH)
 
-        val scrim = FrameLayout(this).apply {
-            setBackgroundColor(AndroidColor.argb(0, 0, 0, 0))
-            setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    collapseToolsPanel()
-                    true
-                } else false
-            }
-        }
-
-        val scrimParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-            x = 0
-            y = 0
-        }
-        windowManager.addView(scrim, scrimParams)
-        scrimView = scrim
-
         val verticalLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(0, topPad, 0, botPad)
         }
 
         val collapseBtn = TextView(this).apply {
-            text = "—"
+            text = ">>"
             textSize = 14f
             setTextColor(AndroidColor.WHITE)
             gravity = Gravity.CENTER
@@ -337,13 +312,15 @@ class FloatWindowService : Service() {
             verticalLayout.addView(sep, sepLp)
         }
 
+        val contentWidth = panelWidth - (8 * density).toInt()
+
         quickAccessItems.forEach { item ->
             if (item != null) {
                 val btnLayout = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER
-                    setPadding((4 * density).toInt(), (2 * density).toInt(),
-                        (4 * density).toInt(), (2 * density).toInt())
+                    setPadding((4 * density).toInt(), (4 * density).toInt(),
+                        (4 * density).toInt(), (4 * density).toInt())
 
                     val bg = GradientDrawable().apply {
                         setColor(AndroidColor.argb(40, 255, 255, 255))
@@ -356,11 +333,10 @@ class FloatWindowService : Service() {
                         textSize = 10f
                         setTextColor(AndroidColor.WHITE)
                         gravity = Gravity.CENTER
-                        maxLines = 1
-                        ellipsize = android.text.TextUtils.TruncateAt.END
+                        maxLines = 2
                     }
                     addView(label, LinearLayout.LayoutParams(
-                        panelWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
+                        contentWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
 
                     if (item.badge != null) {
                         val badge = TextView(this@FloatWindowService).apply {
@@ -371,15 +347,17 @@ class FloatWindowService : Service() {
                             maxLines = 1
                         }
                         addView(badge, LinearLayout.LayoutParams(
-                            panelWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
+                            contentWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
                     }
 
                     setOnClickListener {
                         UrlOpener.open(this@FloatWindowService, item.url, savedKeyword)
                     }
                 }
-                verticalLayout.addView(btnLayout, LinearLayout.LayoutParams(
-                    panelWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
+                val btnLp = LinearLayout.LayoutParams(
+                    panelWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+                btnLp.setMargins(0, (3 * density).toInt(), 0, (3 * density).toInt())
+                verticalLayout.addView(btnLayout, btnLp)
             }
         }
 
@@ -417,21 +395,17 @@ class FloatWindowService : Service() {
         if (!panelExpanded) return
         panelExpanded = false
 
-        listOfNotNull(scrimView, toolsPanelView).forEach {
-            try { windowManager.removeView(it) } catch (_: Exception) { }
-        }
-        scrimView = null
+        try { windowManager.removeView(toolsPanelView) } catch (_: Exception) { }
         toolsPanelView = null
 
         createCollapsedIcon()
     }
 
     private fun removeQuickAccessViews() {
-        listOfNotNull(toolsPanelView, scrimView, collapsedIcon).forEach {
+        listOfNotNull(toolsPanelView, collapsedIcon).forEach {
             try { windowManager.removeView(it) } catch (_: Exception) { }
         }
         toolsPanelView = null
-        scrimView = null
         collapsedIcon = null
         panelExpanded = false
     }
