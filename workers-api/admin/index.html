@@ -216,12 +216,21 @@ function getCurrentGroup() {
 function renderTabs() {
   const container = document.getElementById('tabsContainer');
   container.innerHTML = '';
-  config.groups.sort((a, b) => a.order - b.order).forEach(g => {
+  [...config.groups].sort((a, b) => a.order - b.order).forEach(g => {
     const btn = document.createElement('button');
     btn.className = `tab ${g.id === currentGroupId ? 'active' : ''}`;
     btn.textContent = g.name;
     btn.onclick = () => { currentGroupId = g.id; render(); };
     container.appendChild(btn);
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'tab';
+    editBtn.textContent = '⚙';
+    editBtn.style.fontSize = '12px';
+    editBtn.style.padding = '8px 6px';
+    editBtn.title = '编辑分组属性';
+    editBtn.onclick = (e) => { e.stopPropagation(); editGroup(g.id); };
+    container.appendChild(editBtn);
   });
   const addBtn = document.createElement('button');
   addBtn.className = 'tab tab-add';
@@ -398,9 +407,16 @@ function saveHints() {
 function addGroup() {
   const name = prompt('请输入分组名称：');
   if (!name) return;
+  let tab = '全部';
+  const tabOptions = config.tabs && config.tabs.length > 0
+    ? config.tabs.map(t => t.name).join(', ')
+    : '全部';
+  const tabInput = prompt('归属标签（可选：' + tabOptions + '，留空默认"全部"）：');
+  if (tabInput !== null && tabInput.trim()) tab = tabInput.trim();
   const newGroup = {
     id: 'group_' + Date.now(),
     name,
+    tab: tab === '全部' ? null : tab,
     order: config.groups.length + 1,
     hints: [],
     buttons: []
@@ -409,6 +425,21 @@ function addGroup() {
   currentGroupId = newGroup.id;
   render();
   toast('分组已添加');
+}
+
+function editGroup(groupId) {
+  const group = config.groups.find(g => g.id === groupId);
+  if (!group) return;
+  const name = prompt('分组名称：', group.name);
+  if (!name) return;
+  const tabOptions = config.tabs && config.tabs.length > 0
+    ? config.tabs.map(t => t.name).join(', ')
+    : '全部';
+  const tab = prompt('归属标签（可选：' + tabOptions + '，留空为"全部"）：', group.tab || '全部');
+  group.name = name;
+  group.tab = (tab !== null && tab.trim() && tab.trim() !== '全部') ? tab.trim() : null;
+  render();
+  toast('分组已更新');
 }
 
 function renderTabManager() {
@@ -470,9 +501,11 @@ function moveTab(index, direction) {
 
 async function saveAll() {
   saveHints();
+  const body = { groups: config.groups };
+  if (config.tabs) body.tabs = config.tabs;
   const data = await api('/api/admin/reorder', {
     method: 'PUT',
-    body: JSON.stringify({ groups: config.groups })
+    body: JSON.stringify(body)
   });
   if (data.success) toast('已保存');
 }
