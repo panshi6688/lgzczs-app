@@ -23,7 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,7 +61,7 @@ import com.lgzczs.app.model.ToolItem
 import com.lgzczs.app.util.UrlOpener
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsPage(
     repository: ToolsRepository
@@ -245,7 +247,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
             val keywordOptions = buildList {
                 add("" to "(不使用)")
                 config?.keywords?.forEach { add(it to it) }
-                customKeywords.forEach { kw -> if (none { it.first == kw }) add(kw to kw) }
+                customKeywords.forEach { kw -> if (none { p -> p.first == kw }) add(kw to kw) }
                 add("__custom__" to "自定义...")
             }
             val currentKeywordLabel = keywordOptions.find { it.first == selectedKeyword }?.second
