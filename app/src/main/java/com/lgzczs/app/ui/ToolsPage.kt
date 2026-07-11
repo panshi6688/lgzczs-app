@@ -244,11 +244,13 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                     }
                 }
             }
-            val keywordOptions = buildList {
-                add("" to "(不使用)")
-                config?.keywords?.forEach { add(it to it) }
-                customKeywords.forEach { kw -> if (none { p -> p.first == kw }) add(kw to kw) }
-                add("__custom__" to "自定义...")
+            val keywordOptions = remember(config, customKeywords) {
+                val options = mutableListOf<Pair<String, String>>()
+                options.add("" to "(不使用)")
+                config?.keywords?.forEach { options.add(it to it) }
+                customKeywords.forEach { kw -> if (!options.any { p -> p.first == kw }) options.add(kw to kw) }
+                options.add("__custom__" to "自定义...")
+                options.toList()
             }
             val currentKeywordLabel = keywordOptions.find { it.first == selectedKeyword }?.second
                 ?: selectedKeyword.ifBlank { "(不使用)" }
