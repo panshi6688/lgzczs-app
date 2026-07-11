@@ -113,6 +113,16 @@
       </div>
       <div id="tabList"></div>
     </div>
+
+    <div class="card" style="margin-top:12px">
+      <h2 style="font-size:16px;margin-bottom:12px">关键词管理</h2>
+      <p style="font-size:12px;color:#888;margin-bottom:8px">默认关键词会出现在App的关键词选择器中，用户也可自定义临时关键词</p>
+      <div class="hints-row">
+        <input id="newKeywordInput" placeholder="新关键词" onkeydown="if(event.key==='Enter')addKeyword()">
+        <button class="btn btn-primary btn-sm" onclick="addKeyword()">添加</button>
+      </div>
+      <div id="keywordList"></div>
+    </div>
   </div>
 </div>
 <div id="toast" class="toast"></div>
@@ -192,10 +202,12 @@ async function loadConfig() {
   const data = await api('/api/admin/buttons');
   if (data && data.groups) {
     config = data;
+    if (!config.keywords) config.keywords = [];
     if (!config.tabs) config.tabs = [];
     if (!config.tabs.some(t => t.name === '全部')) {
       config.tabs.unshift({ name: '全部', order: 0 });
     }
+    if (!config.keywords) config.keywords = [];
     if (!currentGroupId && config.groups.length) currentGroupId = config.groups[0].id;
   }
 }
@@ -207,6 +219,7 @@ function render() {
   renderTabs();
   renderGrid();
   renderTabManager();
+  renderKeywordManager();
 }
 
 function getCurrentGroup() {
@@ -499,10 +512,50 @@ function moveTab(index, direction) {
   renderTabManager();
 }
 
+/* Keyword Management */
+function renderKeywordManager() {
+  const container = document.getElementById('keywordList');
+  if (!config.keywords) config.keywords = [];
+  if (config.keywords.length === 0) {
+    container.innerHTML = '<div style="color:#999;font-size:13px;padding:8px 0">暂无关键词，添加一个开始</div>';
+    return;
+  }
+  let html = '';
+  config.keywords.forEach((kw, i) => {
+    html += `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0">
+        <span style="flex:1;font-size:14px">${escHtml(kw)}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteKeyword(${i})">删除</button>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function addKeyword() {
+  const input = document.getElementById('newKeywordInput');
+  const kw = input.value.trim();
+  if (!kw) return toast('请输入关键词');
+  if (!config.keywords) config.keywords = [];
+  if (config.keywords.includes(kw)) return toast('关键词已存在');
+  config.keywords.push(kw);
+  input.value = '';
+  renderKeywordManager();
+  toast('关键词已添加');
+}
+
+function deleteKeyword(index) {
+  if (!confirm('确定删除此关键词？')) return;
+  config.keywords.splice(index, 1);
+  renderKeywordManager();
+  toast('已删除');
+}
+
 async function saveAll() {
   saveHints();
   const body = { groups: config.groups };
   if (config.tabs) body.tabs = config.tabs;
+  if (config.keywords) body.keywords = config.keywords;
   const data = await api('/api/admin/reorder', {
     method: 'PUT',
     body: JSON.stringify(body)
