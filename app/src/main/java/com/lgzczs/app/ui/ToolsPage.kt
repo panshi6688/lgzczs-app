@@ -21,11 +21,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
@@ -68,6 +72,11 @@ fun ToolsPage(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var quickAccess by remember { mutableStateOf(repository.getQuickAccessButtons()) }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedKeyword by remember { mutableStateOf(repository.getSelectedKeyword()) }
+    var customKeywords by remember { mutableStateOf(repository.getCustomKeywords()) }
+    var keywordDropdownExpanded by remember { mutableStateOf(false) }
+    var showCustomKeywordDialog by remember { mutableStateOf(false) }
+    var customKeywordInput by remember { mutableStateOf("") }
 
     fun addToQuickAccess(item: ToolItem) {
         val items = quickAccess.toMutableList()
@@ -199,7 +208,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color(0xFFE8E8E8))
                                 .combinedClickable(
-                                    onClick = { UrlOpener.open(context, item.url) },
+                                    onClick = { UrlOpener.open(context, item.url, selectedKeyword) },
                                     onLongClick = { removeQuickAccess(index) }
                                 )
                                 .padding(vertical = 8.dp, horizontal = 4.dp),
@@ -231,6 +240,68 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                             )
                         }
                     }
+                }
+            }
+            val keywordOptions = buildList {
+                add("" to "(不使用)")
+                config?.keywords?.forEach { add(it to it) }
+                customKeywords.forEach { kw -> if (none { it.first == kw }) add(kw to kw) }
+                add("__custom__" to "自定义...")
+            }
+            val currentKeywordLabel = keywordOptions.find { it.first == selectedKeyword }?.second
+                ?: selectedKeyword.ifBlank { "(不使用)" }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "关键词:",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box {
+                    Text(
+                        text = currentKeywordLabel,
+                        modifier = Modifier
+                            .clickable { keywordDropdownExpanded = true }
+                            .background(Color(0xFFF0F0F0), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                        fontSize = 13.sp,
+                        maxLines = 1
+                    )
+                    DropdownMenu(
+                        expanded = keywordDropdownExpanded,
+                        onDismissRequest = { keywordDropdownExpanded = false }
+                    ) {
+                        keywordOptions.forEach { (value, label) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    keywordDropdownExpanded = false
+                                    if (value == "__custom__") {
+                                        customKeywordInput = ""
+                                        showCustomKeywordDialog = true
+                                    } else {
+                                        selectedKeyword = value
+                                        repository.setSelectedKeyword(value)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+                if (selectedKeyword.isNotEmpty()) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "✕",
+                        modifier = Modifier.clickable {
+                            selectedKeyword = ""
+                            repository.setSelectedKeyword("")
+                        },
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
                 }
             }
             if (tabs.isNotEmpty()) {
@@ -292,7 +363,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .combinedClickable(
-                                        onClick = { UrlOpener.open(context, item.url) },
+                                        onClick = { UrlOpener.open(context, item.url, selectedKeyword) },
                                         onLongClick = { addToQuickAccess(item) }
                                     )
                                     .padding(vertical = 10.dp, horizontal = 4.dp),
@@ -334,6 +405,34 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(6.dp))
                 }
             }
+        }
+        if (showCustomKeywordDialog) {
+            AlertDialog(
+                onDismissRequest = { showCustomKeywordDialog = false },
+                title = { Text("自定义关键词") },
+                text = {
+                    OutlinedTextField(
+                        value = customKeywordInput,
+                        onValueChange = { customKeywordInput = it },
+                        label = { Text("输入搜索关键词") },
+                        singleLine = true
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        if (customKeywordInput.isNotBlank()) {
+                            repository.addCustomKeyword(customKeywordInput)
+                            customKeywords = repository.getCustomKeywords()
+                            selectedKeyword = customKeywordInput
+                            repository.setSelectedKeyword(customKeywordInput)
+                        }
+                        showCustomKeywordDialog = false
+                    }) { Text("确定") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCustomKeywordDialog = false }) { Text("取消") }
+                }
+            )
         }
     }
 }
