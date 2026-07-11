@@ -30,7 +30,14 @@ class ToolsRepository(private val context: Context) {
         private const val PREFS_QUICK = "quick_access"
         private const val KEY_QUICK_PREFIX = "qa_"
         private const val MAX_QUICK_ACCESS = 4
+        private const val PREFS_KEYWORD = "keyword_prefs"
+        private const val KEY_SELECTED = "selected_keyword"
+        private const val KEY_CUSTOM_PREFIX = "custom_kw_"
+        private const val MAX_CUSTOM_KEYWORDS = 5
     }
+
+    private val keywordPrefs: SharedPreferences =
+        context.getSharedPreferences(PREFS_KEYWORD, Context.MODE_PRIVATE)
 
     suspend fun fetchButtons(): Result<ToolConfig> = withContext(Dispatchers.IO) {
         try {
@@ -98,6 +105,37 @@ class ToolsRepository(private val context: Context) {
     }
 
     fun getMaxQuickAccess() = MAX_QUICK_ACCESS
+
+    fun getSelectedKeyword(): String {
+        return keywordPrefs.getString(KEY_SELECTED, "") ?: ""
+    }
+
+    fun setSelectedKeyword(keyword: String) {
+        keywordPrefs.edit().putString(KEY_SELECTED, keyword).apply()
+    }
+
+    fun getCustomKeywords(): List<String> {
+        val result = mutableListOf<String>()
+        for (i in 0 until MAX_CUSTOM_KEYWORDS) {
+            val kw = keywordPrefs.getString("${KEY_CUSTOM_PREFIX}$i", null) ?: break
+            result.add(kw)
+        }
+        return result
+    }
+
+    fun addCustomKeyword(keyword: String) {
+        if (keyword.isBlank()) return
+        val existing = getCustomKeywords().toMutableList()
+        existing.remove(keyword)
+        existing.add(0, keyword)
+        val trimmed = existing.take(MAX_CUSTOM_KEYWORDS)
+        val editor = keywordPrefs.edit()
+        editor.clear()
+        trimmed.forEachIndexed { i, kw ->
+            editor.putString("${KEY_CUSTOM_PREFIX}$i", kw)
+        }
+        editor.apply()
+    }
 
     fun loadDefaultConfig(): ToolConfig? {
         return try {
