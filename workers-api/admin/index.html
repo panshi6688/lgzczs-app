@@ -129,7 +129,7 @@
 </div>
 
 <script>
-const API = 'https://lgzc-toolsmenu.lghaomaauto.workers.dev';
+const API = '';
 let token = localStorage.getItem('admin_token');
 let config = { groups: [] };
 let currentGroupId = null;
@@ -144,12 +144,17 @@ function toast(msg) {
 }
 
 async function api(path, options = {}) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${API}${path}`, { ...options, headers });
-  if (res.status === 401) { token = null; localStorage.removeItem('admin_token'); render(); }
-  const text = await res.text();
-  try { return JSON.parse(text); } catch { return { error: text }; }
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API}${path}`, { ...options, headers });
+    if (res.status === 401) { token = null; localStorage.removeItem('admin_token'); render(); }
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return { error: text }; }
+  } catch (e) {
+    toast('网络错误：无法连接到服务器');
+    return { error: e.message };
+  }
 }
 
 async function login() {
@@ -176,7 +181,7 @@ function logout() {
 
 async function loadConfig() {
   const data = await api('/api/admin/buttons');
-  if (data.groups) {
+  if (data && data.groups) {
     config = data;
     if (!currentGroupId && config.groups.length) currentGroupId = config.groups[0].id;
   }
