@@ -330,6 +330,11 @@ function saveButton() {
       btn.badge = badge || null;
       btn.order = order;
     }
+  } else {
+    group.buttons.push({
+      id: 'btn_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      label, url, badge: badge || null, order
+    });
   }
   renderGrid();
   closeModal();
