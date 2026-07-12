@@ -14,7 +14,11 @@ object UrlOpener {
     private const val TAOBAO_PACKAGE = "com.taobao.taobao"
     private const val DIANTAO_PACKAGE = "com.taobao.live"
 
-    fun open(context: Context, url: String, keyword: String? = null) {
+    fun open(context: Context, url: String, keyword: String? = null, useDiandian: Boolean = false) {
+        if (useDiandian) {
+            openWithPackage(context, url, DIANTAO_PACKAGE)
+            return
+        }
         val finalUrl = if (!keyword.isNullOrBlank() && url.contains("s.m.taobao.com")) {
             replaceQParam(url, keyword)
         } else {
@@ -35,11 +39,6 @@ object UrlOpener {
 
         try {
             when {
-                url.contains("shop294995043.m.taobao.com") ||
-                url == "https://main.m.taobao.com/cart/index.html?spm=a2141.7631565.tbshopmod-photo_retouch.21&spm=a2141.7631565.tbshopmod-photo_retouch.18" ||
-                url == "https://main.m.taobao.com/olist/index.html?tabCode=waitPay" -> {
-                    openWithPackage(context, url, DIANTAO_PACKAGE)
-                }
                 url.contains("s.m.taobao.com") || url.contains("web.m.taobao.com") -> {
                     openWithTbOpenScheme(context, url)
                 }

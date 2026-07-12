@@ -137,6 +137,10 @@
     <textarea id="editUrl" placeholder="https://..." rows="2"></textarea>
     <label>Badge（角标文字）</label>
     <input id="editBadge" placeholder="如 10次、乐动力">
+    <label style="display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:10px">
+      <input id="editDiandian" type="checkbox" style="width:auto;margin:0">
+      点淘打开
+    </label>
     <label>排序</label>
     <input id="editOrder" type="number" placeholder="数字越小越靠前">
     <div class="modal-actions">
@@ -367,6 +371,7 @@ function openEdit(btnId) {
   document.getElementById('editLabel').value = btn.label || '';
   document.getElementById('editUrl').value = btn.url || '';
   document.getElementById('editBadge').value = btn.badge || '';
+  document.getElementById('editDiandian').checked = btn.diandian === true;
   document.getElementById('editOrder').value = btn.order || 0;
   document.getElementById('deleteBtn').classList.remove('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -383,6 +388,7 @@ function saveButton() {
   const label = document.getElementById('editLabel').value.trim();
   const url = document.getElementById('editUrl').value.trim();
   const badge = document.getElementById('editBadge').value.trim();
+  const diandian = document.getElementById('editDiandian').checked;
   const order = parseInt(document.getElementById('editOrder').value) || 0;
 
   if (!label) return toast('请输入名称');
@@ -394,12 +400,13 @@ function saveButton() {
       btn.label = label;
       btn.url = url;
       btn.badge = badge || null;
+      btn.diandian = diandian;
       btn.order = order;
     }
   } else {
     group.buttons.push({
       id: 'btn_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-      label, url, badge: badge || null, order
+      label, url, badge: badge || null, diandian, order
     });
   }
   renderGrid();

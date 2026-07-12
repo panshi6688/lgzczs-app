@@ -217,7 +217,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                 .background(Color(0xFFE8E8E8))
                                 .heightIn(min = 45.dp)
                                 .combinedClickable(
-                                    onClick = { UrlOpener.open(context, item.url, selectedKeyword) },
+                                    onClick = { UrlOpener.open(context, item.url, selectedKeyword, item.diandian == true) },
                                     onLongClick = { removeQuickAccess(index) }
                                 )
                                 .padding(vertical = 8.dp, horizontal = 4.dp),
@@ -407,7 +407,7 @@ val tabs = if (config?.tabs != null && config!!.tabs!!.isNotEmpty()) {
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .combinedClickable(
-                                        onClick = { UrlOpener.open(context, item.url, selectedKeyword) },
+                                        onClick = { UrlOpener.open(context, item.url, selectedKeyword, item.diandian == true) },
                                         onLongClick = { addToQuickAccess(item) }
                                     )
                                     .padding(vertical = 10.dp, horizontal = 4.dp),

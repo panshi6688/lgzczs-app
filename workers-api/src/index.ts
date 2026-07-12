@@ -8,6 +8,7 @@ interface ToolItem {
   url: string;
   badge: string | null;
   order: number;
+  diandian?: boolean;
 }
 
 interface TabItem {

@@ -25,5 +25,6 @@ data class ToolItem(
     val label: String,
     val url: String,
     val badge: String?,
-    val order: Int
+    val order: Int,
+    val diandian: Boolean? = null
 )

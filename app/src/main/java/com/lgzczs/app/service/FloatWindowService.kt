@@ -350,8 +350,8 @@ class FloatWindowService : Service() {
                             contentWidth, LinearLayout.LayoutParams.WRAP_CONTENT))
                     }
 
-                    setOnClickListener {
-                        UrlOpener.open(this@FloatWindowService, item.url, savedKeyword)
+                        setOnClickListener {
+                        UrlOpener.open(this@FloatWindowService, item.url, savedKeyword, item.diandian == true)
                     }
                 }
                 val btnLp = LinearLayout.LayoutParams(
